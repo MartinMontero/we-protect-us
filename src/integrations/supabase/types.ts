@@ -9,16 +9,377 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      case_studies: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          key_principles: string[] | null
+          lessons: string[] | null
+          location: string
+          organization: string
+          outcomes: string[] | null
+          relevance_score: number | null
+          tags: string[] | null
+          time_period: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          key_principles?: string[] | null
+          lessons?: string[] | null
+          location: string
+          organization: string
+          outcomes?: string[] | null
+          relevance_score?: number | null
+          tags?: string[] | null
+          time_period: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          key_principles?: string[] | null
+          lessons?: string[] | null
+          location?: string
+          organization?: string
+          outcomes?: string[] | null
+          relevance_score?: number | null
+          tags?: string[] | null
+          time_period?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      mutual_aid_posts: {
+        Row: {
+          category: Database["public"]["Enums"]["need_category"]
+          created_at: string | null
+          description: string
+          expires_at: string | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          radius_km: number | null
+          skills_needed: string[] | null
+          status: Database["public"]["Enums"]["fulfillment_status"] | null
+          time_commitment_hours: number | null
+          title: string
+          type: string
+          updated_at: string | null
+          urgency: Database["public"]["Enums"]["urgency_level"] | null
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["need_category"]
+          created_at?: string | null
+          description: string
+          expires_at?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          radius_km?: number | null
+          skills_needed?: string[] | null
+          status?: Database["public"]["Enums"]["fulfillment_status"] | null
+          time_commitment_hours?: number | null
+          title: string
+          type: string
+          updated_at?: string | null
+          urgency?: Database["public"]["Enums"]["urgency_level"] | null
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["need_category"]
+          created_at?: string | null
+          description?: string
+          expires_at?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          radius_km?: number | null
+          skills_needed?: string[] | null
+          status?: Database["public"]["Enums"]["fulfillment_status"] | null
+          time_commitment_hours?: number | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+          urgency?: Database["public"]["Enums"]["urgency_level"] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mutual_aid_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          pseudonym: string
+          skills: string[] | null
+          time_bank_hours: number | null
+          trust_score: number | null
+          updated_at: string | null
+          vulnerability_factors: string[] | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          id: string
+          location_lat?: number | null
+          location_lng?: number | null
+          pseudonym: string
+          skills?: string[] | null
+          time_bank_hours?: number | null
+          trust_score?: number | null
+          updated_at?: string | null
+          vulnerability_factors?: string[] | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          pseudonym?: string
+          skills?: string[] | null
+          time_bank_hours?: number | null
+          trust_score?: number | null
+          updated_at?: string | null
+          vulnerability_factors?: string[] | null
+        }
+        Relationships: []
+      }
+      reflections: {
+        Row: {
+          created_at: string | null
+          id: string
+          mutual_aid_post_id: string | null
+          prompt_text: string
+          prompt_type: string
+          response: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mutual_aid_post_id?: string | null
+          prompt_text: string
+          prompt_type: string
+          response?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mutual_aid_post_id?: string | null
+          prompt_text?: string
+          prompt_type?: string
+          response?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reflections_mutual_aid_post_id_fkey"
+            columns: ["mutual_aid_post_id"]
+            isOneToOne: false
+            referencedRelation: "mutual_aid_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reflections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solidarity_metrics: {
+        Row: {
+          active_participants: number | null
+          created_at: string | null
+          date: string
+          id: string
+          network_density: number | null
+          total_hours_exchanged: number | null
+          trust_network_size: number | null
+          vulnerability_support_ratio: number | null
+          wealth_circulated: number | null
+        }
+        Insert: {
+          active_participants?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          network_density?: number | null
+          total_hours_exchanged?: number | null
+          trust_network_size?: number | null
+          vulnerability_support_ratio?: number | null
+          wealth_circulated?: number | null
+        }
+        Update: {
+          active_participants?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          network_density?: number | null
+          total_hours_exchanged?: number | null
+          trust_network_size?: number | null
+          vulnerability_support_ratio?: number | null
+          wealth_circulated?: number | null
+        }
+        Relationships: []
+      }
+      time_bank_transactions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          giver_id: string
+          hours: number
+          id: string
+          mutual_aid_post_id: string | null
+          receiver_id: string
+          skill_category: string
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          giver_id: string
+          hours: number
+          id?: string
+          mutual_aid_post_id?: string | null
+          receiver_id: string
+          skill_category: string
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          giver_id?: string
+          hours?: number
+          id?: string
+          mutual_aid_post_id?: string | null
+          receiver_id?: string
+          skill_category?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_bank_transactions_giver_id_fkey"
+            columns: ["giver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_bank_transactions_mutual_aid_post_id_fkey"
+            columns: ["mutual_aid_post_id"]
+            isOneToOne: false
+            referencedRelation: "mutual_aid_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_bank_transactions_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_bank_transactions_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trust_relations: {
+        Row: {
+          created_at: string | null
+          from_user_id: string
+          id: string
+          notes: string | null
+          to_user_id: string
+          trust_level: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          from_user_id: string
+          id?: string
+          notes?: string | null
+          to_user_id: string
+          trust_level?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          from_user_id?: string
+          id?: string
+          notes?: string | null
+          to_user_id?: string
+          trust_level?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_relations_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trust_relations_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_network_density: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      update_solidarity_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      fulfillment_status: "open" | "in_progress" | "fulfilled" | "expired"
+      need_category:
+        | "food"
+        | "housing"
+        | "transportation"
+        | "childcare"
+        | "healthcare"
+        | "education"
+        | "technology"
+        | "labor"
+        | "financial"
+        | "emotional_support"
+      urgency_level: "low" | "medium" | "high" | "critical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +494,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      fulfillment_status: ["open", "in_progress", "fulfilled", "expired"],
+      need_category: [
+        "food",
+        "housing",
+        "transportation",
+        "childcare",
+        "healthcare",
+        "education",
+        "technology",
+        "labor",
+        "financial",
+        "emotional_support",
+      ],
+      urgency_level: ["low", "medium", "high", "critical"],
+    },
   },
 } as const

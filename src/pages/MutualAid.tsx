@@ -1,97 +1,128 @@
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MutualAidMap } from '@/components/mutual-aid/MutualAidMap';
+import { SolidarityProjections } from '@/components/mutual-aid/SolidarityProjections';
+import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
 import { Button } from '@/components/ui/button';
-import { Heart, Plus, HandHeart, Gift } from 'lucide-react';
+import { Plus, Map, BarChart3, Users } from 'lucide-react';
 
 const MutualAid = () => {
-  const requests = [
-    {
-      type: 'request',
-      title: 'Need help with grocery pickup',
-      category: 'Transportation',
-      community: 'Downtown Neighbors',
-      time: '2 hours ago'
-    },
-    {
-      type: 'offer',
-      title: 'Free homemade meals available',
-      category: 'Food',
-      community: 'Green Valley Co-op',
-      time: '4 hours ago'
-    },
-    {
-      type: 'request',
-      title: 'Looking for childcare swap',
-      category: 'Childcare',
-      community: 'Riverside Mutual Aid',
-      time: '1 day ago'
-    }
-  ];
-
   return (
-    <main id="main-content" className="min-h-screen p-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Mutual Aid</h1>
-          <p className="text-muted-foreground">
-            Share resources and support each other in your community
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            Solidarity Coordination Matrix
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Building community resilience through mutual aid and resource sharing
           </p>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Post Request
-          </Button>
-          <Button variant="outline">
-            <Gift className="mr-2 h-4 w-4" />
-            Offer Help
+        <div className="flex gap-3">
+          <CommunityLens />
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            Create Request/Offer
           </Button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {requests.map((request, index) => (
-            <Card key={index} className="transition-all duration-200 hover:shadow-lg">
+      <Tabs defaultValue="map" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="map" className="gap-2">
+            <Map className="w-4 h-4" />
+            Resource Map
+          </TabsTrigger>
+          <TabsTrigger value="projections" className="gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Solidarity Projections
+          </TabsTrigger>
+          <TabsTrigger value="community" className="gap-2">
+            <Users className="w-4 h-4" />
+            Community Impact
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="map" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Map className="w-5 h-5" />
+                Geospatial Resource Network
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MutualAidMap />
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className={`p-2 rounded-full ${
-                    request.type === 'offer' 
-                      ? 'bg-green-100 text-green-600' 
-                      : 'bg-blue-100 text-blue-600'
-                  }`}>
-                    {request.type === 'offer' ? (
-                      <Gift className="h-4 w-4" />
-                    ) : (
-                      <HandHeart className="h-4 w-4" />
-                    )}
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    request.type === 'offer'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {request.type === 'offer' ? 'Offering' : 'Requesting'}
-                  </span>
-                </div>
-                <CardTitle className="text-lg">{request.title}</CardTitle>
-                <CardDescription>
-                  {request.category} • {request.community}
-                </CardDescription>
+                <CardTitle className="text-lg">Legend</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">{request.time}</span>
-                  <Button size="sm">
-                    {request.type === 'offer' ? 'Accept' : 'Offer Help'}
-                  </Button>
+              <CardContent className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+                  <span className="text-sm">Critical Requests</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
+                  <span className="text-sm">High Priority Requests</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
+                  <span className="text-sm">Community Offers</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-green-600 rounded-full"></div>
+                  <span className="text-sm">Low Priority Requests</span>
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      </div>
-    </main>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Vulnerability-Aware Matching</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-3">
+                  Our algorithm prioritizes requests from community members with identified vulnerabilities:
+                </p>
+                <ul className="text-sm space-y-1">
+                  <li>• Single parents</li>
+                  <li>• Disabled community members</li>
+                  <li>• Elderly individuals</li>
+                  <li>• Recently displaced</li>
+                  <li>• Chronic health conditions</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="projections" className="space-y-4">
+          <SolidarityProjections />
+        </TabsContent>
+
+        <TabsContent value="community" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Community Impact Education</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Understanding the deeper implications of mutual aid beyond immediate transactions.
+                Click the "Community Lens" button to explore historical context and reflect on systemic impacts.
+              </p>
+              <CommunityLens />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
