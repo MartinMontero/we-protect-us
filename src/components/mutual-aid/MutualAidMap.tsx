@@ -20,7 +20,7 @@ interface MutualAidPost {
   id: string;
   title: string;
   description: string;
-  type: 'request' | 'offer';
+  type: string; // Changed from 'request' | 'offer' to string to match database
   category: string;
   urgency: string;
   location_lat: number;
