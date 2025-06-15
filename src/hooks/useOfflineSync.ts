@@ -2,6 +2,13 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+// Extend ServiceWorkerRegistration interface to include sync
+interface ServiceWorkerRegistrationWithSync extends ServiceWorkerRegistration {
+  sync?: {
+    register: (tag: string) => Promise<void>;
+  };
+}
+
 interface OfflineData {
   checkins: Array<{
     data: any;
@@ -28,11 +35,24 @@ export const useOfflineSync = () => {
         description: "Syncing offline data...",
       });
       
-      // Trigger background sync
-      if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+      // Trigger background sync if supported
+      if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(registration => {
-          return registration.sync.register('background-sync');
+          const syncRegistration = registration as ServiceWorkerRegistrationWithSync;
+          if (syncRegistration.sync) {
+            return syncRegistration.sync.register('background-sync');
+          } else {
+            console.log('Background sync not supported');
+            // Fallback: trigger manual sync
+            syncOfflineData();
+          }
+        }).catch(error => {
+          console.error('Background sync registration failed:', error);
+          syncOfflineData();
         });
+      } else {
+        // Fallback for browsers without service worker support
+        syncOfflineData();
       }
     };
 
@@ -64,6 +84,73 @@ export const useOfflineSync = () => {
       setHasOfflineData(!!offlineData);
     } catch (error) {
       console.error('Error checking offline data:', error);
+    }
+  };
+
+  const syncOfflineData = async () => {
+    try {
+      const cache = await caches.open('emergency-prep-v1');
+      const offlineData = await cache.match('/offline-data');
+      
+      if (offlineData) {
+        const data: OfflineData = await offlineData.json();
+        
+        // Sync safety check-ins
+        for (const checkin of data.checkins) {
+          try {
+            const response = await fetch('/rest/v1/safety_checkins', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${checkin.token}`
+              },
+              body: JSON.stringify(checkin.data)
+            });
+            
+            if (!response.ok) {
+              throw new Error('Failed to sync checkin');
+            }
+          } catch (error) {
+            console.error('Error syncing checkin:', error);
+          }
+        }
+        
+        // Sync damage reports
+        for (const report of data.reports) {
+          try {
+            const response = await fetch('/rest/v1/damage_reports', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${report.token}`
+              },
+              body: JSON.stringify(report.data)
+            });
+            
+            if (!response.ok) {
+              throw new Error('Failed to sync damage report');
+            }
+          } catch (error) {
+            console.error('Error syncing damage report:', error);
+          }
+        }
+        
+        // Clear offline data after successful sync
+        await cache.delete('/offline-data');
+        setHasOfflineData(false);
+        
+        toast({
+          title: "Offline Data Synced",
+          description: "Your offline submissions have been successfully synced.",
+        });
+      }
+    } catch (error) {
+      console.error('Manual sync failed:', error);
+      toast({
+        title: "Sync Error",
+        description: "Failed to sync offline data. Will retry when connection improves.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -116,6 +203,7 @@ export const useOfflineSync = () => {
     isOnline,
     hasOfflineData,
     storeOfflineData,
-    checkOfflineData
+    checkOfflineData,
+    syncOfflineData
   };
 };
