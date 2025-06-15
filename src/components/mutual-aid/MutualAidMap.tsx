@@ -24,30 +24,46 @@ export const MutualAidMap: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  // Ensure we have valid posts array
-  const validPosts = Array.isArray(posts) ? posts : [];
+  // Ensure we have valid posts array - add safety checks
+  const validPosts = Array.isArray(posts) ? posts.filter(post => 
+    post && 
+    typeof post.id === 'string' && 
+    typeof post.latitude === 'number' && 
+    typeof post.longitude === 'number'
+  ) : [];
+
+  console.log('MutualAidMap render - validPosts:', validPosts.length);
 
   return (
-    <div className="h-full w-full">
-      <MapContainer
-        center={[37.7749, -122.4194]}
-        zoom={12}
-        style={{ height: '400px', width: '100%' }}
-        className="rounded-lg"
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        
-        {validPosts.map((post) => (
-          <MapMarker
-            key={post.id}
-            post={post}
-            onPostClick={handleMarkerClick}
+    <div className="h-full w-full relative">
+      <div className="h-[400px] w-full rounded-lg overflow-hidden">
+        <MapContainer
+          center={[37.7749, -122.4194]}
+          zoom={12}
+          style={{ height: '100%', width: '100%' }}
+          className="rounded-lg"
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-        ))}
-      </MapContainer>
+          
+          {validPosts.length > 0 && validPosts.map((post) => {
+            try {
+              return (
+                <MapMarker
+                  key={post.id}
+                  post={post}
+                  onPostClick={handleMarkerClick}
+                />
+              );
+            } catch (error) {
+              console.error('Error rendering marker for post:', post.id, error);
+              return null;
+            }
+          })}
+        </MapContainer>
+      </div>
 
       {selectedPost && (
         <PostDetails 
