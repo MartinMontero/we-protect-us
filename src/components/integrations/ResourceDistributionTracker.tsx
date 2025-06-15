@@ -4,38 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Package, MapPin, Clock, QrCode, Camera } from 'lucide-react';
-import { useResourceDistribution } from '@/hooks/useIntegrations';
+import { useResourceDistribution, ResourceDistribution } from '@/hooks/useIntegrations';
 import { supabase } from '@/integrations/supabase/client';
-
-interface ResourceDistribution {
-  id: string;
-  resource_id: string;
-  donor_id: string;
-  recipient_id: string;
-  volunteer_id: string;
-  qr_code: string;
-  status: string;
-  scheduled_pickup_at: string;
-  scheduled_delivery_at: string;
-  pickup_location_lat: number;
-  pickup_location_lng: number;
-  delivery_location_lat: number;
-  delivery_location_lng: number;
-  verification_photo_url?: string;
-  created_at: string;
-  community_resource?: {
-    resource_name: string;
-    resource_type: string;
-  };
-  donor_profile?: {
-    full_name: string;
-    pseudonym: string;
-  };
-  recipient_profile?: {
-    full_name: string;
-    pseudonym: string;
-  };
-}
 
 export const ResourceDistributionTracker: React.FC = () => {
   const { updateDistributionStatus } = useResourceDistribution();
@@ -60,7 +30,51 @@ export const ResourceDistributionTracker: React.FC = () => {
         .limit(20);
 
       if (error) throw error;
-      setDistributions(data || []);
+
+      // Transform the data to match our interface
+      const transformedDistributions: ResourceDistribution[] = (data || []).map(dist => ({
+        id: dist.id,
+        resource_id: dist.resource_id,
+        donor_id: dist.donor_id,
+        recipient_id: dist.recipient_id,
+        volunteer_id: dist.volunteer_id,
+        qr_code: dist.qr_code || '',
+        status: dist.status,
+        scheduled_pickup_at: dist.scheduled_pickup_at,
+        scheduled_delivery_at: dist.scheduled_delivery_at,
+        pickup_location_lat: dist.pickup_location_lat,
+        pickup_location_lng: dist.pickup_location_lng,
+        delivery_location_lat: dist.delivery_location_lat,
+        delivery_location_lng: dist.delivery_location_lng,
+        verification_photo_url: dist.verification_photo_url,
+        created_at: dist.created_at,
+        community_resource: dist.community_resource && 
+          typeof dist.community_resource === 'object' &&
+          'resource_name' in dist.community_resource
+          ? {
+              resource_name: dist.community_resource.resource_name || '',
+              resource_type: dist.community_resource.resource_type || ''
+            }
+          : null,
+        donor_profile: dist.donor_profile && 
+          typeof dist.donor_profile === 'object' &&
+          'full_name' in dist.donor_profile
+          ? {
+              full_name: dist.donor_profile.full_name || '',
+              pseudonym: dist.donor_profile.pseudonym || ''
+            }
+          : null,
+        recipient_profile: dist.recipient_profile && 
+          typeof dist.recipient_profile === 'object' &&
+          'full_name' in dist.recipient_profile
+          ? {
+              full_name: dist.recipient_profile.full_name || '',
+              pseudonym: dist.recipient_profile.pseudonym || ''
+            }
+          : null
+      }));
+
+      setDistributions(transformedDistributions);
     } catch (error) {
       console.error('Error fetching distributions:', error);
     } finally {
@@ -164,13 +178,15 @@ export const ResourceDistributionTracker: React.FC = () => {
                   <Badge className={getStatusColor(distribution.status)}>
                     {distribution.status.replace('_', ' ')}
                   </Badge>
-                  <div className="mt-2">
-                    <img
-                      src={generateQRCode(distribution.qr_code)}
-                      alt="Distribution QR Code"
-                      className="w-16 h-16 mx-auto"
-                    />
-                  </div>
+                  {distribution.qr_code && (
+                    <div className="mt-2">
+                      <img
+                        src={generateQRCode(distribution.qr_code)}
+                        alt="Distribution QR Code"
+                        className="w-16 h-16 mx-auto"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

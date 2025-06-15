@@ -65,7 +65,7 @@ export const useTimeBankTransactions = () => {
         created_at: transaction.created_at,
         giver_profile: transaction.giver_profile && 
           transaction.giver_profile !== null &&
-          typeof transaction.giver_profile === 'object' &&
+          typeof transaction.giver_profile === 'object' && 
           'full_name' in transaction.giver_profile
           ? transaction.giver_profile as { full_name: string; pseudonym: string }
           : null,

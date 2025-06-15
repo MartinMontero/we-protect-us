@@ -23,6 +23,16 @@ export interface VolunteerMatch {
   factors: Record<string, any>;
   status: string;
   created_at: string;
+  volunteer_profile?: {
+    full_name: string;
+    pseudonym: string;
+    skills: string[];
+  } | null;
+  mutual_aid_post?: {
+    title: string;
+    description: string;
+    post_type: string;
+  } | null;
 }
 
 export interface ResourceDistribution {
@@ -35,6 +45,24 @@ export interface ResourceDistribution {
   status: string;
   scheduled_pickup_at: string;
   scheduled_delivery_at: string;
+  pickup_location_lat: number;
+  pickup_location_lng: number;
+  delivery_location_lat: number;
+  delivery_location_lng: number;
+  verification_photo_url?: string;
+  created_at: string;
+  community_resource?: {
+    resource_name: string;
+    resource_type: string;
+  } | null;
+  donor_profile?: {
+    full_name: string;
+    pseudonym: string;
+  } | null;
+  recipient_profile?: {
+    full_name: string;
+    pseudonym: string;
+  } | null;
 }
 
 export const useIntegrations = () => {
@@ -55,7 +83,22 @@ export const useIntegrations = () => {
         .order('service_name');
 
       if (error) throw error;
-      setIntegrations(data || []);
+
+      // Transform the data to match our interface
+      const transformedData: IntegrationConfig[] = (data || []).map(item => ({
+        id: item.id,
+        service_name: item.service_name,
+        api_endpoint: item.api_endpoint || '',
+        api_key_name: item.api_key_name || '',
+        is_enabled: item.is_enabled,
+        configuration: typeof item.configuration === 'object' && item.configuration !== null 
+          ? item.configuration as Record<string, any>
+          : {},
+        health_status: item.health_status,
+        last_health_check: item.last_health_check,
+      }));
+
+      setIntegrations(transformedData);
     } catch (error) {
       console.error('Error fetching integrations:', error);
       toast({

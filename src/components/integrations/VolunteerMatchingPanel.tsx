@@ -5,28 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Users, MapPin, Clock, Star } from 'lucide-react';
-import { useVolunteerMatching } from '@/hooks/useIntegrations';
+import { useVolunteerMatching, VolunteerMatch } from '@/hooks/useIntegrations';
 import { supabase } from '@/integrations/supabase/client';
-
-interface VolunteerMatch {
-  id: string;
-  need_id: string;
-  volunteer_id: string;
-  match_score: number;
-  factors: Record<string, any>;
-  status: string;
-  created_at: string;
-  volunteer_profile?: {
-    full_name: string;
-    pseudonym: string;
-    skills: string[];
-  };
-  mutual_aid_post?: {
-    title: string;
-    description: string;
-    post_type: string;
-  };
-}
 
 export const VolunteerMatchingPanel: React.FC = () => {
   const { generateMatches, acceptMatch } = useVolunteerMatching();
@@ -50,7 +30,39 @@ export const VolunteerMatchingPanel: React.FC = () => {
         .limit(20);
 
       if (error) throw error;
-      setMatches(data || []);
+
+      // Transform the data to match our interface
+      const transformedMatches: VolunteerMatch[] = (data || []).map(match => ({
+        id: match.id,
+        need_id: match.need_id,
+        volunteer_id: match.volunteer_id,
+        match_score: match.match_score,
+        factors: typeof match.factors === 'object' && match.factors !== null 
+          ? match.factors as Record<string, any>
+          : {},
+        status: match.status,
+        created_at: match.created_at,
+        volunteer_profile: match.volunteer_profile && 
+          typeof match.volunteer_profile === 'object' &&
+          'full_name' in match.volunteer_profile
+          ? {
+              full_name: match.volunteer_profile.full_name || '',
+              pseudonym: match.volunteer_profile.pseudonym || '',
+              skills: Array.isArray(match.volunteer_profile.skills) ? match.volunteer_profile.skills : []
+            }
+          : null,
+        mutual_aid_post: match.mutual_aid_post && 
+          typeof match.mutual_aid_post === 'object' &&
+          'title' in match.mutual_aid_post
+          ? {
+              title: match.mutual_aid_post.title || '',
+              description: match.mutual_aid_post.description || '',
+              post_type: match.mutual_aid_post.post_type || ''
+            }
+          : null
+      }));
+
+      setMatches(transformedMatches);
     } catch (error) {
       console.error('Error fetching matches:', error);
     } finally {
@@ -123,7 +135,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
                     {match.mutual_aid_post?.title || 'Untitled Need'}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3">
-                    {match.mutual_aid_post?.description?.substring(0, 150)}...
+                    {match.mutual_aid_post?.description?.substring(0, 150) || 'No description available'}...
                   </p>
                   
                   <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -161,7 +173,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
                 </div>
               </div>
 
-              {match.volunteer_profile?.skills && (
+              {match.volunteer_profile?.skills && match.volunteer_profile.skills.length > 0 && (
                 <div className="mb-4">
                   <div className="text-sm text-gray-600 mb-2">Volunteer Skills</div>
                   <div className="flex flex-wrap gap-1">
