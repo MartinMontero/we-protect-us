@@ -45,7 +45,7 @@ const SkillsPage = () => {
         </TabsContent>
 
         <TabsContent value="marketplace">
-          <SkillMarketplace />
+          <SkillMarketplace searchQuery={searchQuery} />
         </TabsContent>
 
         <TabsContent value="knowledge">
