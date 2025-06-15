@@ -184,7 +184,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
                 </div>
               </div>
 
-              {course.profiles && (
+              {course.profiles && course.profiles !== null && (
                 <div className="flex items-center gap-2 pt-2 border-t">
                   <img 
                     src={course.profiles.avatar_url || '/placeholder-avatar.png'} 
