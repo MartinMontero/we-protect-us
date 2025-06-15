@@ -16,6 +16,8 @@ export interface Profile {
   trust_score?: number;
   created_at?: string;
   updated_at?: string;
+  full_name?: string;
+  avatar_url?: string;
 }
 
 export const useProfile = () => {
@@ -75,6 +77,8 @@ export const useProfile = () => {
           vulnerability_factors: profileData.vulnerability_factors || [],
           location_lat: profileData.location_lat,
           location_lng: profileData.location_lng,
+          full_name: profileData.full_name,
+          avatar_url: profileData.avatar_url,
         })
         .select()
         .single();

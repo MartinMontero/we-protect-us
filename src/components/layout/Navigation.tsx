@@ -25,6 +25,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
+    { href: '/dashboard', label: 'Dashboard', icon: Users },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
@@ -58,7 +59,7 @@ const Navigation = () => {
             {/* Logo and brand */}
             <div className="flex items-center">
               <Link 
-                to="/" 
+                to={user ? "/dashboard" : "/"} 
                 className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors focus-visible"
                 aria-label="We Protect Us - Home"
               >
@@ -72,7 +73,7 @@ const Navigation = () => {
 
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              {navItems.map((item) => {
+              {user && navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 
@@ -152,7 +153,7 @@ const Navigation = () => {
             className="md:hidden border-t border-border bg-card"
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => {
+              {user && navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 

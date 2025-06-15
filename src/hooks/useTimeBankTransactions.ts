@@ -14,6 +14,14 @@ export interface TimeBankTransaction {
   mutual_aid_post_id?: string;
   verified_by?: string;
   created_at: string;
+  giver_profile?: {
+    full_name: string;
+    pseudonym: string;
+  };
+  receiver_profile?: {
+    full_name: string;
+    pseudonym: string;
+  };
 }
 
 export const useTimeBankTransactions = () => {
@@ -34,7 +42,11 @@ export const useTimeBankTransactions = () => {
     try {
       const { data, error } = await supabase
         .from('time_bank_transactions')
-        .select('*')
+        .select(`
+          *,
+          giver_profile:profiles!giver_id(full_name, pseudonym),
+          receiver_profile:profiles!receiver_id(full_name, pseudonym)
+        `)
         .or(`giver_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
 

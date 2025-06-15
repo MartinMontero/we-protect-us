@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -31,7 +31,15 @@ import CommunityDefense from "./pages/CommunityDefense";
 import SkillsPage from "./pages/SkillsPage";
 import './lib/i18n';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -44,7 +52,7 @@ const App = () => (
             <BrowserRouter>
               <div className="flex flex-col min-h-screen">
                 <Navigation />
-                <main className="flex-1">
+                <main className="flex-1" id="main-content">
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/home" element={<HomePage />} />
@@ -67,6 +75,7 @@ const App = () => (
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/auth" element={<AuthPage />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </main>
               </div>
