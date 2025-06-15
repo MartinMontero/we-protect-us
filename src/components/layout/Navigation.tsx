@@ -33,21 +33,23 @@ export const Navigation: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+          <div className="flex items-center space-x-3 min-w-0">
+            <div className="w-9 h-9 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <Heart className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-              We Protect Us
-            </span>
+            <div className="min-w-0">
+              <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent whitespace-nowrap">
+                We Protect Us
+              </span>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center max-w-4xl mx-8">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.to;
@@ -57,25 +59,26 @@ export const Navigation: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   className={cn(
-                    "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200",
+                    "flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
                     isActive 
                       ? "bg-red-50 text-red-700 shadow-sm" 
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   )}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-medium">{item.label}</span>
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="whitespace-nowrap">{item.label}</span>
                 </NavLink>
               );
             })}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -84,8 +87,8 @@ export const Navigation: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200/50 py-4 animate-fade-in">
-            <div className="space-y-2">
+          <div className="lg:hidden border-t border-slate-200/50 py-4 animate-fade-in">
+            <div className="space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.to;
@@ -102,7 +105,7 @@ export const Navigation: React.FC = () => {
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     )}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-5 h-5 flex-shrink-0" />
                     <span className="font-medium">{item.label}</span>
                   </NavLink>
                 );

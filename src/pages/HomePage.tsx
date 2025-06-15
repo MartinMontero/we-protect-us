@@ -22,7 +22,7 @@ const features = [
   {
     icon: Shield,
     title: 'Community Security',
-    description: 'Revolutionary security training and surveillance detection for community protection.',
+    description: 'Security training and surveillance detection for community protection and safety.',
     color: 'from-red-500 to-orange-500'
   },
   {
@@ -51,7 +51,7 @@ export const HomePage: React.FC = () => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-red-50 text-red-700 px-4 py-2 rounded-full text-sm font-medium mb-8 animate-fade-in">
               <Sparkles className="w-4 h-4" />
-              <span>Building Revolutionary Community Infrastructure</span>
+              <span>Building Community Infrastructure for Mutual Aid</span>
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 mb-6 animate-fade-in">
@@ -93,7 +93,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">
-              Revolutionary Tools for
+              Essential Tools for
               <span className="text-red-600"> Community Power</span>
             </h2>
             <p className="text-xl text-slate-600 leading-relaxed">
@@ -132,7 +132,7 @@ export const HomePage: React.FC = () => {
           </h2>
           <p className="text-xl text-red-100 mb-8 leading-relaxed">
             Join communities already organizing for liberation, mutual aid, and collective defense. 
-            The revolution starts with us protecting each other.
+            The future starts with us protecting each other.
           </p>
           <Button 
             size="lg"
