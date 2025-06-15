@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Star, Plus, CheckCircle } from 'lucide-react';
+import { SkillExchangeTooltip } from './education/ContextualTooltips';
 
 interface SkillEndorsement {
   id: string;
@@ -83,10 +83,12 @@ export const SkillMapping: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
-            Community Skill Network
-          </CardTitle>
+          <SkillExchangeTooltip>
+            <CardTitle className="flex items-center gap-2 cursor-help">
+              <Users className="w-5 h-5" />
+              Community Skill Network
+            </CardTitle>
+          </SkillExchangeTooltip>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="network" className="w-full">

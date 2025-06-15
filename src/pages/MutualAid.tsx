@@ -5,8 +5,10 @@ import { MutualAidMap } from '@/components/mutual-aid/MutualAidMap';
 import { SolidarityProjections } from '@/components/mutual-aid/SolidarityProjections';
 import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
 import { TrustBuilding } from '@/components/mutual-aid/TrustBuilding';
+import { CommunityLibrary } from '@/components/mutual-aid/education/CommunityLibrary';
+import { FoodShareTooltip } from '@/components/mutual-aid/education/ContextualTooltips';
 import { Button } from '@/components/ui/button';
-import { Plus, Map, BarChart3, Users, Handshake } from 'lucide-react';
+import { Plus, Map, BarChart3, Users, Handshake, BookOpen } from 'lucide-react';
 
 const MutualAid = () => {
   return (
@@ -22,15 +24,17 @@ const MutualAid = () => {
         </div>
         <div className="flex gap-3">
           <CommunityLens />
-          <Button className="gap-2">
-            <Plus className="w-4 h-4" />
-            Create Request/Offer
-          </Button>
+          <FoodShareTooltip>
+            <Button className="gap-2">
+              <Plus className="w-4 h-4" />
+              Create Request/Offer
+            </Button>
+          </FoodShareTooltip>
         </div>
       </div>
 
       <Tabs defaultValue="map" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="map" className="gap-2">
             <Map className="w-4 h-4" />
             Resource Map
@@ -46,6 +50,10 @@ const MutualAid = () => {
           <TabsTrigger value="community" className="gap-2">
             <Users className="w-4 h-4" />
             Community Impact
+          </TabsTrigger>
+          <TabsTrigger value="library" className="gap-2">
+            <BookOpen className="w-4 h-4" />
+            Learning Library
           </TabsTrigger>
         </TabsList>
 
@@ -128,6 +136,10 @@ const MutualAid = () => {
               <CommunityLens />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="library" className="space-y-4">
+          <CommunityLibrary />
         </TabsContent>
       </Tabs>
     </div>

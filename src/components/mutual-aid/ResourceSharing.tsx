@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Package, Wrench, Calendar, User } from 'lucide-react';
+import { ResourceSharingTooltip } from './education/ContextualTooltips';
 
 interface ResourceItem {
   id: string;
@@ -120,10 +120,12 @@ export const ResourceSharing: React.FC = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="w-5 h-5" />
-            Community Resource Network
-          </CardTitle>
+          <ResourceSharingTooltip>
+            <CardTitle className="flex items-center gap-2 cursor-help">
+              <Package className="w-5 h-5" />
+              Community Resource Network
+            </CardTitle>
+          </ResourceSharingTooltip>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 mb-6">
