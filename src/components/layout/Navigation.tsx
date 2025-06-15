@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRoles } from '@/hooks/useRoles';
 import { 
   Sun, 
   Moon, 
@@ -12,7 +13,9 @@ import {
   Settings,
   Menu,
   X,
-  LogIn
+  LogIn,
+  Shield,
+  Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LanguageToggle } from '@/components/LanguageToggle';
@@ -22,10 +25,13 @@ const Navigation = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
+  const { hasPermission } = useRoles();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Users },
+    { href: '/integrations', label: 'Integrations', icon: Zap },
+    ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Shield }] : []),
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
@@ -60,14 +66,18 @@ const Navigation = () => {
             <div className="flex items-center">
               <Link 
                 to={user ? "/dashboard" : "/"} 
-                className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors focus-visible"
+                className="flex items-center space-x-3 text-foreground hover:text-primary transition-colors focus-visible group"
                 aria-label="We Protect Us - Home"
               >
-                <Users className="h-8 w-8 text-primary" aria-hidden="true" />
-                <span className="font-bold text-lg hidden sm:block">
-                  We Protect Us
-                </span>
-                <span className="font-bold text-lg sm:hidden">WPU</span>
+                <Users className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" aria-hidden="true" />
+                <div className="flex flex-col">
+                  <span className="font-bold text-lg leading-tight hidden sm:block">
+                    We Protect Us
+                  </span>
+                  <span className="font-bold text-lg sm:hidden">
+                    WPU
+                  </span>
+                </div>
               </Link>
             </div>
 
@@ -75,14 +85,15 @@ const Navigation = () => {
             <div className="hidden md:flex items-center space-x-4">
               {user && navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.href;
+                const isActive = location.pathname === item.href || 
+                  (item.href === '/admin' && location.pathname.startsWith('/admin'));
                 
                 return (
                   <Link
                     key={item.href}
                     to={item.href}
                     className={cn(
-                      "flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors focus-visible",
+                      "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors focus-visible",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -155,7 +166,8 @@ const Navigation = () => {
             <div className="px-2 pt-2 pb-3 space-y-1">
               {user && navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.href;
+                const isActive = location.pathname === item.href ||
+                  (item.href === '/admin' && location.pathname.startsWith('/admin'));
                 
                 return (
                   <Link

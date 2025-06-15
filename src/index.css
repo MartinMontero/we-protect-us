@@ -88,6 +88,33 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Ensure all major containers inherit theme colors */
+#root {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+}
+
+/* Apply theme to common elements */
+.dark #root,
+.dark body,
+.dark main,
+.dark section,
+.dark article {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.high-contrast #root,
+.high-contrast body,
+.high-contrast main,
+.high-contrast section,
+.high-contrast article {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 /* Accessibility improvements for skip link */
@@ -121,6 +148,22 @@ body {
 
 .high-contrast * {
   border-width: 2px !important;
+}
+
+/* Animation utilities */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }
 
 /* RTL support for Tailwind utilities */

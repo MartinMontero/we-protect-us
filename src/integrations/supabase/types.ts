@@ -6071,6 +6071,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_user_role: {
+        Args: { target_user_id: string; new_role: string; assigner_id: string }
+        Returns: undefined
+      }
       calculate_network_density: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -6078,6 +6082,19 @@ export type Database = {
       cleanup_expired_oauth_states: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_user_role: {
+        Args: { user_id: string }
+        Returns: string
+      }
+      get_users_with_roles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          user_id: string
+          pseudonym: string
+          role: string
+          assigned_at: string
+        }[]
       }
       update_solidarity_metrics: {
         Args: Record<PropertyKey, never>
