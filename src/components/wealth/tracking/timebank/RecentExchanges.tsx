@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle } from 'lucide-react';
+import { Clock, ArrowRight } from 'lucide-react';
 
 interface Transaction {
   id: string;
@@ -27,27 +27,31 @@ export const RecentExchanges: React.FC<RecentExchangesProps> = ({ transactions }
       <CardContent>
         <div className="space-y-3">
           {transactions.map((transaction) => (
-            <div key={transaction.id} className="flex items-center justify-between p-3 border rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm">{transaction.skill}</span>
-                  {transaction.status === 'completed' && (
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                  )}
+            <div key={transaction.id} className="p-3 border rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-medium">{transaction.from}</span>
+                  <ArrowRight className="w-3 h-3" />
+                  <span className="font-medium">{transaction.to}</span>
                 </div>
-                <div className="text-xs text-gray-600">
-                  {transaction.from} → {transaction.to}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {transaction.hours} hours • {transaction.date}
+                <Badge 
+                  variant={transaction.status === 'completed' ? 'default' : 'secondary'}
+                >
+                  {transaction.status}
+                </Badge>
+              </div>
+              
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">{transaction.skill}</span>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{transaction.hours} hours</span>
                 </div>
               </div>
-              <Badge 
-                variant={transaction.status === 'completed' ? 'default' : 'secondary'}
-                className="text-xs"
-              >
-                {transaction.status === 'completed' ? 'Complete' : 'In Progress'}
-              </Badge>
+              
+              <div className="text-xs text-gray-500 mt-1">
+                {transaction.date}
+              </div>
             </div>
           ))}
         </div>
