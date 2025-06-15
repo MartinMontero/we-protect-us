@@ -2,56 +2,71 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, User, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Clock, User, MapPin, MessageSquare } from 'lucide-react';
 import { MutualAidPost } from '../types';
+import { PerspectivesTrigger } from '../perspectives/PerspectivesTrigger';
 
 interface PostDetailsProps {
   post: MutualAidPost;
+  onClose: () => void;
 }
 
-export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => {
+export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose }) => {
   return (
-    <Card className="mt-4">
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>{post.title}</span>
-          <div className="flex gap-2">
-            <Badge variant={post.type === 'request' ? 'destructive' : 'default'}>
-              {post.type}
-            </Badge>
-            <Badge variant="outline">{post.urgency}</Badge>
-          </div>
+          <span className="text-lg">{post.title}</span>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            ×
+          </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-600 mb-3">{post.description}</p>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+      <CardContent className="space-y-4">
+        <p className="text-sm text-gray-600">{post.description}</p>
+        
+        <div className="flex flex-wrap gap-2">
+          <Badge variant={post.type === 'request' ? 'destructive' : 'default'}>
+            {post.type}
+          </Badge>
+          <Badge variant="outline">{post.category}</Badge>
+          <Badge variant="secondary">{post.urgency}</Badge>
+        </div>
+
+        <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <User className="w-4 h-4" />
-            <span>{post.profiles?.pseudonym}</span>
+            <span>{post.profiles?.pseudonym || 'Anonymous'}</span>
           </div>
+          
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            <span>{post.time_commitment_hours}h</span>
+            <span>{post.time_commitment_hours} hours</span>
           </div>
+          
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            <span>{post.radius_km}km radius</span>
+            <span>Within {post.radius_km}km</span>
           </div>
-          <Badge variant="secondary">{post.category}</Badge>
         </div>
-        {post.profiles?.vulnerability_factors?.length > 0 && (
-          <div className="mt-3">
-            <p className="text-xs text-gray-500 mb-1">Vulnerability considerations:</p>
-            <div className="flex flex-wrap gap-1">
-              {post.profiles.vulnerability_factors.map((factor, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {factor}
-                </Badge>
-              ))}
-            </div>
+
+        {post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0 && (
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <p className="text-xs font-semibold text-blue-800 mb-1">Priority Support</p>
+            <p className="text-xs text-blue-700">
+              This request prioritizes vulnerable community members
+            </p>
           </div>
         )}
+
+        <div className="flex gap-2 pt-4">
+          <Button size="sm" className="flex-1 gap-2">
+            <MessageSquare className="w-4 h-4" />
+            Respond
+          </Button>
+          <PerspectivesTrigger post={post} />
+        </div>
       </CardContent>
     </Card>
   );
