@@ -1,45 +1,19 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRoles } from '@/hooks/useRoles';
-import { 
-  Sun, 
-  Moon, 
-  Contrast,
-  Users,
-  Settings,
-  Menu,
-  X,
-  LogIn,
-  Shield,
-  Zap
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Menu, X, LogIn } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { UserMenu } from '@/components/layout/UserMenu';
+import { NavigationItems } from './navigation/NavigationItems';
+import { ThemeSelector } from './navigation/ThemeSelector';
+import { MobileMenu } from './navigation/MobileMenu';
+import { BrandLogo } from './navigation/BrandLogo';
 
 const Navigation = () => {
-  const location = useLocation();
-  const { theme, setTheme } = useTheme();
   const { user } = useAuth();
-  const { hasPermission } = useRoles();
   const [isOpen, setIsOpen] = React.useState(false);
-
-  const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: Users },
-    { href: '/integrations', label: 'Integrations', icon: Zap },
-    ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Shield }] : []),
-    { href: '/settings', label: 'Settings', icon: Settings },
-  ];
-
-  const themeOptions = [
-    { value: 'light' as const, label: 'Light', icon: Sun },
-    { value: 'dark' as const, label: 'Dark', icon: Moon },
-    { value: 'high-contrast' as const, label: 'High Contrast', icon: Contrast },
-  ];
 
   const toggleMobileMenu = () => setIsOpen(!isOpen);
 
@@ -63,69 +37,18 @@ const Navigation = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             {/* Logo and brand */}
-            <div className="flex items-center">
-              <Link 
-                to={user ? "/dashboard" : "/"} 
-                className="flex items-center space-x-3 text-foreground hover:text-primary transition-colors focus-visible group"
-                aria-label="We Protect Us - Home"
-              >
-                <Users className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" aria-hidden="true" />
-                <div className="flex flex-col">
-                  <span className="font-bold text-lg leading-tight hidden sm:block">
-                    We Protect Us
-                  </span>
-                  <span className="font-bold text-lg sm:hidden">
-                    WPU
-                  </span>
-                </div>
-              </Link>
-            </div>
+            <BrandLogo />
 
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              {user && navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.href || 
-                  (item.href === '/admin' && location.pathname.startsWith('/admin'));
-                
-                return (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className={cn(
-                      "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors focus-visible",
-                      isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    )}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
+              <NavigationItems />
 
               {/* Language toggle */}
               <LanguageToggle />
 
               {/* Theme selector */}
-              <div className="flex items-center space-x-1 ml-4">
-                {themeOptions.map((option) => {
-                  const Icon = option.icon;
-                  return (
-                    <Button
-                      key={option.value}
-                      variant={theme === option.value ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setTheme(option.value)}
-                      aria-label={`Switch to ${option.label} theme`}
-                      aria-pressed={theme === option.value}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </Button>
-                  );
-                })}
+              <div className="ml-4">
+                <ThemeSelector />
               </div>
 
               {/* Auth section */}
@@ -158,88 +81,7 @@ const Navigation = () => {
         </div>
 
         {/* Mobile navigation */}
-        {isOpen && (
-          <div 
-            id="mobile-menu"
-            className="md:hidden border-t border-border bg-card"
-          >
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {user && navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.href ||
-                  (item.href === '/admin' && location.pathname.startsWith('/admin'));
-                
-                return (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors focus-visible",
-                      isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    )}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-              
-              {/* Mobile auth section */}
-              {user ? (
-                <div className="px-3 py-2">
-                  <UserMenu />
-                </div>
-              ) : (
-                <Link
-                  to="/auth"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-visible"
-                >
-                  <LogIn className="h-5 w-5" aria-hidden="true" />
-                  <span>Sign In</span>
-                </Link>
-              )}
-              
-              {/* Mobile language toggle */}
-              <div className="pt-4 border-t border-border mt-4">
-                <div className="px-3 py-2 text-sm font-medium text-muted-foreground">
-                  Language
-                </div>
-                <div className="px-3">
-                  <LanguageToggle />
-                </div>
-              </div>
-
-              {/* Mobile theme selector */}
-              <div className="pt-4 border-t border-border mt-4">
-                <div className="px-3 py-2 text-sm font-medium text-muted-foreground">
-                  Theme
-                </div>
-                <div className="flex space-x-2 px-3">
-                  {themeOptions.map((option) => {
-                    const Icon = option.icon;
-                    return (
-                      <Button
-                        key={option.value}
-                        variant={theme === option.value ? "default" : "ghost"}
-                        size="sm"
-                        onClick={() => setTheme(option.value)}
-                        aria-label={`Switch to ${option.label} theme`}
-                        aria-pressed={theme === option.value}
-                      >
-                        <Icon className="h-4 w-4" />
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
       </nav>
     </>
   );

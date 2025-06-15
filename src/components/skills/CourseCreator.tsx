@@ -1,84 +1,80 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { supabase } from '@/integrations/supabase/client';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
-interface CourseData {
-  title: string;
-  description: string;
-  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
-  learning_format: 'one_on_one' | 'small_group' | 'large_class' | 'self_paced' | 'apprenticeship';
-  location_type: 'in_person' | 'virtual' | 'hybrid';
-  duration_weeks: number;
-  max_participants: number;
-  price: number;
-}
-
-export const CourseCreator: React.FC = () => {
+const CourseCreator = () => {
   const { user } = useAuth();
-  const [courseData, setCourseData] = useState<CourseData>({
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const [courseData, setCourseData] = useState({
     title: '',
     description: '',
-    difficulty_level: 'beginner',
-    learning_format: 'one_on_one',
-    location_type: 'in_person',
+    difficulty_level: 'beginner' as 'beginner' | 'intermediate' | 'advanced' | 'expert',
+    delivery_mode: 'in_person' as 'in_person' | 'virtual' | 'hybrid',
     duration_weeks: 4,
-    max_participants: 10,
-    price: 0,
+    max_participants: 20,
+    prerequisites: '',
+    learning_outcomes: '',
+    materials_needed: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-
-    setIsSubmitting(true);
-    try {
-      // Map location_type to match database enum
-      let dbLocationType: 'local' | 'remote' | 'regional' = 'local';
-      if (courseData.location_type === 'virtual') dbLocationType = 'remote';
-      if (courseData.location_type === 'hybrid') dbLocationType = 'regional';
+  const createCourseMutation = useMutation({
+    mutationFn: async (data: typeof courseData) => {
+      if (!user) throw new Error('User not authenticated');
 
       const { error } = await supabase
-        .from('courses')
+        .from('skill_courses')
         .insert({
-          creator_id: user.id,
-          title: courseData.title,
-          description: courseData.description,
-          difficulty_level: courseData.difficulty_level,
-          learning_format: courseData.learning_format,
-          location_type: dbLocationType,
-          duration_weeks: courseData.duration_weeks,
-          max_participants: courseData.max_participants,
-          price: courseData.price,
+          ...data,
+          created_by: user.id,
         });
 
       if (error) throw error;
-
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['skill_courses'] });
+      toast({
+        title: "Course created!",
+        description: "Your course has been successfully created.",
+      });
+      // Reset form
       setCourseData({
         title: '',
         description: '',
         difficulty_level: 'beginner',
-        learning_format: 'one_on_one',
-        location_type: 'in_person',
+        delivery_mode: 'in_person',
         duration_weeks: 4,
-        max_participants: 10,
-        price: 0,
+        max_participants: 20,
+        prerequisites: '',
+        learning_outcomes: '',
+        materials_needed: '',
       });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error creating course",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
-      console.log('Course created successfully');
-    } catch (error) {
-      console.error('Error creating course:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createCourseMutation.mutate(courseData);
   };
 
-  const handleInputChange = (field: keyof CourseData, value: any) => {
+  const handleInputChange = (field: keyof typeof courseData, value: any) => {
     setCourseData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -86,76 +82,69 @@ export const CourseCreator: React.FC = () => {
     <Card>
       <CardHeader>
         <CardTitle>Create New Course</CardTitle>
+        <CardDescription>Design a course to share your skills with the community</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Course Title</label>
-            <Input
-              value={courseData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="Enter course title"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Course Title</Label>
+              <Input
+                id="title"
+                value={courseData.title}
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                placeholder="e.g., Introduction to Permaculture"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="difficulty">Difficulty Level</Label>
+              <Select value={courseData.difficulty_level} onValueChange={(value) => handleInputChange('difficulty_level', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="expert">Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Course Description</Label>
+            <Textarea
+              id="description"
+              value={courseData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              placeholder="Describe what participants will learn..."
+              rows={3}
               required
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
-            <Textarea
-              value={courseData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Describe your course"
-              rows={4}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Difficulty Level</label>
-              <select
-                value={courseData.difficulty_level}
-                onChange={(e) => handleInputChange('difficulty_level', e.target.value)}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="delivery">Delivery Mode</Label>
+              <Select value={courseData.delivery_mode} onValueChange={(value) => handleInputChange('delivery_mode', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="in_person">In Person</SelectItem>
+                  <SelectItem value="virtual">Virtual</SelectItem>
+                  <SelectItem value="hybrid">Hybrid</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Learning Format</label>
-              <select
-                value={courseData.learning_format}
-                onChange={(e) => handleInputChange('learning_format', e.target.value)}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="one_on_one">One on One</option>
-                <option value="small_group">Small Group</option>
-                <option value="large_class">Large Class</option>
-                <option value="self_paced">Self Paced</option>
-                <option value="apprenticeship">Apprenticeship</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Location Type</label>
-              <select
-                value={courseData.location_type}
-                onChange={(e) => handleInputChange('location_type', e.target.value)}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="in_person">In Person</option>
-                <option value="virtual">Virtual</option>
-                <option value="hybrid">Hybrid</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Duration (weeks)</label>
+            <div className="space-y-2">
+              <Label htmlFor="duration">Duration (weeks)</Label>
               <Input
+                id="duration"
                 type="number"
                 value={courseData.duration_weeks}
                 onChange={(e) => handleInputChange('duration_weeks', parseInt(e.target.value))}
@@ -163,12 +152,11 @@ export const CourseCreator: React.FC = () => {
                 max="52"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Max Participants</label>
+            <div className="space-y-2">
+              <Label htmlFor="participants">Max Participants</Label>
               <Input
+                id="participants"
                 type="number"
                 value={courseData.max_participants}
                 onChange={(e) => handleInputChange('max_participants', parseInt(e.target.value))}
@@ -176,24 +164,52 @@ export const CourseCreator: React.FC = () => {
                 max="100"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Price ($)</label>
-              <Input
-                type="number"
-                value={courseData.price}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
-                min="0"
-                step="0.01"
-              />
-            </div>
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Creating...' : 'Create Course'}
+          <div className="space-y-2">
+            <Label htmlFor="prerequisites">Prerequisites</Label>
+            <Textarea
+              id="prerequisites"
+              value={courseData.prerequisites}
+              onChange={(e) => handleInputChange('prerequisites', e.target.value)}
+              placeholder="What should participants know before taking this course?"
+              rows={2}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="outcomes">Learning Outcomes</Label>
+            <Textarea
+              id="outcomes"
+              value={courseData.learning_outcomes}
+              onChange={(e) => handleInputChange('learning_outcomes', e.target.value)}
+              placeholder="What will participants be able to do after completing this course?"
+              rows={3}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="materials">Materials Needed</Label>
+            <Textarea
+              id="materials"
+              value={courseData.materials_needed}
+              onChange={(e) => handleInputChange('materials_needed', e.target.value)}
+              placeholder="List any materials, tools, or supplies participants need"
+              rows={2}
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={createCourseMutation.isPending}
+          >
+            {createCourseMutation.isPending ? 'Creating Course...' : 'Create Course'}
           </Button>
         </form>
       </CardContent>
     </Card>
   );
 };
+
+export default CourseCreator;

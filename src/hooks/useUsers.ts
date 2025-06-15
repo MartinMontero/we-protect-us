@@ -1,95 +1,75 @@
 
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
-export interface User {
+export interface UserProfile {
   id: string;
-  full_name: string;
   pseudonym: string;
-  email?: string;
-  avatar_url?: string;
+  bio: string;
+  skills: string[];
+  interests: string[];
+  address: string;
+  location_lat: number;
+  location_lng: number;
+  trust_score: number;
   created_at: string;
-  last_sign_in_at?: string;
-  skills?: string[];
-  time_bank_hours?: number;
-  status: 'active' | 'suspended' | 'pending';
+  // Note: avatar_url is not available in the profiles table
 }
 
 export const useUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
+  const { data: users = [], isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      return data as UserProfile[];
+    },
+    enabled: !!user,
+  });
 
-      const mappedUsers: User[] = (data || []).map(profile => ({
-        id: profile.id,
-        full_name: profile.pseudonym || 'Unknown',
-        pseudonym: profile.pseudonym || 'Anonymous',
-        email: profile.phone_number || 'N/A',
-        avatar_url: profile.avatar_url || undefined,
-        created_at: profile.created_at,
-        last_sign_in_at: profile.updated_at,
-        skills: profile.skills || [],
-        time_bank_hours: profile.time_bank_hours || 0,
-        status: 'active',
-      }));
-
-      setUsers(mappedUsers);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      setError('Failed to load users');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateUserStatus = async (userId: string, status: User['status']) => {
-    try {
-      setUsers(prev => prev.map(user => 
-        user.id === userId ? { ...user, status } : user
-      ));
-    } catch (err) {
-      console.error('Error updating user status:', err);
-      throw err;
-    }
-  };
-
-  const deleteUser = async (userId: string) => {
-    try {
-      const { error } = await supabase
+  const { data: currentUserProfile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ['user-profile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      
+      const { data, error } = await supabase
         .from('profiles')
-        .delete()
-        .eq('id', userId);
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
       if (error) throw error;
+      return data as UserProfile;
+    },
+    enabled: !!user?.id,
+  });
 
-      setUsers(prev => prev.filter(user => user.id !== userId));
-    } catch (err) {
-      console.error('Error deleting user:', err);
-      throw err;
-    }
+  const getUserById = (userId: string) => {
+    return users.find(u => u.id === userId);
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const searchUsers = (query: string) => {
+    return users.filter(user => 
+      user.pseudonym.toLowerCase().includes(query.toLowerCase()) ||
+      user.bio.toLowerCase().includes(query.toLowerCase()) ||
+      user.skills.some(skill => skill.toLowerCase().includes(query.toLowerCase())) ||
+      user.interests.some(interest => interest.toLowerCase().includes(query.toLowerCase()))
+    );
+  };
 
   return {
     users,
-    loading,
+    currentUserProfile,
+    isLoading: isLoading || isLoadingProfile,
     error,
-    refetch: fetchUsers,
-    updateUserStatus,
-    deleteUser,
+    getUserById,
+    searchUsers,
   };
 };

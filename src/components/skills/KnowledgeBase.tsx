@@ -1,37 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { BookOpen, Search, Plus } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Search, BookOpen, Calendar, User } from 'lucide-react';
+import CreateArticleModal from './CreateArticleModal';
 
-interface Article {
+interface ArticleWithProfile {
   id: string;
   title: string;
   content: string;
   tags: string[];
-  author_id: string;
   created_at: string;
-  like_count: number;
-  author?: {
-    full_name: string;
+  profiles: {
     pseudonym: string;
-  };
+  } | null;
 }
 
-export const KnowledgeBase: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+const KnowledgeBase = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  const fetchArticles = async () => {
-    try {
+  const { data: articles = [], isLoading } = useQuery({
+    queryKey: ['knowledge_articles'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('knowledge_articles')
         .select(`
@@ -41,103 +37,101 @@ export const KnowledgeBase: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-
-      const mappedArticles: Article[] = (data || []).map(article => {
-        const author = article.profiles && 
-          article.profiles !== null &&
-          typeof article.profiles === 'object' &&
-          'pseudonym' in article.profiles
-          ? {
-              full_name: (article.profiles as any)?.pseudonym || 'Unknown',
-              pseudonym: (article.profiles as any)?.pseudonym || 'Anonymous'
-            }
-          : undefined;
-
-        return {
-          id: article.id,
-          title: article.title,
-          content: article.content,
-          tags: article.tags || [],
-          author_id: article.author_id,
-          created_at: article.created_at,
-          like_count: article.like_count || 0,
-          author,
-        };
-      });
-
-      setArticles(mappedArticles);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.content.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+      return data as ArticleWithProfile[];
+    },
   });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-      </div>
-    );
+  const filteredArticles = articles.filter(article => {
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         article.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTag = !selectedTag || article.tags.includes(selectedTag);
+    return matchesSearch && matchesTag;
+  });
+
+  const allTags = Array.from(new Set(articles.flatMap(article => article.tags)));
+
+  if (isLoading) {
+    return <div>Loading knowledge base...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Search articles..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              New Article
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Knowledge Base</h2>
+          <p className="text-muted-foreground">Community-shared knowledge and resources</p>
+        </div>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          <BookOpen className="h-4 w-4 mr-2" />
+          Create Article
+        </Button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Search articles..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+      </div>
+
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedTag === null ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedTag(null)}
+          >
+            All
+          </Button>
+          {allTags.map((tag) => (
+            <Button
+              key={tag}
+              variant={selectedTag === tag ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedTag(tag)}
+            >
+              {tag}
             </Button>
-          </div>
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-6">
         {filteredArticles.map((article) => (
-          <Card key={article.id} className="hover:shadow-md transition-shadow">
+          <Card key={article.id}>
             <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{article.title}</CardTitle>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-sm text-gray-500">
-                      by {article.author?.full_name || article.author?.pseudonym || 'Anonymous'}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {new Date(article.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-sm text-gray-500">
-                  {article.like_count} likes
-                </div>
-              </div>
+              <CardTitle className="flex items-start justify-between">
+                <span>{article.title}</span>
+              </CardTitle>
+              <CardDescription className="flex items-center gap-4 text-sm">
+                <span className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {article.profiles?.pseudonym || 'Unknown Author'}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(article.created_at).toLocaleDateString()}
+                </span>
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4 line-clamp-3">
-                {article.content.substring(0, 200)}...
-              </p>
+            <CardContent className="space-y-4">
+              <div className="prose prose-sm max-w-none">
+                <div dangerouslySetInnerHTML={{ 
+                  __html: article.content.length > 300 
+                    ? article.content.substring(0, 300) + '...' 
+                    : article.content 
+                }} />
+              </div>
+              
               {article.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {article.tags.map((tag, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                <div className="flex flex-wrap gap-2">
+                  {article.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
                       {tag}
                     </Badge>
                   ))}
@@ -146,19 +140,20 @@ export const KnowledgeBase: React.FC = () => {
             </CardContent>
           </Card>
         ))}
-
-        {filteredArticles.length === 0 && (
-          <Card className="p-8 text-center">
-            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">No Articles Found</h3>
-            <p className="text-gray-600 mb-4">
-              {searchTerm 
-                ? 'Try adjusting your search criteria.' 
-                : 'Be the first to contribute to the knowledge base!'}
-            </p>
-          </Card>
-        )}
       </div>
+
+      {filteredArticles.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          No articles found matching your criteria.
+        </div>
+      )}
+
+      <CreateArticleModal 
+        open={isCreateModalOpen} 
+        onOpenChange={setIsCreateModalOpen} 
+      />
     </div>
   );
 };
+
+export default KnowledgeBase;

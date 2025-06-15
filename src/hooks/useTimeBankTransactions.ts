@@ -1,95 +1,150 @@
 
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
-interface TimeBankTransaction {
+export interface TimeBankTransaction {
   id: string;
   giver_id: string;
   receiver_id: string;
   hours: number;
   description: string;
+  skill_category: string;
+  status: 'pending' | 'completed' | 'cancelled';
   created_at: string;
-  giver_profile?: {
-    full_name: string;
-    avatar_url: string;
+  completed_at?: string;
+  giver_profile: {
+    pseudonym: string;
   } | null;
-  receiver_profile?: {
-    full_name: string;
-    avatar_url: string;
+  receiver_profile: {
+    pseudonym: string;
   } | null;
 }
 
 export const useTimeBankTransactions = () => {
-  const [transactions, setTransactions] = useState<TimeBankTransaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const fetchTransactions = async () => {
-    try {
-      setLoading(true);
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ['timebank_transactions'],
+    queryFn: async () => {
       const { data, error } = await supabase
-        .from('time_bank_transactions')
+        .from('timebank_transactions')
         .select(`
           *,
-          giver_profile:giver_id(pseudonym, avatar_url),
-          receiver_profile:receiver_id(pseudonym, avatar_url)
+          giver_profile:giver_id(pseudonym),
+          receiver_profile:receiver_id(pseudonym)
         `)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
+      return data as TimeBankTransaction[];
+    },
+    enabled: !!user,
+  });
 
-      const mappedTransactions: TimeBankTransaction[] = (data || []).map(transaction => {
-        const giverProfile = transaction.giver_profile && 
-          transaction.giver_profile !== null &&
-          typeof transaction.giver_profile === 'object' &&
-          'pseudonym' in transaction.giver_profile
-          ? {
-              full_name: (transaction.giver_profile as any)?.pseudonym || 'Unknown',
-              avatar_url: (transaction.giver_profile as any)?.avatar_url || ''
-            }
-          : null;
+  const userTransactions = transactions.filter(
+    t => t.giver_id === user?.id || t.receiver_id === user?.id
+  );
 
-        const receiverProfile = transaction.receiver_profile &&
-          transaction.receiver_profile !== null &&
-          typeof transaction.receiver_profile === 'object' &&
-          'pseudonym' in transaction.receiver_profile
-          ? {
-              full_name: (transaction.receiver_profile as any)?.pseudonym || 'Unknown',
-              avatar_url: (transaction.receiver_profile as any)?.avatar_url || ''
-            }
-          : null;
+  const givenHours = transactions
+    .filter(t => t.giver_id === user?.id && t.status === 'completed')
+    .reduce((sum, t) => sum + t.hours, 0);
 
-        return {
-          id: transaction.id,
-          giver_id: transaction.giver_id,
-          receiver_id: transaction.receiver_id,
-          hours: transaction.hours,
-          description: transaction.description,
-          created_at: transaction.created_at,
-          giver_profile: giverProfile,
-          receiver_profile: receiverProfile,
-        };
+  const receivedHours = transactions
+    .filter(t => t.receiver_id === user?.id && t.status === 'completed')
+    .reduce((sum, t) => sum + t.hours, 0);
+
+  const balance = givenHours - receivedHours;
+
+  const enrichedTransactions = userTransactions.map(transaction => ({
+    ...transaction,
+    giver_name: transaction.giver_profile?.pseudonym || 'Unknown',
+    receiver_name: transaction.receiver_profile?.pseudonym || 'Unknown',
+    is_giver: transaction.giver_id === user?.id,
+  }));
+
+  const createTransactionMutation = useMutation({
+    mutationFn: async (transactionData: {
+      receiver_id: string;
+      hours: number;
+      description: string;
+      skill_category: string;
+    }) => {
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('timebank_transactions')
+        .insert({
+          giver_id: user.id,
+          ...transactionData,
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['timebank_transactions'] });
+      toast({
+        title: "Transaction created",
+        description: "Your time bank transaction has been recorded.",
       });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to create transaction. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
-      setTransactions(mappedTransactions);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching time bank transactions:', err);
-      setError('Failed to load transactions');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const updateTransactionStatusMutation = useMutation({
+    mutationFn: async ({ 
+      transactionId, 
+      status 
+    }: { 
+      transactionId: string; 
+      status: 'completed' | 'cancelled';
+    }) => {
+      const updateData: any = { status };
+      if (status === 'completed') {
+        updateData.completed_at = new Date().toISOString();
+      }
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+      const { error } = await supabase
+        .from('timebank_transactions')
+        .update(updateData)
+        .eq('id', transactionId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['timebank_transactions'] });
+      toast({
+        title: "Transaction updated",
+        description: "Transaction status has been updated.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update transaction. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   return {
-    transactions,
-    loading,
-    error,
-    refetch: fetchTransactions,
+    transactions: enrichedTransactions,
+    isLoading,
+    balance,
+    givenHours,
+    receivedHours,
+    createTransaction: createTransactionMutation.mutate,
+    updateTransactionStatus: updateTransactionStatusMutation.mutate,
+    isCreating: createTransactionMutation.isPending,
+    isUpdating: updateTransactionStatusMutation.isPending,
   };
 };
