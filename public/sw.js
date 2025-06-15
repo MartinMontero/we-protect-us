@@ -8,7 +8,6 @@ const STATIC_FILES = [
   '/disaster-preparedness',
   '/offline.html',
   '/manifest.json',
-  // Add critical CSS and JS files
 ];
 
 // Install event - cache static files
@@ -50,8 +49,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Handle API requests
-  if (event.request.url.includes('/rest/v1/')) {
+  // Handle Supabase API requests
+  if (event.request.url.includes('supabase.co')) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -153,65 +152,10 @@ async function doBackgroundSync() {
     if (offlineData) {
       const data = await offlineData.json();
       
-      // Sync safety check-ins
-      if (data.checkins) {
-        for (const checkin of data.checkins) {
-          await syncCheckin(checkin);
-        }
-      }
-      
-      // Sync damage reports
-      if (data.reports) {
-        for (const report of data.reports) {
-          await syncDamageReport(report);
-        }
-      }
-      
-      // Clear offline data after successful sync
-      await cache.delete('/offline-data');
+      // This will be handled by the application layer through useOfflineSync
+      console.log('Background sync triggered, data will be synced by application');
     }
   } catch (error) {
     console.error('Background sync failed:', error);
-  }
-}
-
-async function syncCheckin(checkin) {
-  try {
-    const response = await fetch('/rest/v1/safety_checkins', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${checkin.token}`
-      },
-      body: JSON.stringify(checkin.data)
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to sync checkin');
-    }
-  } catch (error) {
-    console.error('Error syncing checkin:', error);
-    // Re-store for later retry
-    throw error;
-  }
-}
-
-async function syncDamageReport(report) {
-  try {
-    const response = await fetch('/rest/v1/damage_reports', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${report.token}`
-      },
-      body: JSON.stringify(report.data)
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to sync damage report');
-    }
-  } catch (error) {
-    console.error('Error syncing damage report:', error);
-    throw error;
   }
 }

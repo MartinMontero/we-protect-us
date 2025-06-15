@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useOfflineSync } from '@/hooks/useOfflineSync';
 
 interface SafetyStatus {
   id: string;
@@ -25,6 +26,7 @@ export const SafetyCheckin: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isOnline, storeOfflineData } = useOfflineSync();
   const [location, setLocation] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<SafetyStatus['status']>('safe');
@@ -40,7 +42,8 @@ export const SafetyCheckin: React.FC = () => {
       
       if (error) throw error;
       return data as SafetyStatus[];
-    }
+    },
+    enabled: isOnline
   });
 
   const checkinMutation = useMutation({
@@ -52,27 +55,38 @@ export const SafetyCheckin: React.FC = () => {
     }) => {
       if (!user) throw new Error('Not authenticated');
       
-      const { data: result, error } = await supabase
-        .from('safety_checkins')
-        .insert({
-          user_id: user.id,
-          status: data.status,
-          location_description: data.location_description,
-          additional_info: data.additional_info,
-          medical_emergency: data.medical_emergency,
-          contact_method: 'app'
-        })
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return result;
+      const checkinData = {
+        user_id: user.id,
+        status: data.status,
+        location_description: data.location_description,
+        additional_info: data.additional_info,
+        medical_emergency: data.medical_emergency,
+        contact_method: 'app'
+      };
+
+      if (isOnline) {
+        const { data: result, error } = await supabase
+          .from('safety_checkins')
+          .insert(checkinData)
+          .select()
+          .single();
+        
+        if (error) throw error;
+        return result;
+      } else {
+        // Store offline
+        const session = await supabase.auth.getSession();
+        await storeOfflineData('checkin', checkinData, session.data.session?.access_token || '');
+        return checkinData;
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['safety-checkins'] });
+      if (isOnline) {
+        queryClient.invalidateQueries({ queryKey: ['safety-checkins'] });
+      }
       toast({
         title: "Safety Status Updated",
-        description: "Your safety check-in has been recorded.",
+        description: isOnline ? "Your safety check-in has been recorded." : "Check-in saved offline and will sync when connected.",
       });
       setLocation('');
       setAdditionalInfo('');
@@ -117,6 +131,11 @@ export const SafetyCheckin: React.FC = () => {
         <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2">
           <CheckCircle className="w-6 h-6 text-green-600" />
           Quick Safety Check-in
+          {!isOnline && (
+            <span className="text-sm bg-orange-100 text-orange-800 px-2 py-1 rounded">
+              Offline Mode
+            </span>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
@@ -179,6 +198,13 @@ export const SafetyCheckin: React.FC = () => {
           {/* Recent Community Check-ins */}
           <div>
             <h3 className="text-xl font-semibold mb-4">Recent Community Check-ins</h3>
+            {!isOnline && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-orange-800 text-sm">
+                  You're offline. Recent check-ins will load when connection is restored.
+                </p>
+              </div>
+            )}
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {recentCheckins?.map((checkin) => {
                 const IconComponent = statusIcons[checkin.status];

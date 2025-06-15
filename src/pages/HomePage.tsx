@@ -17,10 +17,19 @@ import {
   Lock,
   Sparkles,
   Vote,
-  Wrench
+  Wrench,
+  AlertTriangle
 } from 'lucide-react';
 
 const features = [
+  {
+    icon: AlertTriangle,
+    title: 'Emergency Preparedness',
+    description: 'Community-driven disaster preparedness and response coordination system.',
+    color: 'from-red-500 to-orange-500',
+    path: '/disaster-preparedness',
+    implemented: true
+  },
   {
     icon: Heart,
     title: 'Mutual Aid Networks',
@@ -33,7 +42,7 @@ const features = [
     icon: Shield,
     title: 'Community Security',
     description: 'Security training and surveillance detection for community protection and safety.',
-    color: 'from-red-500 to-orange-500',
+    color: 'from-purple-500 to-pink-500',
     path: '/security-governance',
     implemented: true
   },
@@ -41,7 +50,7 @@ const features = [
     icon: DollarSign,
     title: 'Solidarity Economy',
     description: 'Build alternative economic systems based on cooperation and community wealth.',
-    color: 'from-purple-500 to-pink-500',
+    color: 'from-green-500 to-emerald-500',
     path: '/community-wealth',
     implemented: true
   },
@@ -49,7 +58,7 @@ const features = [
     icon: Vote,
     title: 'Democratic Organizing',
     description: 'Tools for consensus building, event mobilization, and collaborative action.',
-    color: 'from-green-500 to-emerald-500',
+    color: 'from-indigo-500 to-purple-500',
     path: '/organizing',
     implemented: true
   },
@@ -57,7 +66,7 @@ const features = [
     icon: Wrench,
     title: 'Tool Library',
     description: 'Share tools and equipment with your community through our asset sharing system.',
-    color: 'from-orange-500 to-red-500',
+    color: 'from-orange-500 to-amber-500',
     path: '/tool-library',
     implemented: true
   },
@@ -65,23 +74,15 @@ const features = [
     icon: Map,
     title: 'Community Mapping',
     description: 'Create and share maps of community assets, resources, and vulnerabilities.',
-    color: 'from-yellow-500 to-amber-500',
+    color: 'from-yellow-500 to-orange-500',
     path: '/community',
-    implemented: false
-  },
-  {
-    icon: Zap,
-    title: 'Emergency Preparedness',
-    description: 'Develop and implement emergency response plans to protect community members during disasters.',
-    color: 'from-pink-500 to-fuchsia-500',
-    path: '/emergency',
     implemented: false
   },
   {
     icon: Globe,
     title: 'Global Solidarity',
     description: 'Connect with other communities around the world to share resources, knowledge, and support.',
-    color: 'from-cyan-500 to-sky-500',
+    color: 'from-cyan-500 to-blue-500',
     path: '/global',
     implemented: false
   },
@@ -89,7 +90,7 @@ const features = [
     icon: Lock,
     title: 'Community Sovereignty',
     description: 'Build community autonomy through education, governance, and security coordination.',
-    color: 'from-rose-500 to-pink-500',
+    color: 'from-rose-500 to-red-500',
     path: '/community-sovereignty',
     implemented: true
   }
@@ -145,10 +146,11 @@ export const HomePage: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="lg"
-                onClick={() => navigate('/reports')}
+                onClick={() => navigate('/disaster-preparedness')}
                 className="border-2 px-8 py-4 text-lg rounded-xl hover:bg-slate-50 transition-all duration-200"
               >
-                Learn More
+                <AlertTriangle className="mr-2 w-5 h-5" />
+                Emergency Prep
               </Button>
             </div>
           </div>

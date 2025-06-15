@@ -20,6 +20,13 @@ import {
 
 const quickActions = [
   {
+    title: 'Emergency Preparedness',
+    description: 'Disaster response coordination and community safety',
+    icon: AlertTriangle,
+    path: '/disaster-preparedness',
+    color: 'from-red-500 to-orange-500'
+  },
+  {
     title: 'Find Mutual Aid',
     description: 'Connect with neighbors offering and requesting support',
     icon: Heart,
@@ -31,7 +38,7 @@ const quickActions = [
     description: 'Learn surveillance detection and community defense',
     icon: Shield,
     path: '/security-governance',
-    color: 'from-red-500 to-orange-500'
+    color: 'from-purple-500 to-blue-500'
   },
   {
     title: 'Community Wealth',
@@ -46,22 +53,15 @@ const quickActions = [
     icon: Vote,
     path: '/organizing',
     color: 'from-blue-500 to-purple-500'
-  },
-  {
-    title: 'Tool Library',
-    description: 'Borrow and share tools with community members',
-    icon: Wrench,
-    path: '/tool-library',
-    color: 'from-orange-500 to-red-500'
   }
 ];
 
 const recentActivity = [
+  { type: 'emergency', message: 'Emergency preparedness checklist updated', time: '1 hour ago', path: '/disaster-preparedness' },
   { type: 'mutual-aid', message: '15 new mutual aid requests in your area', time: '2 hours ago', path: '/mutual-aid' },
   { type: 'security', message: 'Security training session scheduled for tomorrow', time: '4 hours ago', path: '/security-governance' },
   { type: 'governance', message: 'New community proposal: Neighborhood Garden Project', time: '6 hours ago', path: '/organizing' },
-  { type: 'economy', message: 'Local time bank exchange completed', time: '1 day ago', path: '/community-wealth' },
-  { type: 'tools', message: '3 new tools added to community library', time: '1 day ago', path: '/tool-library' }
+  { type: 'economy', message: 'Local time bank exchange completed', time: '1 day ago', path: '/community-wealth' }
 ];
 
 export const DashboardPage: React.FC = () => {
@@ -146,6 +146,17 @@ export const DashboardPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <div 
+                  className="flex justify-between items-center p-3 bg-red-50 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
+                  onClick={() => navigate('/disaster-preparedness')}
+                >
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600" />
+                    <span className="text-sm font-medium">Emergency Status</span>
+                  </div>
+                  <span className="text-red-600 font-semibold">All Clear</span>
+                </div>
+
                 <div 
                   className="flex justify-between items-center p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
                   onClick={() => navigate('/mutual-aid')}

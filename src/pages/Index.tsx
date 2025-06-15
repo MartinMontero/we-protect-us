@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Heart, Map, Shield, Zap, Globe } from 'lucide-react';
+import { Users, Heart, Map, Shield, Zap, Globe, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { csfDB } from '@/utils/indexedDB';
 
@@ -30,7 +30,7 @@ const Index = () => {
       icon: Users,
       title: 'Community Networks',
       description: 'Connect with neighbors and build stronger local communities',
-      href: '/community',
+      href: '/home',
       color: 'text-blue-600'
     },
     {
@@ -41,31 +41,38 @@ const Index = () => {
       color: 'text-red-600'
     },
     {
+      icon: AlertTriangle,
+      title: 'Emergency Preparedness',
+      description: 'Community-driven disaster preparedness and response coordination',
+      href: '/disaster-preparedness',
+      color: 'text-orange-600'
+    },
+    {
       icon: Map,
       title: 'Local Discovery',
       description: 'Find community resources and events near you',
-      href: '/community',
+      href: '/community-garden',
       color: 'text-green-600'
     },
     {
       icon: Shield,
       title: 'Trust Network',
       description: 'Build reputation through verified community interactions',
-      href: '/settings',
+      href: '/security-governance',
       color: 'text-purple-600'
     },
     {
       icon: Zap,
       title: 'Offline First',
       description: 'Access your community even without internet connection',
-      href: '/settings',
+      href: '/disaster-preparedness',
       color: 'text-yellow-600'
     },
     {
       icon: Globe,
       title: 'Federated Communities',
       description: 'Connect local networks while maintaining autonomy',
-      href: '/community',
+      href: '/community-sovereignty',
       color: 'text-indigo-600'
     }
   ];
@@ -84,15 +91,15 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg">
-              <Link to="/community">
+              <Link to="/dashboard">
                 <Map className="mr-2 h-5 w-5" />
-                Explore Community
+                Get Started
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg">
-              <Link to="/mutual-aid">
-                <Heart className="mr-2 h-5 w-5" />
-                Find Mutual Aid
+              <Link to="/disaster-preparedness">
+                <AlertTriangle className="mr-2 h-5 w-5" />
+                Emergency Prep
               </Link>
             </Button>
           </div>
@@ -152,7 +159,7 @@ const Index = () => {
             Join thousands of neighbors building more resilient, connected communities
           </p>
           <Button asChild size="lg" className="text-lg">
-            <Link to="/community">
+            <Link to="/dashboard">
               <Users className="mr-2 h-5 w-5" />
               Get Started
             </Link>

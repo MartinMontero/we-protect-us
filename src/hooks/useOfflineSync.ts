@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // Extend ServiceWorkerRegistration interface to include sync
 interface ServiceWorkerRegistrationWithSync extends ServiceWorkerRegistration {
@@ -98,16 +99,11 @@ export const useOfflineSync = () => {
         // Sync safety check-ins
         for (const checkin of data.checkins) {
           try {
-            const response = await fetch('/rest/v1/safety_checkins', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${checkin.token}`
-              },
-              body: JSON.stringify(checkin.data)
-            });
+            const { error } = await supabase
+              .from('safety_checkins')
+              .insert(checkin.data);
             
-            if (!response.ok) {
+            if (error) {
               throw new Error('Failed to sync checkin');
             }
           } catch (error) {
@@ -118,16 +114,11 @@ export const useOfflineSync = () => {
         // Sync damage reports
         for (const report of data.reports) {
           try {
-            const response = await fetch('/rest/v1/damage_reports', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${report.token}`
-              },
-              body: JSON.stringify(report.data)
-            });
+            const { error } = await supabase
+              .from('damage_reports')
+              .insert(report.data);
             
-            if (!response.ok) {
+            if (error) {
               throw new Error('Failed to sync damage report');
             }
           } catch (error) {
