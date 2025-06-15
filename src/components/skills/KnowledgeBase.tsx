@@ -80,10 +80,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
           view_count: article.view_count || 0,
           like_count: article.like_count || 0,
           created_at: article.created_at || '',
-          profiles: profileData ? {
-            full_name: profileData.full_name || '',
-            avatar_url: profileData.avatar_url || ''
-          } : null
+          profiles: profileData
         };
       });
 

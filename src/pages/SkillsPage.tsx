@@ -1,107 +1,63 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { BookOpen, Users, Calendar, Trophy, Search, Plus } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { ProjectShowcase } from '@/components/skills/ProjectShowcase';
+import { KnowledgeBase } from '@/components/skills/KnowledgeBase';
 import { SkillMarketplace } from '@/components/skills/SkillMarketplace';
 import { CourseCreator } from '@/components/skills/CourseCreator';
 import { LearningDashboard } from '@/components/skills/LearningDashboard';
-import { KnowledgeBase } from '@/components/skills/KnowledgeBase';
-import { ProjectShowcase } from '@/components/skills/ProjectShowcase';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-export const SkillsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('marketplace');
+const SkillsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-
-  const tabs = [
-    {
-      id: 'marketplace',
-      title: 'Skill Exchange',
-      icon: Users,
-      description: 'Find teachers and learners in your community'
-    },
-    {
-      id: 'courses',
-      title: 'Courses',
-      icon: BookOpen,
-      description: 'Structured learning programs'
-    },
-    {
-      id: 'dashboard',
-      title: 'My Learning',
-      icon: Calendar,
-      description: 'Track your progress and sessions'
-    },
-    {
-      id: 'knowledge',
-      title: 'Knowledge Base',
-      icon: BookOpen,
-      description: 'Community wiki and resources'
-    },
-    {
-      id: 'showcase',
-      title: 'Projects',
-      icon: Trophy,
-      description: 'Share and discover projects'
-    }
-  ];
+  const { t, isRTL } = useLanguage();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Community Learning Hub</h1>
-          <p className="text-gray-600">
-            Share skills, learn together, and build community knowledge
-          </p>
-        </div>
-        <div className="flex items-center gap-4 mt-4 md:mt-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-64"
-            />
-          </div>
+    <div className={`container mx-auto py-8 px-4 ${isRTL ? 'rtl' : ''}`}>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">{t('skills.title')}</h1>
+        <p className="text-gray-600 mb-6">{t('skills.description')}</p>
+        
+        <div className="relative">
+          <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4`} />
+          <Input
+            placeholder={t('common.search')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`${isRTL ? 'pr-10' : 'pl-10'} max-w-md`}
+          />
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
-                <Icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{tab.title}</span>
-              </TabsTrigger>
-            );
-          })}
+      <Tabs defaultValue="marketplace" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="marketplace">{t('skills.skill_marketplace')}</TabsTrigger>
+          <TabsTrigger value="projects">{t('skills.project_showcase')}</TabsTrigger>
+          <TabsTrigger value="knowledge">{t('skills.knowledge_base')}</TabsTrigger>
+          <TabsTrigger value="courses">{t('skills.learning_courses')}</TabsTrigger>
+          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
         </TabsList>
 
         <TabsContent value="marketplace">
           <SkillMarketplace searchQuery={searchQuery} />
         </TabsContent>
 
-        <TabsContent value="courses">
-          <CourseCreator />
-        </TabsContent>
-
-        <TabsContent value="dashboard">
-          <LearningDashboard />
+        <TabsContent value="projects">
+          <ProjectShowcase searchQuery={searchQuery} />
         </TabsContent>
 
         <TabsContent value="knowledge">
           <KnowledgeBase searchQuery={searchQuery} />
         </TabsContent>
 
-        <TabsContent value="showcase">
-          <ProjectShowcase searchQuery={searchQuery} />
+        <TabsContent value="courses">
+          <CourseCreator searchQuery={searchQuery} />
+        </TabsContent>
+
+        <TabsContent value="dashboard">
+          <LearningDashboard />
         </TabsContent>
       </Tabs>
     </div>

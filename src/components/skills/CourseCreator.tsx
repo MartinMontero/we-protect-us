@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, BookOpen, Users, Clock, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Play, Clock, Users, Star, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CreateCourseModal } from './CreateCourseModal';
 
@@ -12,24 +12,22 @@ interface Course {
   id: string;
   title: string;
   description: string;
+  content: any;
+  duration_hours: number;
   difficulty_level: string;
-  learning_format: string;
-  max_participants: number;
-  duration_weeks: number;
-  price: number;
-  location_type: string;
   status: string;
-  featured_image_url: string;
   created_at: string;
-  creator_id: string;
   profiles?: {
     full_name: string;
     avatar_url: string;
   } | null;
-  course_enrollments?: Array<{ id: string }>;
 }
 
-export const CourseCreator: React.FC = () => {
+interface CourseCreatorProps {
+  searchQuery: string;
+}
+
+export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -39,20 +37,17 @@ export const CourseCreator: React.FC = () => {
 
   useEffect(() => {
     fetchCourses();
-  }, [filter]);
+  }, [filter, searchQuery]);
 
   const fetchCourses = async () => {
     try {
       let query = supabase
-        .from('courses')
+        .from('learning_courses')
         .select(`
           *,
           profiles (
             full_name,
             avatar_url
-          ),
-          course_enrollments (
-            id
           )
         `);
 
@@ -82,25 +77,26 @@ export const CourseCreator: React.FC = () => {
           id: course.id,
           title: course.title || '',
           description: course.description || '',
-          difficulty_level: course.difficulty_level,
-          learning_format: course.learning_format,
-          max_participants: course.max_participants || 10,
-          duration_weeks: course.duration_weeks || 4,
-          price: course.price || 0,
-          location_type: course.location_type,
-          status: course.status || 'draft',
-          featured_image_url: course.featured_image_url || '',
+          content: course.content,
+          duration_hours: course.duration_hours || 0,
+          difficulty_level: course.difficulty_level || '',
+          status: course.status || '',
           created_at: course.created_at || '',
-          creator_id: course.creator_id,
-          profiles: profileData ? {
-            full_name: profileData.full_name || '',
-            avatar_url: profileData.avatar_url || ''
-          } : null,
-          course_enrollments: course.course_enrollments || []
+          profiles: profileData
         };
       });
-      
-      setCourses(mappedData);
+
+      let filteredData = mappedData;
+
+      if (searchQuery) {
+        filteredData = filteredData.filter(
+          course => 
+            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      setCourses(filteredData);
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast({
@@ -118,55 +114,7 @@ export const CourseCreator: React.FC = () => {
       case 'beginner': return 'bg-green-100 text-green-800';
       case 'intermediate': return 'bg-blue-100 text-blue-800';
       case 'advanced': return 'bg-purple-100 text-purple-800';
-      case 'expert': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getFormatIcon = (format: string) => {
-    switch (format) {
-      case 'one_on_one': return '👥';
-      case 'small_group': return '👨‍👩‍👧‍👦';
-      case 'large_class': return '🏛️';
-      case 'self_paced': return '⏰';
-      case 'apprenticeship': return '🎓';
-      default: return '📚';
-    }
-  };
-
-  const enrollInCourse = async (courseId: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to enroll in courses",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('course_enrollments')
-        .insert({
-          course_id: courseId,
-          student_id: user.id
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success!",
-        description: "You've enrolled in the course"
-      });
-
-      fetchCourses();
-    } catch (error) {
-      console.error('Error enrolling in course:', error);
-      toast({
-        title: "Error",
-        description: "Failed to enroll in course",
-        variant: "destructive"
-      });
     }
   };
 
@@ -210,54 +158,30 @@ export const CourseCreator: React.FC = () => {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
           <Card key={course.id} className="hover:shadow-lg transition-shadow">
-            {course.featured_image_url && (
-              <div className="h-48 overflow-hidden rounded-t-lg">
-                <img 
-                  src={course.featured_image_url} 
-                  alt={course.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                <div className="text-right">
-                  {course.price > 0 ? (
-                    <p className="font-semibold text-green-600">${course.price}</p>
-                  ) : (
-                    <Badge variant="secondary">Free</Badge>
-                  )}
-                </div>
+                <Badge className={getDifficultyColor(course.difficulty_level)}>
+                  {course.difficulty_level}
+                </Badge>
               </div>
             </CardHeader>
 
             <CardContent className="space-y-4">
               <p className="text-sm text-gray-600 line-clamp-3">{course.description}</p>
 
-              <div className="flex items-center justify-between">
-                <Badge className={getDifficultyColor(course.difficulty_level)}>
-                  {course.difficulty_level}
-                </Badge>
-                <div className="flex items-center gap-1 text-sm text-gray-600">
-                  <span>{getFormatIcon(course.learning_format)}</span>
-                  {course.learning_format.replace('_', ' ')}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  {course.duration_weeks} weeks
+                  {course.duration_hours}h
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  {course.course_enrollments?.length || 0}/{course.max_participants}
+                  Enrolled
                 </div>
                 <div className="flex items-center gap-1">
-                  <BookOpen className="w-4 h-4" />
-                  {course.location_type}
+                  <Star className="w-4 h-4" />
+                  4.5
                 </div>
               </div>
 
@@ -272,24 +196,10 @@ export const CourseCreator: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2">
-                {course.creator_id === user?.id ? (
-                  <Button size="sm" variant="outline" className="flex-1">
-                    Edit Course
-                  </Button>
-                ) : (
-                  <Button 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => enrollInCourse(course.id)}
-                  >
-                    Enroll
-                  </Button>
-                )}
-                <Button size="sm" variant="outline" className="flex-1">
-                  View Details
-                </Button>
-              </div>
+              <Button className="w-full gap-2">
+                <Play className="w-4 h-4" />
+                Start Learning
+              </Button>
             </CardContent>
           </Card>
         ))}
@@ -297,12 +207,14 @@ export const CourseCreator: React.FC = () => {
 
       {courses.length === 0 && (
         <Card className="p-8 text-center">
-          <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <Play className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium mb-2">No Courses Found</h3>
           <p className="text-gray-600 mb-4">
-            {filter === 'my-courses' 
-              ? "You haven't created any courses yet"
-              : "No courses available yet"
+            {searchQuery 
+              ? `No courses match "${searchQuery}"`
+              : filter === 'my-courses'
+                ? "You haven't created any courses yet"
+                : "No courses available yet"
             }
           </p>
           <Button onClick={() => setShowCreateModal(true)}>

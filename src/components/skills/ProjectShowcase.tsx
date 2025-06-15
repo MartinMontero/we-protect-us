@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -87,13 +86,11 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
           demo_url: project.demo_url || '',
           collaboration_open: project.collaboration_open || false,
           created_at: project.created_at || '',
-          profiles: profileData ? {
-            full_name: profileData.full_name || '',
-            avatar_url: profileData.avatar_url || ''
-          } : null
+          profiles: profileData
         };
       });
 
+      // Filter the data based on the search query
       let filteredData = mappedData;
 
       if (searchQuery) {

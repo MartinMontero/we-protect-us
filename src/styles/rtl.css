@@ -1,0 +1,143 @@
+
+/* RTL (Right-to-Left) Support Styles */
+
+/* Basic RTL Layout */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl {
+  direction: rtl;
+}
+
+/* Flex direction adjustments for RTL */
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Margin and padding logical properties */
+.margin-inline-start-2 {
+  margin-inline-start: 0.5rem;
+}
+
+.margin-inline-end-2 {
+  margin-inline-end: 0.5rem;
+}
+
+.padding-inline-start-4 {
+  padding-inline-start: 1rem;
+}
+
+.padding-inline-end-4 {
+  padding-inline-end: 1rem;
+}
+
+/* Text alignment for RTL */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Float adjustments */
+[dir="rtl"] .float-left {
+  float: right;
+}
+
+[dir="rtl"] .float-right {
+  float: left;
+}
+
+/* Border radius adjustments */
+[dir="rtl"] .rounded-l-lg {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+[dir="rtl"] .rounded-r-lg {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+/* Icon positioning for RTL */
+[dir="rtl"] .lucide {
+  transform: scaleX(-1);
+}
+
+/* Dropdown menu positioning */
+[dir="rtl"] .dropdown-content {
+  right: 0;
+  left: auto;
+}
+
+/* Animation adjustments for RTL */
+[dir="rtl"] .slide-in-from-left {
+  animation: slide-in-from-right 0.2s ease-out;
+}
+
+[dir="rtl"] .slide-in-from-right {
+  animation: slide-in-from-left 0.2s ease-out;
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Form input adjustments */
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Navigation spacing adjustments */
+[dir="rtl"] .nav-item {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .nav-item:last-child {
+  margin-right: 0;
+}
+
+/* Card content adjustments */
+[dir="rtl"] .card-header {
+  text-align: right;
+}
+
+[dir="rtl"] .badge {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+
+/* Button icon spacing */
+[dir="rtl"] .btn-icon-left {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .btn-icon-right {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
