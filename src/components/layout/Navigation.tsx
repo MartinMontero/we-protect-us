@@ -3,31 +3,28 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Sun, 
   Moon, 
   Contrast,
   Users,
-  Heart,
-  Map,
-  Shield,
   Settings,
   Menu,
   X,
-  DollarSign
+  LogIn
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LanguageToggle } from '@/components/LanguageToggle';
+import { UserMenu } from '@/components/layout/UserMenu';
 
 const Navigation = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
-    { href: '/community', label: 'Community Map', icon: Map },
-    { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
-    { href: '/wealth', label: 'Community Wealth', icon: DollarSign },
-    { href: '/sovereignty', label: 'Community Sovereignty', icon: Shield },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
@@ -97,6 +94,9 @@ const Navigation = () => {
                 );
               })}
 
+              {/* Language toggle */}
+              <LanguageToggle />
+
               {/* Theme selector */}
               <div className="flex items-center space-x-1 ml-4">
                 {themeOptions.map((option) => {
@@ -115,6 +115,18 @@ const Navigation = () => {
                   );
                 })}
               </div>
+
+              {/* Auth section */}
+              {user ? (
+                <UserMenu />
+              ) : (
+                <Button asChild variant="default" size="sm">
+                  <Link to="/auth" className="flex items-center gap-2">
+                    <LogIn className="h-4 w-4" />
+                    Sign In
+                  </Link>
+                </Button>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -163,6 +175,32 @@ const Navigation = () => {
                 );
               })}
               
+              {/* Mobile auth section */}
+              {user ? (
+                <div className="px-3 py-2">
+                  <UserMenu />
+                </div>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-visible"
+                >
+                  <LogIn className="h-5 w-5" aria-hidden="true" />
+                  <span>Sign In</span>
+                </Link>
+              )}
+              
+              {/* Mobile language toggle */}
+              <div className="pt-4 border-t border-border mt-4">
+                <div className="px-3 py-2 text-sm font-medium text-muted-foreground">
+                  Language
+                </div>
+                <div className="px-3">
+                  <LanguageToggle />
+                </div>
+              </div>
+
               {/* Mobile theme selector */}
               <div className="pt-4 border-t border-border mt-4">
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">
