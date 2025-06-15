@@ -9,7 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface ResourceDistribution {
   id: string;
-  pickup_location: string;
+  delivery_location_lat: number;
+  delivery_location_lng: number;
   quantity: number;
   created_at: string;
   status: string;
@@ -66,7 +67,8 @@ export const ResourceDistributionTracker: React.FC = () => {
 
         return {
           id: dist.id,
-          pickup_location: dist.pickup_location || 'Unknown Location',
+          delivery_location_lat: dist.delivery_location_lat || 0,
+          delivery_location_lng: dist.delivery_location_lng || 0,
           quantity: dist.quantity || 0,
           created_at: dist.created_at,
           status: dist.status,
@@ -142,7 +144,7 @@ export const ResourceDistributionTracker: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg mb-2">
-                    {distribution.pickup_location} - {distribution.quantity} units
+                    Distribution - {distribution.quantity} units
                   </h3>
                   
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">

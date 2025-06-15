@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 interface VolunteerMatch {
   id: string;
   volunteer_id: string;
-  post_id: string;
+  need_id: string;
   match_score: number;
   status: string;
   created_at: string;
@@ -37,7 +38,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
         .select(`
           *,
           volunteer_profile:volunteer_id(full_name, skills),
-          mutual_aid_post:post_id(title, description, post_type)
+          mutual_aid_post:need_id(title, description, post_type)
         `)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -64,7 +65,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
         return {
           id: match.id,
           volunteer_id: match.volunteer_id,
-          post_id: match.post_id,
+          need_id: match.need_id,
           match_score: match.match_score,
           status: match.status,
           created_at: match.created_at,
@@ -111,7 +112,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg mb-2">
-                        {match.volunteer_profile?.full_name} - {match.mutual_aid_post?.title}
+                        {match.volunteer_profile?.full_name || 'Unknown Volunteer'} - {match.mutual_aid_post?.title || 'Unknown Post'}
                       </h3>
                       <div className="text-sm text-gray-500 mb-2">
                         Match Score: {match.match_score}

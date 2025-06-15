@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,7 +8,6 @@ interface TimeBankTransaction {
   receiver_id: string;
   hours: number;
   description: string;
-  status: string;
   created_at: string;
   giver_profile?: {
     full_name: string;
@@ -62,7 +62,6 @@ export const useTimeBankTransactions = () => {
           receiver_id: transaction.receiver_id,
           hours: transaction.hours,
           description: transaction.description,
-          status: transaction.status,
           created_at: transaction.created_at,
           giver_profile: giverProfile,
           receiver_profile: receiverProfile,
