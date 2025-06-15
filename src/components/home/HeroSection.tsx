@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ArrowRight, Shield, Heart, Users } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-red-50 py-20 lg:py-32">
@@ -33,16 +33,18 @@ export const HeroSection: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              asChild
-              size="lg" 
-              className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              <Link to={user ? '/dashboard' : '/auth'}>
-                {user ? 'Go to Dashboard' : 'Join the Movement'}
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
-            </Button>
+            {!loading && (
+              <Button 
+                asChild
+                size="lg" 
+                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                <Link to={user ? '/dashboard' : '/auth'}>
+                  {user ? 'Go to Dashboard' : 'Join the Movement'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
+            )}
             
             <Button 
               asChild

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +14,7 @@ interface ProfileSetupProps {
 }
 
 export const ProfileSetup: React.FC<ProfileSetupProps> = ({ onProfileCreated }) => {
-  const { createProfile, updateProfile, profile } = useProfile();
+  const { updateProfile, profile } = useProfile();
   const [pseudonym, setPseudonym] = useState(profile?.pseudonym || '');
   const [bio, setBio] = useState(profile?.bio || '');
   const [skills, setSkills] = useState<string[]>(profile?.skills || []);
@@ -24,6 +24,15 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({ onProfileCreated }) 
   const [newSkill, setNewSkill] = useState('');
   const [newVulnerabilityFactor, setNewVulnerabilityFactor] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setPseudonym(profile.pseudonym || '');
+      setBio(profile.bio || '');
+      setSkills(profile.skills || []);
+      setVulnerabilityFactors(profile.vulnerability_factors || []);
+    }
+  }, [profile]);
 
   const addSkill = () => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
@@ -58,12 +67,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({ onProfileCreated }) 
       vulnerability_factors: vulnerabilityFactors,
     };
 
-    let result;
-    if (profile) {
-      result = await updateProfile(profileData);
-    } else {
-      result = await createProfile(profileData);
-    }
+    const result = await updateProfile(profileData);
 
     if (result && onProfileCreated) {
       onProfileCreated();
@@ -76,7 +80,7 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({ onProfileCreated }) 
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>
-          {profile ? 'Update Your Profile' : 'Set Up Your Community Profile'}
+          {profile?.bio ? 'Update Your Profile' : 'Set Up Your Community Profile'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -160,8 +164,8 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({ onProfileCreated }) 
 
           <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting 
-              ? (profile ? 'Updating...' : 'Creating...') 
-              : (profile ? 'Update Profile' : 'Create Profile')
+              ? (profile?.bio ? 'Updating...' : 'Creating...') 
+              : (profile?.bio ? 'Update Profile' : 'Complete Setup')
             }
           </Button>
         </form>

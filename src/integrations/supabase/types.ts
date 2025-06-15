@@ -6084,8 +6084,20 @@ export type Database = {
         Returns: undefined
       }
       get_user_role: {
-        Args: Record<PropertyKey, never> | { user_id: string }
+        Args: Record<PropertyKey, never> | { user_id?: string }
         Returns: string
+      }
+      get_users_with_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          pseudonym: string
+          bio: string
+          trust_score: number
+          care_points_balance: number
+          created_at: string
+          role: string
+        }[]
       }
       get_users_with_roles: {
         Args: Record<PropertyKey, never>

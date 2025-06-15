@@ -5,13 +5,6 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export type UserRole = 'super_admin' | 'admin' | 'moderator' | 'user';
 
-interface UserRoleData {
-  user_id: string;
-  role: UserRole;
-  assigned_at: string;
-  assigned_by: string;
-}
-
 export const useRoles = () => {
   const { user } = useAuth();
   const [userRole, setUserRole] = useState<UserRole>('user');
@@ -20,21 +13,26 @@ export const useRoles = () => {
   useEffect(() => {
     if (user) {
       fetchUserRole();
+    } else {
+      setUserRole('user');
+      setLoading(false);
     }
   }, [user]);
 
   const fetchUserRole = async () => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     try {
-      // Use raw SQL query to access user_roles table
-      const { data, error } = await supabase.rpc('get_user_role', { user_id: user.id });
+      const { data, error } = await supabase.rpc('get_user_role');
 
-      if (error || !data) {
-        // User has no role assigned, default to 'user'
+      if (error) {
+        console.error('Error fetching user role:', error);
         setUserRole('user');
       } else {
-        setUserRole(data as UserRole);
+        setUserRole((data as UserRole) || 'user');
       }
     } catch (err) {
       console.error('Error fetching user role:', err);
@@ -61,7 +59,6 @@ export const useRoles = () => {
     }
 
     try {
-      // Use raw SQL to insert into user_roles
       const { error } = await supabase.rpc('assign_user_role', {
         target_user_id: userId,
         new_role: role,

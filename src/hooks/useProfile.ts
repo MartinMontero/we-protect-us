@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export interface Profile {
   id: string;
@@ -14,6 +14,7 @@ export interface Profile {
   location_lng?: number;
   time_bank_hours?: number;
   trust_score?: number;
+  care_points_balance?: number;
   created_at?: string;
   updated_at?: string;
   full_name?: string;
@@ -63,46 +64,6 @@ export const useProfile = () => {
     }
   };
 
-  const createProfile = async (profileData: Partial<Profile>) => {
-    if (!user) return null;
-
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .insert({
-          id: user.id,
-          pseudonym: profileData.pseudonym || 'Anonymous',
-          bio: profileData.bio,
-          skills: profileData.skills || [],
-          vulnerability_factors: profileData.vulnerability_factors || [],
-          location_lat: profileData.location_lat,
-          location_lng: profileData.location_lng,
-          full_name: profileData.full_name,
-          avatar_url: profileData.avatar_url,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setProfile(data);
-      toast({
-        title: "Success",
-        description: "Profile created successfully",
-      });
-
-      return data;
-    } catch (error) {
-      console.error('Error creating profile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create profile",
-        variant: "destructive",
-      });
-      return null;
-    }
-  };
-
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user || !profile) return null;
 
@@ -141,7 +102,6 @@ export const useProfile = () => {
     profile,
     loading,
     fetchProfile,
-    createProfile,
     updateProfile,
   };
 };
