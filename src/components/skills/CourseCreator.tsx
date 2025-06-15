@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -184,7 +183,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
                 </div>
               </div>
 
-              {course.profiles && course.profiles !== null && (
+              {course.profiles && (
                 <div className="flex items-center gap-2 pt-2 border-t">
                   <img 
                     src={course.profiles.avatar_url || '/placeholder-avatar.png'} 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -140,7 +139,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
             <CardHeader>
               <CardTitle className="text-xl">{article.title}</CardTitle>
               <div className="flex items-center gap-4 text-sm text-gray-600">
-                {article.profiles && article.profiles !== null && (
+                {article.profiles && (
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
                     <span>{article.profiles.full_name}</span>
