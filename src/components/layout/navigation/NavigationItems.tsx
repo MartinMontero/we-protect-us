@@ -20,8 +20,9 @@ import { cn } from '@/lib/utils';
 export const NavigationItems: React.FC = () => {
   const location = useLocation();
   const { user } = useAuth();
-  const { hasPermission } = useRoles();
+  const { hasPermission, loading: rolesLoading } = useRoles();
 
+  // Always show integrations and admin for authenticated users, let the ProtectedRoute handle access control
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
@@ -31,11 +32,13 @@ export const NavigationItems: React.FC = () => {
     { href: '/tool-library', label: 'Tools', icon: Wrench },
     { href: '/skills', label: 'Skills', icon: Users },
     { href: '/integrations', label: 'Integrations', icon: Puzzle },
-    ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Crown }] : []),
+    { href: '/admin', label: 'Admin', icon: Crown },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
   if (!user) return null;
+
+  console.log('NavigationItems rendering with user:', user?.id, 'hasPermission admin:', hasPermission('admin'), 'rolesLoading:', rolesLoading);
 
   return (
     <>
