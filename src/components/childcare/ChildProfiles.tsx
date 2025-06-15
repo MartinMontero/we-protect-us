@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, User, AlertTriangle, Heart, Calendar } from 'lucide-react';
 import { AddChildDialog } from './AddChildDialog';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } = from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
 interface Child {
