@@ -9,14 +9,21 @@ import {
   User, 
   Menu, 
   X,
-  Sparkles,
-  Shield
+  Heart,
+  Shield,
+  Users,
+  DollarSign,
+  Map
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { to: '/', label: 'Home', icon: Home },
   { to: '/dashboard', label: 'Dashboard', icon: BarChart3 },
+  { to: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
+  { to: '/security-governance', label: 'Security & Governance', icon: Shield },
+  { to: '/community-wealth', label: 'Community Wealth', icon: DollarSign },
+  { to: '/organizing', label: 'Organizing', icon: Users },
   { to: '/reports', label: 'Reports', icon: FileText },
   { to: '/profile', label: 'Profile', icon: User },
 ];
@@ -31,11 +38,11 @@ export const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+              <Heart className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Community Hub
+            <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+              We Protect Us
             </span>
           </div>
 
@@ -52,7 +59,7 @@ export const Navigation: React.FC = () => {
                   className={cn(
                     "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200",
                     isActive 
-                      ? "bg-blue-50 text-blue-700 shadow-sm" 
+                      ? "bg-red-50 text-red-700 shadow-sm" 
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   )}
                 >
@@ -91,7 +98,7 @@ export const Navigation: React.FC = () => {
                     className={cn(
                       "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200",
                       isActive 
-                        ? "bg-blue-50 text-blue-700" 
+                        ? "bg-red-50 text-red-700" 
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     )}
                   >

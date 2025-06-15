@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
@@ -16,9 +17,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/mutual-aid" element={<div className="p-8"><h1>Mutual Aid (Coming Soon)</h1></div>} />
+          <Route path="/security-governance" element={<SecurityGovernancePage />} />
+          <Route path="/community-wealth" element={<div className="p-8"><h1>Community Wealth (Coming Soon)</h1></div>} />
+          <Route path="/organizing" element={<div className="p-8"><h1>Organizing (Coming Soon)</h1></div>} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/security-governance" element={<SecurityGovernancePage />} />
         </Routes>
         <Toaster />
       </div>
