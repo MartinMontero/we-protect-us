@@ -40,7 +40,7 @@ function App() {
               <Router>
                 <div className="min-h-screen bg-background font-sans antialiased">
                   <Navigation />
-                  <main id="main-content">
+                  <main id="main-content" className="w-full">
                     <Toaster />
                     <Routes>
                       <Route path="/" element={<HomePage />} />

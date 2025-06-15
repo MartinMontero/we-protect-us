@@ -49,9 +49,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
   return (
     <div 
       id="mobile-menu"
-      className="md:hidden border-t border-border bg-card"
+      className="md:hidden border-t border-border bg-card w-full"
     >
-      <div className="px-2 pt-2 pb-3 space-y-1">
+      <div className="px-4 pt-2 pb-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
         {user && navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.href ||
@@ -63,15 +63,15 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
               to={item.href}
               onClick={onClose}
               className={cn(
-                "flex items-center space-x-3 px-3 py-3 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                "flex items-center space-x-3 px-3 py-3 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 w-full",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
               aria-current={isActive ? 'page' : undefined}
             >
-              <Icon className="h-5 w-5" aria-hidden="true" />
-              <span>{item.label}</span>
+              <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <span className="truncate">{item.label}</span>
             </Link>
           );
         })}
@@ -85,9 +85,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           <Link
             to="/auth"
             onClick={onClose}
-            className="flex items-center space-x-3 px-3 py-3 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="flex items-center space-x-3 px-3 py-3 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 w-full"
           >
-            <LogIn className="h-5 w-5" aria-hidden="true" />
+            <LogIn className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
             <span>Sign In</span>
           </Link>
         )}
