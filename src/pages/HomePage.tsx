@@ -16,7 +16,8 @@ import {
   Globe,
   Lock,
   Sparkles,
-  Vote
+  Vote,
+  Wrench
 } from 'lucide-react';
 
 const features = [
@@ -50,6 +51,14 @@ const features = [
     description: 'Tools for consensus building, event mobilization, and collaborative action.',
     color: 'from-green-500 to-emerald-500',
     path: '/organizing',
+    implemented: true
+  },
+  {
+    icon: Wrench,
+    title: 'Tool Library',
+    description: 'Share tools and equipment with your community through our asset sharing system.',
+    color: 'from-orange-500 to-red-500',
+    path: '/tool-library',
     implemented: true
   },
   {

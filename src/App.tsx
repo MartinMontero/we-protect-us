@@ -16,6 +16,7 @@ import CommunitySovereignty from '@/pages/CommunitySovereignty';
 import Organizing from '@/pages/Organizing';
 import Community from '@/pages/Community';
 import AuthPage from '@/pages/AuthPage';
+import { ToolLibrary } from '@/pages/ToolLibrary';
 
 function App() {
   return (
@@ -59,6 +60,11 @@ function App() {
             <Route path="/community" element={
               <ProtectedRoute>
                 <Community />
+              </ProtectedRoute>
+            } />
+            <Route path="/tool-library" element={
+              <ProtectedRoute>
+                <ToolLibrary />
               </ProtectedRoute>
             } />
             <Route path="/reports" element={<ReportsPage />} />

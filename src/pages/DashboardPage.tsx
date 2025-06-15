@@ -14,7 +14,8 @@ import {
   AlertTriangle,
   Handshake,
   Vote,
-  Globe
+  Globe,
+  Wrench
 } from 'lucide-react';
 
 const quickActions = [
@@ -45,14 +46,22 @@ const quickActions = [
     icon: Vote,
     path: '/organizing',
     color: 'from-blue-500 to-purple-500'
+  },
+  {
+    title: 'Tool Library',
+    description: 'Borrow and share tools with community members',
+    icon: Wrench,
+    path: '/tool-library',
+    color: 'from-orange-500 to-red-500'
   }
 ];
 
 const recentActivity = [
-  { type: 'mutual-aid', message: '15 new mutual aid requests in your area', time: '2 hours ago' },
-  { type: 'security', message: 'Security training session scheduled for tomorrow', time: '4 hours ago' },
-  { type: 'governance', message: 'New community proposal: Neighborhood Garden Project', time: '6 hours ago' },
-  { type: 'economy', message: 'Local time bank exchange completed', time: '1 day ago' }
+  { type: 'mutual-aid', message: '15 new mutual aid requests in your area', time: '2 hours ago', path: '/mutual-aid' },
+  { type: 'security', message: 'Security training session scheduled for tomorrow', time: '4 hours ago', path: '/security-governance' },
+  { type: 'governance', message: 'New community proposal: Neighborhood Garden Project', time: '6 hours ago', path: '/organizing' },
+  { type: 'economy', message: 'Local time bank exchange completed', time: '1 day ago', path: '/community-wealth' },
+  { type: 'tools', message: '3 new tools added to community library', time: '1 day ago', path: '/tool-library' }
 ];
 
 export const DashboardPage: React.FC = () => {
@@ -68,7 +77,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
@@ -104,7 +113,11 @@ export const DashboardPage: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div 
+                    key={index} 
+                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() => navigate(activity.path)}
+                  >
                     <div className="w-2 h-2 rounded-full bg-red-500 mt-2 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">{activity.message}</p>
@@ -164,6 +177,17 @@ export const DashboardPage: React.FC = () => {
                     <span className="text-sm font-medium">Active Proposals</span>
                   </div>
                   <span className="text-purple-600 font-semibold">4 voting</span>
+                </div>
+
+                <div 
+                  className="flex justify-between items-center p-3 bg-orange-50 rounded-lg cursor-pointer hover:bg-orange-100 transition-colors"
+                  onClick={() => navigate('/tool-library')}
+                >
+                  <div className="flex items-center gap-2">
+                    <Wrench className="w-4 h-4 text-orange-600" />
+                    <span className="text-sm font-medium">Tools Available</span>
+                  </div>
+                  <span className="text-orange-600 font-semibold">25 items</span>
                 </div>
               </div>
               

@@ -337,6 +337,243 @@ export type Database = {
           },
         ]
       }
+      tool_issues: {
+        Row: {
+          created_at: string | null
+          id: string
+          issue_description: string
+          photos: string[] | null
+          reporter_id: string
+          reservation_id: string | null
+          resolution_notes: string | null
+          resolved: boolean | null
+          severity: string
+          tool_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          issue_description: string
+          photos?: string[] | null
+          reporter_id: string
+          reservation_id?: string | null
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          severity?: string
+          tool_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          issue_description?: string
+          photos?: string[] | null
+          reporter_id?: string
+          reservation_id?: string | null
+          resolution_notes?: string | null
+          resolved?: boolean | null
+          severity?: string
+          tool_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_issues_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_issues_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "tool_reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_issues_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tool_maintenance: {
+        Row: {
+          completed_date: string | null
+          cost: number | null
+          created_at: string | null
+          description: string
+          id: string
+          maintenance_type: string
+          parts_needed: string[] | null
+          photos: string[] | null
+          tool_id: string
+          volunteer_id: string | null
+        }
+        Insert: {
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description: string
+          id?: string
+          maintenance_type: string
+          parts_needed?: string[] | null
+          photos?: string[] | null
+          tool_id: string
+          volunteer_id?: string | null
+        }
+        Update: {
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          maintenance_type?: string
+          parts_needed?: string[] | null
+          photos?: string[] | null
+          tool_id?: string
+          volunteer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_maintenance_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_maintenance_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tool_reservations: {
+        Row: {
+          actual_return_date: string | null
+          borrower_id: string
+          created_at: string | null
+          end_date: string
+          id: string
+          notes: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["reservation_status"] | null
+          time_credits_earned: number | null
+          tool_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_return_date?: string | null
+          borrower_id: string
+          created_at?: string | null
+          end_date: string
+          id?: string
+          notes?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["reservation_status"] | null
+          time_credits_earned?: number | null
+          tool_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_return_date?: string | null
+          borrower_id?: string
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["reservation_status"] | null
+          time_credits_earned?: number | null
+          tool_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_reservations_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_reservations_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tools: {
+        Row: {
+          availability_status: boolean | null
+          category: Database["public"]["Enums"]["tool_category"]
+          condition: Database["public"]["Enums"]["tool_condition"]
+          created_at: string | null
+          description: string | null
+          estimated_value: number | null
+          id: string
+          location_description: string | null
+          location_lat: number | null
+          location_lng: number | null
+          name: string
+          owner_id: string | null
+          photos: string[] | null
+          purchase_date: string | null
+          qr_code: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          availability_status?: boolean | null
+          category: Database["public"]["Enums"]["tool_category"]
+          condition?: Database["public"]["Enums"]["tool_condition"]
+          created_at?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          name: string
+          owner_id?: string | null
+          photos?: string[] | null
+          purchase_date?: string | null
+          qr_code?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          availability_status?: boolean | null
+          category?: Database["public"]["Enums"]["tool_category"]
+          condition?: Database["public"]["Enums"]["tool_condition"]
+          created_at?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          name?: string
+          owner_id?: string | null
+          photos?: string[] | null
+          purchase_date?: string | null
+          qr_code?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tools_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trust_relations: {
         Row: {
           created_at: string | null
@@ -413,6 +650,32 @@ export type Database = {
         | "labor"
         | "financial"
         | "emotional_support"
+      reservation_status:
+        | "pending"
+        | "approved"
+        | "active"
+        | "completed"
+        | "cancelled"
+        | "overdue"
+      tool_category:
+        | "power_tools"
+        | "garden_equipment"
+        | "kitchen_appliances"
+        | "camping_gear"
+        | "party_supplies"
+        | "electronics"
+        | "hand_tools"
+        | "cleaning_equipment"
+        | "automotive"
+        | "sports_recreation"
+        | "home_improvement"
+        | "art_craft"
+      tool_condition:
+        | "excellent"
+        | "good"
+        | "fair"
+        | "needs_repair"
+        | "out_of_service"
       urgency_level: "low" | "medium" | "high" | "critical"
     }
     CompositeTypes: {
@@ -541,6 +804,35 @@ export const Constants = {
         "labor",
         "financial",
         "emotional_support",
+      ],
+      reservation_status: [
+        "pending",
+        "approved",
+        "active",
+        "completed",
+        "cancelled",
+        "overdue",
+      ],
+      tool_category: [
+        "power_tools",
+        "garden_equipment",
+        "kitchen_appliances",
+        "camping_gear",
+        "party_supplies",
+        "electronics",
+        "hand_tools",
+        "cleaning_equipment",
+        "automotive",
+        "sports_recreation",
+        "home_improvement",
+        "art_craft",
+      ],
+      tool_condition: [
+        "excellent",
+        "good",
+        "fair",
+        "needs_repair",
+        "out_of_service",
       ],
       urgency_level: ["low", "medium", "high", "critical"],
     },
