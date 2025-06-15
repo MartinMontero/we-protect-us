@@ -53,29 +53,37 @@ export const useTimeBankTransactions = () => {
       if (error) throw error;
 
       // Map the data to ensure proper typing
-      const mappedTransactions: TimeBankTransaction[] = (data || []).map(transaction => ({
-        id: transaction.id,
-        giver_id: transaction.giver_id,
-        receiver_id: transaction.receiver_id,
-        hours: transaction.hours,
-        skill_category: transaction.skill_category,
-        description: transaction.description,
-        mutual_aid_post_id: transaction.mutual_aid_post_id,
-        verified_by: transaction.verified_by,
-        created_at: transaction.created_at,
-        giver_profile: transaction.giver_profile && 
+      const mappedTransactions: TimeBankTransaction[] = (data || []).map(transaction => {
+        // Safely extract giver profile
+        const giverProfile = transaction.giver_profile && 
           transaction.giver_profile !== null &&
           typeof transaction.giver_profile === 'object' && 
           'full_name' in transaction.giver_profile
           ? transaction.giver_profile as { full_name: string; pseudonym: string }
-          : null,
-        receiver_profile: transaction.receiver_profile &&
+          : null;
+
+        // Safely extract receiver profile
+        const receiverProfile = transaction.receiver_profile &&
           transaction.receiver_profile !== null &&
           typeof transaction.receiver_profile === 'object' &&
           'full_name' in transaction.receiver_profile
           ? transaction.receiver_profile as { full_name: string; pseudonym: string }
-          : null,
-      }));
+          : null;
+
+        return {
+          id: transaction.id,
+          giver_id: transaction.giver_id,
+          receiver_id: transaction.receiver_id,
+          hours: transaction.hours,
+          skill_category: transaction.skill_category,
+          description: transaction.description,
+          mutual_aid_post_id: transaction.mutual_aid_post_id,
+          verified_by: transaction.verified_by,
+          created_at: transaction.created_at,
+          giver_profile: giverProfile,
+          receiver_profile: receiverProfile,
+        };
+      });
 
       setTransactions(mappedTransactions);
     } catch (error) {

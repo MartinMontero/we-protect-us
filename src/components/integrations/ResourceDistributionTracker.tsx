@@ -31,49 +31,61 @@ export const ResourceDistributionTracker: React.FC = () => {
       if (error) throw error;
 
       // Transform the data to match our interface
-      const transformedDistributions: ResourceDistribution[] = (data || []).map(dist => ({
-        id: dist.id,
-        resource_id: dist.resource_id,
-        donor_id: dist.donor_id,
-        recipient_id: dist.recipient_id,
-        volunteer_id: dist.volunteer_id,
-        qr_code: dist.qr_code || '',
-        status: dist.status,
-        scheduled_pickup_at: dist.scheduled_pickup_at,
-        scheduled_delivery_at: dist.scheduled_delivery_at,
-        pickup_location_lat: dist.pickup_location_lat,
-        pickup_location_lng: dist.pickup_location_lng,
-        delivery_location_lat: dist.delivery_location_lat,
-        delivery_location_lng: dist.delivery_location_lng,
-        verification_photo_url: dist.verification_photo_url,
-        created_at: dist.created_at,
-        community_resource: dist.community_resource && 
+      const transformedDistributions: ResourceDistribution[] = (data || []).map(dist => {
+        // Safely extract community resource
+        const communityResource = dist.community_resource && 
           typeof dist.community_resource === 'object' &&
+          dist.community_resource !== null &&
           'resource_name' in dist.community_resource
-          ? {
-              resource_name: dist.community_resource.resource_name || '',
-              resource_type: dist.community_resource.resource_type || ''
-            }
-          : null,
-        donor_profile: dist.donor_profile && 
+          ? dist.community_resource as { resource_name: string; resource_type: string }
+          : null;
+
+        // Safely extract donor profile
+        const donorProfile = dist.donor_profile && 
           typeof dist.donor_profile === 'object' &&
           dist.donor_profile !== null &&
           'full_name' in dist.donor_profile
-          ? {
-              full_name: dist.donor_profile.full_name || '',
-              pseudonym: dist.donor_profile.pseudonym || ''
-            }
-          : null,
-        recipient_profile: dist.recipient_profile && 
+          ? dist.donor_profile as { full_name: string; pseudonym: string }
+          : null;
+
+        // Safely extract recipient profile
+        const recipientProfile = dist.recipient_profile && 
           typeof dist.recipient_profile === 'object' &&
           dist.recipient_profile !== null &&
           'full_name' in dist.recipient_profile
-          ? {
-              full_name: dist.recipient_profile.full_name || '',
-              pseudonym: dist.recipient_profile.pseudonym || ''
-            }
-          : null
-      }));
+          ? dist.recipient_profile as { full_name: string; pseudonym: string }
+          : null;
+
+        return {
+          id: dist.id,
+          resource_id: dist.resource_id,
+          donor_id: dist.donor_id,
+          recipient_id: dist.recipient_id,
+          volunteer_id: dist.volunteer_id,
+          qr_code: dist.qr_code || '',
+          status: dist.status,
+          scheduled_pickup_at: dist.scheduled_pickup_at,
+          scheduled_delivery_at: dist.scheduled_delivery_at,
+          pickup_location_lat: dist.pickup_location_lat,
+          pickup_location_lng: dist.pickup_location_lng,
+          delivery_location_lat: dist.delivery_location_lat,
+          delivery_location_lng: dist.delivery_location_lng,
+          verification_photo_url: dist.verification_photo_url,
+          created_at: dist.created_at,
+          community_resource: communityResource ? {
+            resource_name: communityResource.resource_name || '',
+            resource_type: communityResource.resource_type || ''
+          } : null,
+          donor_profile: donorProfile ? {
+            full_name: donorProfile.full_name || '',
+            pseudonym: donorProfile.pseudonym || ''
+          } : null,
+          recipient_profile: recipientProfile ? {
+            full_name: recipientProfile.full_name || '',
+            pseudonym: recipientProfile.pseudonym || ''
+          } : null
+        };
+      });
 
       setDistributions(transformedDistributions);
     } catch (error) {

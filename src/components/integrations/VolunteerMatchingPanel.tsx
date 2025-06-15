@@ -32,37 +32,45 @@ export const VolunteerMatchingPanel: React.FC = () => {
       if (error) throw error;
 
       // Transform the data to match our interface
-      const transformedMatches: VolunteerMatch[] = (data || []).map(match => ({
-        id: match.id,
-        need_id: match.need_id,
-        volunteer_id: match.volunteer_id,
-        match_score: match.match_score,
-        factors: typeof match.factors === 'object' && match.factors !== null 
-          ? match.factors as Record<string, any>
-          : {},
-        status: match.status,
-        created_at: match.created_at,
-        volunteer_profile: match.volunteer_profile && 
+      const transformedMatches: VolunteerMatch[] = (data || []).map(match => {
+        // Safely extract volunteer profile
+        const volunteerProfile = match.volunteer_profile && 
           typeof match.volunteer_profile === 'object' &&
           match.volunteer_profile !== null &&
           'full_name' in match.volunteer_profile
-          ? {
-              full_name: match.volunteer_profile.full_name || '',
-              pseudonym: match.volunteer_profile.pseudonym || '',
-              skills: Array.isArray(match.volunteer_profile.skills) ? match.volunteer_profile.skills : []
-            }
-          : null,
-        mutual_aid_post: match.mutual_aid_post && 
+          ? match.volunteer_profile as { full_name: string; pseudonym: string; skills: any }
+          : null;
+
+        // Safely extract mutual aid post
+        const mutualAidPost = match.mutual_aid_post && 
           typeof match.mutual_aid_post === 'object' &&
           match.mutual_aid_post !== null &&
           'title' in match.mutual_aid_post
-          ? {
-              title: match.mutual_aid_post.title || '',
-              description: match.mutual_aid_post.description || '',
-              post_type: match.mutual_aid_post.post_type || ''
-            }
-          : null
-      }));
+          ? match.mutual_aid_post as { title: string; description: string; post_type: string }
+          : null;
+
+        return {
+          id: match.id,
+          need_id: match.need_id,
+          volunteer_id: match.volunteer_id,
+          match_score: match.match_score,
+          factors: typeof match.factors === 'object' && match.factors !== null 
+            ? match.factors as Record<string, any>
+            : {},
+          status: match.status,
+          created_at: match.created_at,
+          volunteer_profile: volunteerProfile ? {
+            full_name: volunteerProfile.full_name || '',
+            pseudonym: volunteerProfile.pseudonym || '',
+            skills: Array.isArray(volunteerProfile.skills) ? volunteerProfile.skills : []
+          } : null,
+          mutual_aid_post: mutualAidPost ? {
+            title: mutualAidPost.title || '',
+            description: mutualAidPost.description || '',
+            post_type: mutualAidPost.post_type || ''
+          } : null
+        };
+      });
 
       setMatches(transformedMatches);
     } catch (error) {
