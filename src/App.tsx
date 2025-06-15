@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
@@ -17,6 +18,7 @@ import Community from '@/pages/Community';
 import AuthPage from '@/pages/AuthPage';
 import { ToolLibrary } from '@/pages/ToolLibrary';
 import { CommunityGarden } from '@/pages/CommunityGarden';
+import { ChildcareCoop } from '@/pages/ChildcareCoop';
 
 function App() {
   return (
@@ -35,6 +37,11 @@ function App() {
             <Route path="/mutual-aid" element={
               <ProtectedRoute>
                 <MutualAid />
+              </ProtectedRoute>
+            } />
+            <Route path="/childcare" element={
+              <ProtectedRoute>
+                <ChildcareCoop />
               </ProtectedRoute>
             } />
             <Route path="/security-governance" element={

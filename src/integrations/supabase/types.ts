@@ -9,6 +9,54 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      activity_participants: {
+        Row: {
+          activity_id: string
+          children_ids: string[]
+          emergency_contact_override: Json | null
+          id: string
+          parent_id: string
+          permission_slip_signed: boolean | null
+          signed_up_at: string | null
+          special_instructions: string | null
+        }
+        Insert: {
+          activity_id: string
+          children_ids: string[]
+          emergency_contact_override?: Json | null
+          id?: string
+          parent_id: string
+          permission_slip_signed?: boolean | null
+          signed_up_at?: string | null
+          special_instructions?: string | null
+        }
+        Update: {
+          activity_id?: string
+          children_ids?: string[]
+          emergency_contact_override?: Json | null
+          id?: string
+          parent_id?: string
+          permission_slip_signed?: boolean | null
+          signed_up_at?: string | null
+          special_instructions?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_participants_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "group_activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_participants_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bulk_order_participants: {
         Row: {
           bulk_order_id: string
@@ -101,6 +149,326 @@ export type Database = {
           },
         ]
       }
+      care_messages: {
+        Row: {
+          attachment_url: string | null
+          care_session_id: string
+          created_at: string | null
+          id: string
+          is_emergency: boolean | null
+          message_content: string
+          message_type: string | null
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          care_session_id: string
+          created_at?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          message_content: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          care_session_id?: string
+          created_at?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          message_content?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_messages_care_session_id_fkey"
+            columns: ["care_session_id"]
+            isOneToOne: false
+            referencedRelation: "care_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_points_transactions: {
+        Row: {
+          care_session_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          member_id: string
+          points_change: number
+          transaction_type: string
+        }
+        Insert: {
+          care_session_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          member_id: string
+          points_change: number
+          transaction_type: string
+        }
+        Update: {
+          care_session_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          member_id?: string
+          points_change?: number
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_points_transactions_care_session_id_fkey"
+            columns: ["care_session_id"]
+            isOneToOne: false
+            referencedRelation: "care_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_points_transactions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_requests: {
+        Row: {
+          care_instructions: string | null
+          caregiver_id: string | null
+          children_ids: string[]
+          created_at: string | null
+          emergency_instructions: string | null
+          end_time: string
+          id: string
+          is_recurring: boolean | null
+          last_minute_request: boolean | null
+          location_address: string
+          location_lat: number | null
+          location_lng: number | null
+          points_offered: number
+          recurring_pattern: Json | null
+          requesting_parent_id: string
+          start_time: string
+          status: Database["public"]["Enums"]["care_request_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          care_instructions?: string | null
+          caregiver_id?: string | null
+          children_ids: string[]
+          created_at?: string | null
+          emergency_instructions?: string | null
+          end_time: string
+          id?: string
+          is_recurring?: boolean | null
+          last_minute_request?: boolean | null
+          location_address: string
+          location_lat?: number | null
+          location_lng?: number | null
+          points_offered: number
+          recurring_pattern?: Json | null
+          requesting_parent_id: string
+          start_time: string
+          status?: Database["public"]["Enums"]["care_request_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          care_instructions?: string | null
+          caregiver_id?: string | null
+          children_ids?: string[]
+          created_at?: string | null
+          emergency_instructions?: string | null
+          end_time?: string
+          id?: string
+          is_recurring?: boolean | null
+          last_minute_request?: boolean | null
+          location_address?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          points_offered?: number
+          recurring_pattern?: Json | null
+          requesting_parent_id?: string
+          start_time?: string
+          status?: Database["public"]["Enums"]["care_request_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_requests_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_requests_requesting_parent_id_fkey"
+            columns: ["requesting_parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_sessions: {
+        Row: {
+          actual_end: string | null
+          actual_start: string | null
+          care_request_id: string
+          caregiver_id: string
+          check_in_photo_url: string | null
+          check_out_photo_url: string | null
+          children_ids: string[]
+          created_at: string | null
+          id: string
+          incident_reports: Json | null
+          location_lat: number | null
+          location_lng: number | null
+          parent_id: string
+          points_earned: number | null
+          scheduled_end: string
+          scheduled_start: string
+          session_notes: string | null
+          status: Database["public"]["Enums"]["session_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end?: string | null
+          actual_start?: string | null
+          care_request_id: string
+          caregiver_id: string
+          check_in_photo_url?: string | null
+          check_out_photo_url?: string | null
+          children_ids: string[]
+          created_at?: string | null
+          id?: string
+          incident_reports?: Json | null
+          location_lat?: number | null
+          location_lng?: number | null
+          parent_id: string
+          points_earned?: number | null
+          scheduled_end: string
+          scheduled_start: string
+          session_notes?: string | null
+          status?: Database["public"]["Enums"]["session_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end?: string | null
+          actual_start?: string | null
+          care_request_id?: string
+          caregiver_id?: string
+          check_in_photo_url?: string | null
+          check_out_photo_url?: string | null
+          children_ids?: string[]
+          created_at?: string | null
+          id?: string
+          incident_reports?: Json | null
+          location_lat?: number | null
+          location_lng?: number | null
+          parent_id?: string
+          points_earned?: number | null
+          scheduled_end?: string
+          scheduled_start?: string
+          session_notes?: string | null
+          status?: Database["public"]["Enums"]["session_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_sessions_care_request_id_fkey"
+            columns: ["care_request_id"]
+            isOneToOne: false
+            referencedRelation: "care_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_sessions_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "care_sessions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caregiver_reviews: {
+        Row: {
+          care_session_id: string
+          caregiver_id: string
+          created_at: string | null
+          id: string
+          rating: number
+          review_text: string | null
+          reviewer_id: string
+          tags: string[] | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          care_session_id: string
+          caregiver_id: string
+          created_at?: string | null
+          id?: string
+          rating: number
+          review_text?: string | null
+          reviewer_id: string
+          tags?: string[] | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          care_session_id?: string
+          caregiver_id?: string
+          created_at?: string | null
+          id?: string
+          rating?: number
+          review_text?: string | null
+          reviewer_id?: string
+          tags?: string[] | null
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caregiver_reviews_care_session_id_fkey"
+            columns: ["care_session_id"]
+            isOneToOne: false
+            referencedRelation: "care_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_reviews_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       case_studies: {
         Row: {
           created_at: string | null
@@ -146,6 +514,68 @@ export type Database = {
         }
         Relationships: []
       }
+      children: {
+        Row: {
+          allergies: string[] | null
+          birth_date: string
+          created_at: string | null
+          dietary_restrictions: string[] | null
+          emergency_instructions: string | null
+          favorite_activities: string[] | null
+          first_name: string
+          gender: string | null
+          id: string
+          medical_conditions: string[] | null
+          medications: Json | null
+          parent_id: string
+          photo_url: string | null
+          special_needs: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          allergies?: string[] | null
+          birth_date: string
+          created_at?: string | null
+          dietary_restrictions?: string[] | null
+          emergency_instructions?: string | null
+          favorite_activities?: string[] | null
+          first_name: string
+          gender?: string | null
+          id?: string
+          medical_conditions?: string[] | null
+          medications?: Json | null
+          parent_id: string
+          photo_url?: string | null
+          special_needs?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          allergies?: string[] | null
+          birth_date?: string
+          created_at?: string | null
+          dietary_restrictions?: string[] | null
+          emergency_instructions?: string | null
+          favorite_activities?: string[] | null
+          first_name?: string
+          gender?: string | null
+          id?: string
+          medical_conditions?: string[] | null
+          medications?: Json | null
+          parent_id?: string
+          photo_url?: string | null
+          special_needs?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "children_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compost_bins: {
         Row: {
           bin_name: string
@@ -184,6 +614,63 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      consent_forms: {
+        Row: {
+          child_id: string
+          created_at: string | null
+          digital_signature: string | null
+          expires_date: string | null
+          form_data: Json | null
+          form_type: string
+          form_version: string
+          id: string
+          parent_id: string
+          signed_date: string
+          witness_signature: string | null
+        }
+        Insert: {
+          child_id: string
+          created_at?: string | null
+          digital_signature?: string | null
+          expires_date?: string | null
+          form_data?: Json | null
+          form_type: string
+          form_version: string
+          id?: string
+          parent_id: string
+          signed_date: string
+          witness_signature?: string | null
+        }
+        Update: {
+          child_id?: string
+          created_at?: string | null
+          digital_signature?: string | null
+          expires_date?: string | null
+          form_data?: Json | null
+          form_type?: string
+          form_version?: string
+          id?: string
+          parent_id?: string
+          signed_date?: string
+          witness_signature?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_forms_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consent_forms_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       current_plantings: {
         Row: {
@@ -238,6 +725,53 @@ export type Database = {
             columns: ["plot_id"]
             isOneToOne: false
             referencedRelation: "garden_plots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_contacts: {
+        Row: {
+          address: string | null
+          child_id: string
+          created_at: string | null
+          email: string | null
+          id: string
+          is_authorized_pickup: boolean | null
+          name: string
+          phone_number: string
+          priority_order: number | null
+          relationship: Database["public"]["Enums"]["emergency_contact_relationship"]
+        }
+        Insert: {
+          address?: string | null
+          child_id: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_authorized_pickup?: boolean | null
+          name: string
+          phone_number: string
+          priority_order?: number | null
+          relationship: Database["public"]["Enums"]["emergency_contact_relationship"]
+        }
+        Update: {
+          address?: string | null
+          child_id?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_authorized_pickup?: boolean | null
+          name?: string
+          phone_number?: string
+          priority_order?: number | null
+          relationship?: Database["public"]["Enums"]["emergency_contact_relationship"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
             referencedColumns: ["id"]
           },
         ]
@@ -345,6 +879,71 @@ export type Database = {
           },
         ]
       }
+      group_activities: {
+        Row: {
+          activity_type: string
+          age_max: number | null
+          age_min: number | null
+          cost_per_child: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          location_address: string | null
+          location_lat: number | null
+          location_lng: number | null
+          location_name: string | null
+          max_children: number | null
+          organizer_id: string
+          requires_permission_slip: boolean | null
+          scheduled_date: string
+          title: string
+        }
+        Insert: {
+          activity_type: string
+          age_max?: number | null
+          age_min?: number | null
+          cost_per_child?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          location_name?: string | null
+          max_children?: number | null
+          organizer_id: string
+          requires_permission_slip?: boolean | null
+          scheduled_date: string
+          title: string
+        }
+        Update: {
+          activity_type?: string
+          age_max?: number | null
+          age_min?: number | null
+          cost_per_child?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          location_name?: string | null
+          max_children?: number | null
+          organizer_id?: string
+          requires_permission_slip?: boolean | null
+          scheduled_date?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_activities_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       harvest_sharing: {
         Row: {
           available_date: string | null
@@ -396,6 +995,151 @@ export type Database = {
           {
             foreignKeyName: "harvest_sharing_gardener_id_fkey"
             columns: ["gardener_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_references: {
+        Row: {
+          contacted_date: string | null
+          created_at: string | null
+          id: string
+          member_id: string
+          notes: string | null
+          reference_email: string | null
+          reference_name: string
+          reference_phone: string
+          relationship: string
+          verified: boolean | null
+        }
+        Insert: {
+          contacted_date?: string | null
+          created_at?: string | null
+          id?: string
+          member_id: string
+          notes?: string | null
+          reference_email?: string | null
+          reference_name: string
+          reference_phone: string
+          relationship: string
+          verified?: boolean | null
+        }
+        Update: {
+          contacted_date?: string | null
+          created_at?: string | null
+          id?: string
+          member_id?: string
+          notes?: string | null
+          reference_email?: string | null
+          reference_name?: string
+          reference_phone?: string
+          relationship?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_references_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_skill_badges: {
+        Row: {
+          badge_type: Database["public"]["Enums"]["skill_badge_type"]
+          certificate_url: string | null
+          certification_date: string | null
+          created_at: string | null
+          expiry_date: string | null
+          id: string
+          member_id: string
+          verified: boolean | null
+        }
+        Insert: {
+          badge_type: Database["public"]["Enums"]["skill_badge_type"]
+          certificate_url?: string | null
+          certification_date?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          member_id: string
+          verified?: boolean | null
+        }
+        Update: {
+          badge_type?: Database["public"]["Enums"]["skill_badge_type"]
+          certificate_url?: string | null
+          certification_date?: string | null
+          created_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          member_id?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_skill_badges_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_verification: {
+        Row: {
+          background_check_completed: boolean | null
+          background_check_provider: string | null
+          created_at: string | null
+          documents_submitted: boolean | null
+          id: string
+          member_id: string
+          references_verified: number | null
+          updated_at: string | null
+          verification_date: string | null
+          verification_notes: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          background_check_completed?: boolean | null
+          background_check_provider?: string | null
+          created_at?: string | null
+          documents_submitted?: boolean | null
+          id?: string
+          member_id: string
+          references_verified?: number | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verification_notes?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          background_check_completed?: boolean | null
+          background_check_provider?: string | null
+          created_at?: string | null
+          documents_submitted?: boolean | null
+          id?: string
+          member_id?: string
+          references_verified?: number | null
+          updated_at?: string | null
+          verification_date?: string | null
+          verification_notes?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_verification_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_verification_verified_by_fkey"
+            columns: ["verified_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -588,43 +1332,73 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          background_check_date: string | null
           bio: string | null
+          care_philosophy: string | null
+          care_points_balance: number | null
           created_at: string | null
           id: string
           location_lat: number | null
           location_lng: number | null
+          max_children_capacity: number | null
+          phone_number: string | null
           pseudonym: string
           skills: string[] | null
           time_bank_hours: number | null
           trust_score: number | null
           updated_at: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
           vulnerability_factors: string[] | null
+          years_experience: number | null
         }
         Insert: {
+          address?: string | null
+          background_check_date?: string | null
           bio?: string | null
+          care_philosophy?: string | null
+          care_points_balance?: number | null
           created_at?: string | null
           id: string
           location_lat?: number | null
           location_lng?: number | null
+          max_children_capacity?: number | null
+          phone_number?: string | null
           pseudonym: string
           skills?: string[] | null
           time_bank_hours?: number | null
           trust_score?: number | null
           updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
           vulnerability_factors?: string[] | null
+          years_experience?: number | null
         }
         Update: {
+          address?: string | null
+          background_check_date?: string | null
           bio?: string | null
+          care_philosophy?: string | null
+          care_points_balance?: number | null
           created_at?: string | null
           id?: string
           location_lat?: number | null
           location_lng?: number | null
+          max_children_capacity?: number | null
+          phone_number?: string | null
           pseudonym?: string
           skills?: string[] | null
           time_bank_hours?: number | null
           trust_score?: number | null
           updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
           vulnerability_factors?: string[] | null
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -1214,7 +1988,21 @@ export type Database = {
       }
     }
     Enums: {
+      care_request_status:
+        | "open"
+        | "accepted"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
       crop_season: "spring" | "summer" | "fall" | "winter" | "year_round"
+      emergency_contact_relationship:
+        | "parent"
+        | "guardian"
+        | "grandparent"
+        | "relative"
+        | "family_friend"
+        | "other"
       fulfillment_status: "open" | "in_progress" | "fulfilled" | "expired"
       need_category:
         | "food"
@@ -1235,6 +2023,22 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "overdue"
+      session_status:
+        | "scheduled"
+        | "checked_in"
+        | "in_progress"
+        | "checked_out"
+        | "completed"
+        | "emergency"
+      skill_badge_type:
+        | "cpr_certified"
+        | "first_aid"
+        | "special_needs"
+        | "infant_care"
+        | "toddler_specialist"
+        | "homework_help"
+        | "music_activities"
+        | "outdoor_activities"
       soil_type: "clay" | "sandy" | "loamy" | "rocky" | "amended"
       sun_exposure: "full_sun" | "partial_sun" | "partial_shade" | "full_shade"
       tool_category:
@@ -1257,6 +2061,14 @@ export type Database = {
         | "needs_repair"
         | "out_of_service"
       urgency_level: "low" | "medium" | "high" | "critical"
+      verification_status:
+        | "pending"
+        | "documents_submitted"
+        | "references_pending"
+        | "background_check_pending"
+        | "approved"
+        | "rejected"
+        | "suspended"
       work_party_status: "planned" | "active" | "completed" | "cancelled"
     }
     CompositeTypes: {
@@ -1373,7 +2185,23 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      care_request_status: [
+        "open",
+        "accepted",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
       crop_season: ["spring", "summer", "fall", "winter", "year_round"],
+      emergency_contact_relationship: [
+        "parent",
+        "guardian",
+        "grandparent",
+        "relative",
+        "family_friend",
+        "other",
+      ],
       fulfillment_status: ["open", "in_progress", "fulfilled", "expired"],
       need_category: [
         "food",
@@ -1395,6 +2223,24 @@ export const Constants = {
         "completed",
         "cancelled",
         "overdue",
+      ],
+      session_status: [
+        "scheduled",
+        "checked_in",
+        "in_progress",
+        "checked_out",
+        "completed",
+        "emergency",
+      ],
+      skill_badge_type: [
+        "cpr_certified",
+        "first_aid",
+        "special_needs",
+        "infant_care",
+        "toddler_specialist",
+        "homework_help",
+        "music_activities",
+        "outdoor_activities",
       ],
       soil_type: ["clay", "sandy", "loamy", "rocky", "amended"],
       sun_exposure: ["full_sun", "partial_sun", "partial_shade", "full_shade"],
@@ -1420,6 +2266,15 @@ export const Constants = {
         "out_of_service",
       ],
       urgency_level: ["low", "medium", "high", "critical"],
+      verification_status: [
+        "pending",
+        "documents_submitted",
+        "references_pending",
+        "background_check_pending",
+        "approved",
+        "rejected",
+        "suspended",
+      ],
       work_party_status: ["planned", "active", "completed", "cancelled"],
     },
   },
