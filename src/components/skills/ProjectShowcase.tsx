@@ -22,7 +22,7 @@ interface Project {
   profiles?: {
     full_name: string;
     avatar_url: string;
-  };
+  } | null;
 }
 
 interface ProjectShowcaseProps {
@@ -63,7 +63,14 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
 
       if (error) throw error;
 
-      let filteredData = data || [];
+      let filteredData = (data || []).map(project => ({
+        ...project,
+        project_images: Array.isArray(project.project_images) 
+          ? project.project_images 
+          : project.project_images 
+            ? [project.project_images as string]
+            : []
+      })) as Project[];
 
       if (searchQuery) {
         filteredData = filteredData.filter(

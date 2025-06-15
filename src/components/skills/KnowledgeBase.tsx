@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ interface Article {
   profiles?: {
     full_name: string;
     avatar_url: string;
-  };
+  } | null;
 }
 
 interface KnowledgeBaseProps {
@@ -62,7 +61,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
 
       if (error) throw error;
 
-      let filteredData = data || [];
+      let filteredData = (data || []) as Article[];
 
       if (searchQuery) {
         filteredData = filteredData.filter(

@@ -76,20 +76,21 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
 
     setLoading(true);
     try {
+      const insertData = {
+        skill_id: formData.skill_id,
+        skill_level: formData.skill_level as any,
+        is_teaching: formData.is_teaching,
+        is_learning: formData.is_learning,
+        teaching_styles: formData.teaching_styles,
+        preferred_location: formData.preferred_location,
+        hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
+        bio: formData.bio,
+        years_experience: formData.years_experience ? parseInt(formData.years_experience) : 0
+      };
+
       const { error } = await supabase
         .from('user_skills')
-        .insert({
-          user_id: user.id,
-          skill_id: formData.skill_id,
-          skill_level: formData.skill_level as any,
-          is_teaching: formData.is_teaching,
-          is_learning: formData.is_learning,
-          teaching_styles: formData.teaching_styles,
-          preferred_location: formData.preferred_location,
-          hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : null,
-          bio: formData.bio,
-          years_experience: formData.years_experience ? parseInt(formData.years_experience) : 0
-        });
+        .insert(insertData);
 
       if (error) throw error;
 

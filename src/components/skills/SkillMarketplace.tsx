@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,15 +20,15 @@ interface UserSkill {
   hourly_rate: number;
   bio: string;
   years_experience: number;
-  skills_catalog: {
+  skills_catalog?: {
     skill_name: string;
     category: string;
     description: string;
-  };
+  } | null;
   profiles?: {
     full_name: string;
     avatar_url: string;
-  };
+  } | null;
 }
 
 interface SkillMarketplaceProps {
@@ -76,7 +75,7 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
 
       if (error) throw error;
 
-      let filteredData = data || [];
+      let filteredData = (data || []) as UserSkill[];
 
       if (categoryFilter !== 'all') {
         filteredData = filteredData.filter(

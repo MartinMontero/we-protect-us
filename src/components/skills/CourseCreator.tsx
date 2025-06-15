@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ interface Course {
   profiles?: {
     full_name: string;
     avatar_url: string;
-  };
+  } | null;
   course_enrollments?: Array<{ id: string }>;
 }
 
@@ -69,7 +68,10 @@ export const CourseCreator: React.FC = () => {
       const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCourses(data || []);
+      
+      // Type assertion to handle the Supabase response
+      const typedData = (data || []) as Course[];
+      setCourses(typedData);
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast({
