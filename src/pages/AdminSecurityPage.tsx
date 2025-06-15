@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
-import { ContentModeration } from '@/components/admin/ContentModeration';
+import ContentModeration from '@/components/admin/ContentModeration';
 
 const AdminSecurityPage: React.FC = () => {
   return (

@@ -15,7 +15,7 @@ interface ArticleWithProfile {
   content: string;
   tags: string[];
   created_at: string;
-  profiles: {
+  author_profile: {
     pseudonym: string;
   } | null;
 }
@@ -32,20 +32,19 @@ const KnowledgeBase = () => {
         .from('knowledge_articles')
         .select(`
           *,
-          profiles:author_id(pseudonym)
+          author_profile:profiles!author_id(pseudonym)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // Map the data to match our interface
       return data.map(article => ({
         id: article.id,
         title: article.title,
         content: article.content,
         tags: article.tags || [],
         created_at: article.created_at,
-        profiles: article.profiles ? { pseudonym: article.profiles.pseudonym } : null
+        author_profile: article.author_profile
       })) as ArticleWithProfile[];
     },
   });
@@ -124,7 +123,7 @@ const KnowledgeBase = () => {
               <CardDescription className="flex items-center gap-4 text-sm">
                 <span className="flex items-center gap-1">
                   <User className="h-4 w-4" />
-                  {article.profiles?.pseudonym || 'Unknown Author'}
+                  {article.author_profile?.pseudonym || 'Unknown Author'}
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />

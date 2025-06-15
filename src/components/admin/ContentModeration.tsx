@@ -14,7 +14,7 @@ interface PostWithProfile {
   title: string;
   description: string;
   category: string;
-  status: string;
+  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
   created_at: string;
   profiles: {
     pseudonym: string;
@@ -39,24 +39,15 @@ const ContentModeration = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data.map(post => ({
-        ...post,
-        post_type: post.category // Map category to post_type for compatibility
-      })) as PostWithProfile[];
+      return data as PostWithProfile[];
     },
   });
 
   const updatePostMutation = useMutation({
-    mutationFn: async ({ postId, status }: { postId: string; status: string }) => {
-      // Map status values to valid enum values
-      let validStatus = status;
-      if (!['open', 'in_progress', 'fulfilled', 'expired'].includes(status)) {
-        validStatus = status === 'active' ? 'open' : 'expired';
-      }
-
+    mutationFn: async ({ postId, status }: { postId: string; status: 'open' | 'in_progress' | 'fulfilled' | 'expired' }) => {
       const { error } = await supabase
         .from('mutual_aid_posts')
-        .update({ status: validStatus })
+        .update({ status })
         .eq('id', postId);
 
       if (error) throw error;
@@ -79,7 +70,7 @@ const ContentModeration = () => {
     },
   });
 
-  const handleModeration = (postId: string, status: string) => {
+  const handleModeration = (postId: string, status: 'open' | 'in_progress' | 'fulfilled' | 'expired') => {
     updatePostMutation.mutate({ postId, status });
   };
 

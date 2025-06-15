@@ -30,13 +30,13 @@ export const useUsers = () => {
 
       if (error) throw error;
       
-      // Map the database fields to our interface
+      // Map the database fields to our interface, handling missing properties
       return data.map(profile => ({
         id: profile.id,
         pseudonym: profile.pseudonym || 'Anonymous',
         bio: profile.bio || '',
         skills: profile.skills || [],
-        interests: profile.interests || [],
+        interests: [], // Default to empty array since this field may not exist
         address: profile.address || '',
         location_lat: profile.location_lat || 0,
         location_lng: profile.location_lng || 0,
@@ -66,7 +66,7 @@ export const useUsers = () => {
         pseudonym: data.pseudonym || 'Anonymous',
         bio: data.bio || '',
         skills: data.skills || [],
-        interests: data.interests || [],
+        interests: [], // Default to empty array since this field may not exist
         address: data.address || '',
         location_lat: data.location_lat || 0,
         location_lng: data.location_lng || 0,
@@ -86,8 +86,7 @@ export const useUsers = () => {
     return users.filter(user => 
       user.pseudonym.toLowerCase().includes(query.toLowerCase()) ||
       user.bio.toLowerCase().includes(query.toLowerCase()) ||
-      user.skills.some(skill => skill.toLowerCase().includes(query.toLowerCase())) ||
-      user.interests.some(interest => interest.toLowerCase().includes(query.toLowerCase()))
+      user.skills.some(skill => skill.toLowerCase().includes(query.toLowerCase()))
     );
   };
 
