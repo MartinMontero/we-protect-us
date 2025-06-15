@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { FileText, Plus, Camera, Clock, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import type { Json } from '@/integrations/supabase/types';
 
 interface TenantIssue {
   id: string;
@@ -16,7 +17,7 @@ interface TenantIssue {
   status: 'open' | 'in_progress' | 'resolved' | 'escalated';
   priority_level: number;
   date_reported: string;
-  documentation: any[];
+  documentation: Json;
   rental_properties?: {
     address: string;
   };
@@ -113,44 +114,48 @@ export const RepairRequests: React.FC = () => {
 
       {/* Issues List */}
       <div className="grid gap-4">
-        {issues.map((issue) => (
-          <Card key={issue.id}>
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex items-center gap-3">
-                  {getPriorityIcon(issue.priority_level)}
-                  <div>
-                    <h4 className="font-semibold">{issue.issue_type}</h4>
-                    <p className="text-sm text-gray-600">{issue.rental_properties?.address}</p>
+        {issues.map((issue) => {
+          const documentation = Array.isArray(issue.documentation) ? issue.documentation : [];
+          
+          return (
+            <Card key={issue.id}>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    {getPriorityIcon(issue.priority_level)}
+                    <div>
+                      <h4 className="font-semibold">{issue.issue_type}</h4>
+                      <p className="text-sm text-gray-600">{issue.rental_properties?.address}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Badge className={getStatusColor(issue.status)}>
+                      {issue.status.replace('_', ' ')}
+                    </Badge>
+                    <span className="text-xs text-gray-500">
+                      {new Date(issue.date_reported).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Badge className={getStatusColor(issue.status)}>
-                    {issue.status.replace('_', ' ')}
-                  </Badge>
-                  <span className="text-xs text-gray-500">
-                    {new Date(issue.date_reported).toLocaleDateString()}
-                  </span>
+
+                <p className="text-sm text-gray-700 mb-3">{issue.description}</p>
+
+                {documentation.length > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <FileText className="w-4 h-4" />
+                    <span>{documentation.length} document(s) attached</span>
+                  </div>
+                )}
+
+                <div className="flex justify-end mt-3">
+                  <Button variant="outline" size="sm">
+                    Update Status
+                  </Button>
                 </div>
-              </div>
-
-              <p className="text-sm text-gray-700 mb-3">{issue.description}</p>
-
-              {issue.documentation?.length > 0 && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <FileText className="w-4 h-4" />
-                  <span>{issue.documentation.length} document(s) attached</span>
-                </div>
-              )}
-
-              <div className="flex justify-end mt-3">
-                <Button variant="outline" size="sm">
-                  Update Status
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {issues.length === 0 && (

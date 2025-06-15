@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Plus, TrendingUp, AlertTriangle, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import type { Json } from '@/integrations/supabase/types';
 
 interface RentRecord {
   id: string;
@@ -15,7 +16,7 @@ interface RentRecord {
   unit_number: string;
   lease_start_date: string;
   lease_end_date: string;
-  rent_increase_notices: any[];
+  rent_increase_notices: Json;
   rental_properties: {
     address: string;
     landlord_name: string;
@@ -63,8 +64,9 @@ export const RentTracker: React.FC = () => {
   };
 
   const calculateRentIncrease = (record: RentRecord) => {
-    if (record.rent_increase_notices?.length > 0) {
-      const lastIncrease = record.rent_increase_notices[record.rent_increase_notices.length - 1];
+    const notices = Array.isArray(record.rent_increase_notices) ? record.rent_increase_notices : [];
+    if (notices.length > 0) {
+      const lastIncrease = notices[notices.length - 1] as any;
       return ((lastIncrease.new_rent - record.monthly_rent) / record.monthly_rent * 100).toFixed(1);
     }
     return null;
@@ -104,6 +106,7 @@ export const RentTracker: React.FC = () => {
       <div className="grid gap-4">
         {rentRecords.map((record) => {
           const increasePercent = calculateRentIncrease(record);
+          const notices = Array.isArray(record.rent_increase_notices) ? record.rent_increase_notices : [];
           
           return (
             <Card key={record.id}>
@@ -135,11 +138,11 @@ export const RentTracker: React.FC = () => {
                   </div>
                 </div>
 
-                {record.rent_increase_notices?.length > 0 && (
+                {notices.length > 0 && (
                   <div className="mt-4 pt-4 border-t">
                     <h5 className="text-sm font-medium mb-2">Recent Increases</h5>
                     <div className="space-y-2">
-                      {record.rent_increase_notices.slice(-2).map((notice, index) => (
+                      {notices.slice(-2).map((notice: any, index: number) => (
                         <div key={index} className="flex justify-between items-center text-sm">
                           <span>{new Date(notice.notice_date).toLocaleDateString()}</span>
                           <Badge variant="outline">
