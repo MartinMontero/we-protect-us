@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -187,7 +186,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
                 <div className="mb-4">
                   <div className="text-sm text-gray-600 mb-2">Volunteer Skills</div>
                   <div className="flex flex-wrap gap-1">
-                    {match.volunteer_profile.skills.slice(0, 5).map((skill, index) => (
+                    {match.volunteer_profile.skills.slice(0, 5).map((skill: string, index: number) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {skill}
                       </Badge>
