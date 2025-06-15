@@ -19,9 +19,9 @@ export const HeroSection: React.FC = () => {
             <span>Building Community Power Through Mutual Aid</span>
           </div>
           
-          <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-6">
+          <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
             We Protect Us
-            <span className="block bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent leading-tight">
               Together We Rise
             </span>
           </h1>
@@ -48,7 +48,7 @@ export const HeroSection: React.FC = () => {
               asChild
               variant="outline" 
               size="lg"
-              className="border-2 px-8 py-4 text-lg rounded-xl hover:bg-gray-50 transition-all duration-200"
+              className="border-2 border-gray-300 bg-white text-gray-900 px-8 py-4 text-lg rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
             >
               <Link to="/disaster-preparedness">
                 <Shield className="mr-2 w-5 h-5" />
