@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,9 +9,9 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface ResourceDistribution {
   id: string;
-  resource_type: string;
+  pickup_location: string;
   quantity: number;
-  distribution_date: string;
+  created_at: string;
   status: string;
   donor_id: string;
   recipient_id: string;
@@ -41,7 +42,7 @@ export const ResourceDistributionTracker: React.FC = () => {
           donor_profile:profiles!donor_id(full_name, pseudonym),
           recipient_profile:profiles!recipient_id(full_name, pseudonym)
         `)
-        .order('distribution_date', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(20);
 
       if (error) throw error;
@@ -49,25 +50,25 @@ export const ResourceDistributionTracker: React.FC = () => {
       const mappedDistributions: ResourceDistribution[] = (data || []).map(dist => {
         // Safely extract donor profile
         const donorProfile = dist.donor_profile && 
-          typeof dist.donor_profile === 'object' &&
           dist.donor_profile !== null &&
+          typeof dist.donor_profile === 'object' &&
           'full_name' in dist.donor_profile
           ? dist.donor_profile as { full_name: string; pseudonym: string }
           : null;
 
         // Safely extract recipient profile  
         const recipientProfile = dist.recipient_profile &&
-          typeof dist.recipient_profile === 'object' &&
           dist.recipient_profile !== null &&
+          typeof dist.recipient_profile === 'object' &&
           'full_name' in dist.recipient_profile
           ? dist.recipient_profile as { full_name: string; pseudonym: string }
           : null;
 
         return {
           id: dist.id,
-          resource_type: dist.resource_type,
-          quantity: dist.quantity,
-          distribution_date: dist.distribution_date,
+          pickup_location: dist.pickup_location || 'Unknown Location',
+          quantity: dist.quantity || 0,
+          created_at: dist.created_at,
           status: dist.status,
           donor_id: dist.donor_id,
           recipient_id: dist.recipient_id,
@@ -141,7 +142,7 @@ export const ResourceDistributionTracker: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg mb-2">
-                    {distribution.resource_type} - {distribution.quantity} units
+                    {distribution.pickup_location} - {distribution.quantity} units
                   </h3>
                   
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
@@ -156,7 +157,7 @@ export const ResourceDistributionTracker: React.FC = () => {
                   </div>
                   
                   <div className="text-sm text-gray-500">
-                    Distribution Date: {new Date(distribution.distribution_date).toLocaleDateString()}
+                    Distribution Date: {new Date(distribution.created_at).toLocaleDateString()}
                   </div>
                 </div>
 

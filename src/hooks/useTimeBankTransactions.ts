@@ -1,73 +1,59 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
 
-export interface TimeBankTransaction {
+interface TimeBankTransaction {
   id: string;
   giver_id: string;
   receiver_id: string;
   hours: number;
-  skill_category: string;
-  description?: string;
-  mutual_aid_post_id?: string;
-  verified_by?: string;
+  description: string;
+  status: string;
   created_at: string;
   giver_profile?: {
     full_name: string;
-    pseudonym: string;
+    avatar_url: string;
   } | null;
   receiver_profile?: {
     full_name: string;
-    pseudonym: string;
+    avatar_url: string;
   } | null;
 }
 
 export const useTimeBankTransactions = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
   const [transactions, setTransactions] = useState<TimeBankTransaction[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user) {
-      fetchTransactions();
-    }
-  }, [user]);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTransactions = async () => {
-    if (!user) return;
-
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('time_bank_transactions')
         .select(`
           *,
-          giver_profile:profiles!giver_id(full_name, pseudonym),
-          receiver_profile:profiles!receiver_id(full_name, pseudonym)
+          giver_profile:giver_id(full_name, avatar_url),
+          receiver_profile:receiver_id(full_name, avatar_url)
         `)
-        .or(`giver_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(50);
 
       if (error) throw error;
 
-      // Map the data to ensure proper typing
       const mappedTransactions: TimeBankTransaction[] = (data || []).map(transaction => {
         // Safely extract giver profile
         const giverProfile = transaction.giver_profile && 
           transaction.giver_profile !== null &&
-          typeof transaction.giver_profile === 'object' && 
+          typeof transaction.giver_profile === 'object' &&
           'full_name' in transaction.giver_profile
-          ? transaction.giver_profile as { full_name: string; pseudonym: string }
+          ? transaction.giver_profile as { full_name: string; avatar_url: string }
           : null;
 
-        // Safely extract receiver profile
+        // Safely extract receiver profile  
         const receiverProfile = transaction.receiver_profile &&
           transaction.receiver_profile !== null &&
           typeof transaction.receiver_profile === 'object' &&
           'full_name' in transaction.receiver_profile
-          ? transaction.receiver_profile as { full_name: string; pseudonym: string }
+          ? transaction.receiver_profile as { full_name: string; avatar_url: string }
           : null;
 
         return {
@@ -75,10 +61,8 @@ export const useTimeBankTransactions = () => {
           giver_id: transaction.giver_id,
           receiver_id: transaction.receiver_id,
           hours: transaction.hours,
-          skill_category: transaction.skill_category,
           description: transaction.description,
-          mutual_aid_post_id: transaction.mutual_aid_post_id,
-          verified_by: transaction.verified_by,
+          status: transaction.status,
           created_at: transaction.created_at,
           giver_profile: giverProfile,
           receiver_profile: receiverProfile,
@@ -86,65 +70,23 @@ export const useTimeBankTransactions = () => {
       });
 
       setTransactions(mappedTransactions);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load transactions",
-        variant: "destructive",
-      });
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching time bank transactions:', err);
+      setError('Failed to load transactions');
     } finally {
       setLoading(false);
     }
   };
 
-  const createTransaction = async (
-    receiverId: string,
-    hours: number,
-    skillCategory: string,
-    description?: string,
-    mutualAidPostId?: string
-  ) => {
-    if (!user) return null;
-
-    try {
-      const { data, error } = await supabase
-        .from('time_bank_transactions')
-        .insert({
-          giver_id: user.id,
-          receiver_id: receiverId,
-          hours: hours,
-          skill_category: skillCategory,
-          description: description,
-          mutual_aid_post_id: mutualAidPostId,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Time bank transaction recorded successfully",
-      });
-
-      fetchTransactions();
-      return data;
-    } catch (error) {
-      console.error('Error creating transaction:', error);
-      toast({
-        title: "Error",
-        description: "Failed to record transaction",
-        variant: "destructive",
-      });
-      return null;
-    }
-  };
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   return {
     transactions,
     loading,
-    fetchTransactions,
-    createTransaction,
+    error,
+    refetch: fetchTransactions,
   };
 };
