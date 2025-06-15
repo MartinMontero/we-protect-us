@@ -19,6 +19,11 @@ const AuthPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [blueskyIdentifier, setBlueskyIdentifier] = useState('');
+  const [blueskyPassword, setBlueskyPassword] = useState('');
+  const [mastodonInstance, setMastodonInstance] = useState('mastodon.social');
+  const [showBlueskyAuth, setShowBlueskyAuth] = useState(false);
+  const [showMastodonAuth, setShowMastodonAuth] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -206,9 +211,23 @@ const AuthPage: React.FC = () => {
   };
 
   const handleBlueskySignIn = async () => {
+    if (!blueskyIdentifier || !blueskyPassword) {
+      toast({
+        title: "Credentials required",
+        description: "Please enter your Bluesky handle and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const { data, error } = await supabase.functions.invoke('bluesky-oauth', {
-        body: { action: 'initiate' }
+        body: { 
+          action: 'authenticate',
+          identifier: blueskyIdentifier,
+          password: blueskyPassword
+        }
       });
 
       if (error) {
@@ -220,8 +239,12 @@ const AuthPage: React.FC = () => {
         return;
       }
 
-      if (data?.authUrl) {
-        window.location.href = data.authUrl;
+      if (data?.user) {
+        toast({
+          title: "Success",
+          description: "Successfully signed in with Bluesky!",
+        });
+        navigate('/dashboard');
       }
     } catch (error) {
       toast({
@@ -229,13 +252,19 @@ const AuthPage: React.FC = () => {
         description: "Failed to sign in with Bluesky. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleMastodonSignIn = async () => {
     try {
+      setIsLoading(true);
       const { data, error } = await supabase.functions.invoke('mastodon-oauth', {
-        body: { action: 'initiate' }
+        body: { 
+          action: 'initiate',
+          instance: mastodonInstance
+        }
       });
 
       if (error) {
@@ -256,6 +285,8 @@ const AuthPage: React.FC = () => {
         description: "Failed to sign in with Mastodon. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -432,20 +463,76 @@ const AuthPage: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mt-3">
-                <Button variant="outline" onClick={handleBlueskySignIn} className="w-full">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowBlueskyAuth(!showBlueskyAuth)} 
+                  className="w-full"
+                >
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 2.105.139 3.107.139 4.896.139 4.896s.139 1.789.902 2.791c.659.839 1.664 1.161 4.3-.699C7.954 4.747 10.913 8.686 12 10.8zm0 0c1.087-2.114 4.046-6.053 6.798-7.995C21.434.944 22.439 1.266 23.098 2.105c.763 1.002.763 2.791.763 2.791s-.139 1.789-.902 2.791c-.659.839-1.664 1.161-4.3-.699C16.046 4.747 13.087 8.686 12 10.8z"/>
                   </svg>
                   Bluesky
                 </Button>
 
-                <Button variant="outline" onClick={handleMastodonSignIn} className="w-full">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowMastodonAuth(!showMastodonAuth)} 
+                  className="w-full"
+                >
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/>
                   </svg>
                   Mastodon
                 </Button>
               </div>
+
+              {showBlueskyAuth && (
+                <div className="mt-4 space-y-3 p-4 border rounded-lg bg-blue-50">
+                  <h3 className="font-medium text-blue-900">Bluesky Authentication</h3>
+                  <div>
+                    <Label htmlFor="bluesky-identifier">Handle or Email</Label>
+                    <Input
+                      id="bluesky-identifier"
+                      type="text"
+                      placeholder="your.handle or email@example.com"
+                      value={blueskyIdentifier}
+                      onChange={(e) => setBlueskyIdentifier(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="bluesky-password">App Password</Label>
+                    <Input
+                      id="bluesky-password"
+                      type="password"
+                      placeholder="Your Bluesky app password"
+                      value={blueskyPassword}
+                      onChange={(e) => setBlueskyPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button onClick={handleBlueskySignIn} disabled={isLoading} className="w-full">
+                    {isLoading ? 'Connecting...' : 'Connect Bluesky'}
+                  </Button>
+                </div>
+              )}
+
+              {showMastodonAuth && (
+                <div className="mt-4 space-y-3 p-4 border rounded-lg bg-purple-50">
+                  <h3 className="font-medium text-purple-900">Mastodon Authentication</h3>
+                  <div>
+                    <Label htmlFor="mastodon-instance">Instance</Label>
+                    <Input
+                      id="mastodon-instance"
+                      type="text"
+                      placeholder="mastodon.social"
+                      value={mastodonInstance}
+                      onChange={(e) => setMastodonInstance(e.target.value)}
+                    />
+                  </div>
+                  <Button onClick={handleMastodonSignIn} disabled={isLoading} className="w-full">
+                    {isLoading ? 'Connecting...' : 'Connect Mastodon'}
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

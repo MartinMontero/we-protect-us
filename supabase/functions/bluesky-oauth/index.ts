@@ -15,102 +15,79 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
 
-    const { action, code, state } = await req.json()
+    const { action, identifier, password } = await req.json()
 
-    if (action === 'initiate') {
-      // Generate OAuth state and code verifier
-      const oauthState = crypto.randomUUID()
-      const codeVerifier = crypto.randomUUID()
-      const redirectUri = `${Deno.env.get('SUPABASE_URL')}/functions/v1/bluesky-oauth`
-      
-      // Store state in database
-      await supabaseClient.from('oauth_states').insert({
-        state: oauthState,
-        provider: 'bluesky',
-        redirect_url: redirectUri,
-        code_verifier: codeVerifier
-      })
-
-      // Bluesky OAuth URL (AT Protocol)
-      const authUrl = `https://bsky.social/xrpc/com.atproto.server.createSession?` +
-        `client_id=${Deno.env.get('BLUESKY_CLIENT_ID')}&` +
-        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-        `response_type=code&` +
-        `state=${oauthState}&` +
-        `scope=read`
-
-      return new Response(
-        JSON.stringify({ authUrl }),
-        { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200 
-        }
-      )
-    }
-
-    if (action === 'callback' && code && state) {
-      // Verify state
-      const { data: stateData } = await supabaseClient
-        .from('oauth_states')
-        .select('*')
-        .eq('state', state)
-        .eq('provider', 'bluesky')
-        .single()
-
-      if (!stateData) {
-        throw new Error('Invalid OAuth state')
-      }
-
-      // Exchange code for token with Bluesky
-      const tokenResponse = await fetch('https://bsky.social/xrpc/com.atproto.server.createSession', {
+    if (action === 'authenticate') {
+      // Bluesky uses AT Protocol authentication
+      const authResponse = await fetch('https://bsky.social/xrpc/com.atproto.server.createSession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          identifier: code, // Bluesky uses identifier instead of traditional OAuth
-          password: stateData.code_verifier
+          identifier: identifier,
+          password: password
         })
       })
 
-      if (!tokenResponse.ok) {
-        throw new Error('Failed to exchange code for token')
+      if (!authResponse.ok) {
+        const error = await authResponse.json()
+        throw new Error(`Bluesky auth failed: ${error.message || 'Authentication failed'}`)
       }
 
-      const tokenData = await tokenResponse.json()
+      const authData = await authResponse.json()
 
-      // Get user info from Bluesky
-      const userResponse = await fetch('https://bsky.social/xrpc/com.atproto.repo.getRecord', {
+      // Get user profile from Bluesky
+      const profileResponse = await fetch('https://bsky.social/xrpc/com.atproto.repo.describe', {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${tokenData.accessJwt}`
+          'Authorization': `Bearer ${authData.accessJwt}`
         }
       })
 
-      const userData = await userResponse.json()
+      let profileData = { handle: identifier, displayName: identifier }
+      if (profileResponse.ok) {
+        profileData = await profileResponse.json()
+      }
 
-      // Create user in Supabase
-      const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
-        email: `${userData.handle}@bsky.social`, // Synthetic email
+      // Create or sign in user in Supabase
+      const { data: authUser, error: authError } = await supabaseClient.auth.admin.createUser({
+        email: `${profileData.handle}@bsky.placeholder`, // Synthetic email
         user_metadata: {
           provider: 'bluesky',
-          bluesky_handle: userData.handle,
-          full_name: userData.displayName || userData.handle,
-          avatar_url: userData.avatar
+          bluesky_handle: profileData.handle,
+          full_name: profileData.displayName || profileData.handle,
+          bluesky_access_token: authData.accessJwt,
+          bluesky_refresh_token: authData.refreshJwt
         }
       })
 
-      if (authError) {
+      if (authError && !authError.message.includes('already registered')) {
         throw authError
       }
 
-      // Clean up OAuth state
-      await supabaseClient.from('oauth_states').delete().eq('state', state)
+      // If user already exists, sign them in
+      let finalUser = authUser?.user
+      if (authError?.message.includes('already registered')) {
+        const { data: signInData, error: signInError } = await supabaseClient.auth.admin.getUserById(
+          // We need to find the user by email
+          `${profileData.handle}@bsky.placeholder`
+        )
+        if (signInError) throw signInError
+        finalUser = signInData.user
+      }
 
       return new Response(
-        JSON.stringify({ user: authData.user }),
+        JSON.stringify({ 
+          user: finalUser,
+          session: {
+            access_token: authData.accessJwt,
+            refresh_token: authData.refreshJwt
+          }
+        }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200 
@@ -119,7 +96,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ error: 'Invalid action' }),
+      JSON.stringify({ error: 'Invalid action. Use "authenticate" with identifier and password.' }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400 
