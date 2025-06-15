@@ -30,6 +30,8 @@ interface SkillOfferModalProps {
 }
 
 type LocationType = 'in_person' | 'virtual' | 'hybrid';
+type TeachingStyle = 'hands_on' | 'lecture' | 'discussion' | 'project_based' | 'mentoring';
+type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
 export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
   open,
@@ -42,10 +44,10 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     skill_id: '',
-    skill_level: '',
+    skill_level: '' as SkillLevel | '',
     is_teaching: false,
     is_learning: false,
-    teaching_styles: [] as string[],
+    teaching_styles: [] as TeachingStyle[],
     preferred_location: [] as LocationType[],
     hourly_rate: '',
     bio: '',
@@ -81,7 +83,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
       const insertData = {
         user_id: user.id,
         skill_id: formData.skill_id,
-        skill_level: formData.skill_level as any,
+        skill_level: formData.skill_level as SkillLevel,
         is_teaching: formData.is_teaching,
         is_learning: formData.is_learning,
         teaching_styles: formData.teaching_styles,
@@ -127,7 +129,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
     }
   };
 
-  const teachingStyles = ['hands_on', 'lecture', 'discussion', 'project_based', 'mentoring'];
+  const teachingStyles: TeachingStyle[] = ['hands_on', 'lecture', 'discussion', 'project_based', 'mentoring'];
   const locationTypes: LocationType[] = ['in_person', 'virtual', 'hybrid'];
 
   return (
@@ -162,7 +164,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
               <Label htmlFor="level">Your Level</Label>
               <Select 
                 value={formData.skill_level} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, skill_level: value }))}
+                onValueChange={(value: SkillLevel) => setFormData(prev => ({ ...prev, skill_level: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select your level" />

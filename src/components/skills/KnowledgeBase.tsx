@@ -62,20 +62,26 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
       if (error) throw error;
 
       // Map the data to match our interface
-      const mappedData: Article[] = (data || []).map(article => ({
-        id: article.id,
-        title: article.title || '',
-        content: article.content || '',
-        tags: article.tags || [],
-        is_featured: article.is_featured || false,
-        view_count: article.view_count || 0,
-        like_count: article.like_count || 0,
-        created_at: article.created_at || '',
-        profiles: article.profiles && typeof article.profiles === 'object' && 'full_name' in article.profiles ? {
-          full_name: article.profiles.full_name || '',
-          avatar_url: article.profiles.avatar_url || ''
-        } : null
-      }));
+      const mappedData: Article[] = (data || []).map(article => {
+        const profileData = article.profiles && typeof article.profiles === 'object' && 'full_name' in article.profiles 
+          ? article.profiles as { full_name: string; avatar_url: string }
+          : null;
+          
+        return {
+          id: article.id,
+          title: article.title || '',
+          content: article.content || '',
+          tags: article.tags || [],
+          is_featured: article.is_featured || false,
+          view_count: article.view_count || 0,
+          like_count: article.like_count || 0,
+          created_at: article.created_at || '',
+          profiles: profileData ? {
+            full_name: profileData.full_name || '',
+            avatar_url: profileData.avatar_url || ''
+          } : null
+        };
+      });
 
       let filteredData = mappedData;
 

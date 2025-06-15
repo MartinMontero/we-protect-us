@@ -76,27 +76,33 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
       if (error) throw error;
 
       // Map the data to match our interface
-      const mappedData: UserSkill[] = (data || []).map(skill => ({
-        id: skill.id,
-        user_id: skill.user_id,
-        skill_level: skill.skill_level || '',
-        is_teaching: skill.is_teaching || false,
-        is_learning: skill.is_learning || false,
-        teaching_styles: skill.teaching_styles || [],
-        preferred_location: skill.preferred_location || [],
-        hourly_rate: skill.hourly_rate || 0,
-        bio: skill.bio || '',
-        years_experience: skill.years_experience || 0,
-        skills_catalog: skill.skills_catalog ? {
-          skill_name: skill.skills_catalog.skill_name || '',
-          category: skill.skills_catalog.category || '',
-          description: skill.skills_catalog.description || ''
-        } : null,
-        profiles: skill.profiles && typeof skill.profiles === 'object' && 'full_name' in skill.profiles ? {
-          full_name: skill.profiles.full_name || '',
-          avatar_url: skill.profiles.avatar_url || ''
-        } : null
-      }));
+      const mappedData: UserSkill[] = (data || []).map(skill => {
+        const profileData = skill.profiles && typeof skill.profiles === 'object' && 'full_name' in skill.profiles 
+          ? skill.profiles as { full_name: string; avatar_url: string }
+          : null;
+          
+        return {
+          id: skill.id,
+          user_id: skill.user_id,
+          skill_level: skill.skill_level || '',
+          is_teaching: skill.is_teaching || false,
+          is_learning: skill.is_learning || false,
+          teaching_styles: skill.teaching_styles || [],
+          preferred_location: skill.preferred_location || [],
+          hourly_rate: skill.hourly_rate || 0,
+          bio: skill.bio || '',
+          years_experience: skill.years_experience || 0,
+          skills_catalog: skill.skills_catalog ? {
+            skill_name: skill.skills_catalog.skill_name || '',
+            category: skill.skills_catalog.category || '',
+            description: skill.skills_catalog.description || ''
+          } : null,
+          profiles: profileData ? {
+            full_name: profileData.full_name || '',
+            avatar_url: profileData.avatar_url || ''
+          } : null
+        };
+      });
 
       let filteredData = mappedData;
 

@@ -64,25 +64,31 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
       if (error) throw error;
 
       // Map the data to match our interface
-      const mappedData: Project[] = (data || []).map(project => ({
-        id: project.id,
-        title: project.title || '',
-        description: project.description || '',
-        project_images: Array.isArray(project.project_images) 
-          ? project.project_images as string[]
-          : project.project_images 
-            ? [project.project_images as string]
-            : [],
-        project_video_url: project.project_video_url || '',
-        source_code_url: project.source_code_url || '',
-        demo_url: project.demo_url || '',
-        collaboration_open: project.collaboration_open || false,
-        created_at: project.created_at || '',
-        profiles: project.profiles && typeof project.profiles === 'object' && 'full_name' in project.profiles ? {
-          full_name: project.profiles.full_name || '',
-          avatar_url: project.profiles.avatar_url || ''
-        } : null
-      }));
+      const mappedData: Project[] = (data || []).map(project => {
+        const profileData = project.profiles && typeof project.profiles === 'object' && 'full_name' in project.profiles 
+          ? project.profiles as { full_name: string; avatar_url: string }
+          : null;
+          
+        return {
+          id: project.id,
+          title: project.title || '',
+          description: project.description || '',
+          project_images: Array.isArray(project.project_images) 
+            ? project.project_images as string[]
+            : project.project_images 
+              ? [project.project_images as string]
+              : [],
+          project_video_url: project.project_video_url || '',
+          source_code_url: project.source_code_url || '',
+          demo_url: project.demo_url || '',
+          collaboration_open: project.collaboration_open || false,
+          created_at: project.created_at || '',
+          profiles: profileData ? {
+            full_name: profileData.full_name || '',
+            avatar_url: profileData.avatar_url || ''
+          } : null
+        };
+      });
 
       let filteredData = mappedData;
 
