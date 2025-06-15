@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { OverviewMetrics } from './privacy/OverviewMetrics';
 import { ComplianceSection } from './privacy/ComplianceSection';
 import { EncryptionMap } from './privacy/EncryptionMap';
+import { TechnicalDetails } from './privacy/TechnicalDetails';
 
 export const PrivacyArchitectureReport: React.FC = () => {
   const dataSovereigntyCompliance = [
@@ -70,35 +70,7 @@ export const PrivacyArchitectureReport: React.FC = () => {
       <OverviewMetrics overallScore={overallScore} />
       <ComplianceSection items={dataSovereigntyCompliance} />
       <EncryptionMap items={encryptionMap} />
-      
-      {/* Technical Implementation Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Technical Implementation Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium mb-2">Signal Protocol Implementation</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Double Ratchet algorithm for forward secrecy</li>
-                <li>• X3DH key agreement protocol</li>
-                <li>• PreKey distribution via community nodes</li>
-                <li>• Message padding for metadata protection</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium mb-2">Homomorphic Encryption</h4>
-              <ul className="text-sm space-y-1">
-                <li>• CKKS scheme for time bank calculations</li>
-                <li>• Encrypted aggregation without decryption</li>
-                <li>• Privacy-preserving analytics</li>
-                <li>• Community-verified computations</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <TechnicalDetails />
     </div>
   );
 };
