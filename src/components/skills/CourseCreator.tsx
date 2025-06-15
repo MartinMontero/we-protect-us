@@ -187,11 +187,11 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
               {course.profiles && (
                 <div className="flex items-center gap-2 pt-2 border-t">
                   <img 
-                    src={course.profiles.avatar_url || '/placeholder-avatar.png'} 
-                    alt={course.profiles.full_name || 'User'}
+                    src={course.profiles?.avatar_url || '/placeholder-avatar.png'} 
+                    alt={course.profiles?.full_name || 'User'}
                     className="w-6 h-6 rounded-full"
                   />
-                  <span className="text-sm text-gray-600">{course.profiles.full_name || 'Unknown'}</span>
+                  <span className="text-sm text-gray-600">{course.profiles?.full_name || 'Unknown'}</span>
                 </div>
               )}
 

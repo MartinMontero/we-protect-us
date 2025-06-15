@@ -64,11 +64,13 @@ export const useTimeBankTransactions = () => {
         verified_by: transaction.verified_by,
         created_at: transaction.created_at,
         giver_profile: transaction.giver_profile && 
+          transaction.giver_profile !== null &&
           typeof transaction.giver_profile === 'object' &&
           'full_name' in transaction.giver_profile
           ? transaction.giver_profile as { full_name: string; pseudonym: string }
           : null,
         receiver_profile: transaction.receiver_profile &&
+          transaction.receiver_profile !== null &&
           typeof transaction.receiver_profile === 'object' &&
           'full_name' in transaction.receiver_profile
           ? transaction.receiver_profile as { full_name: string; pseudonym: string }

@@ -143,7 +143,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
                 {article.profiles && (
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span>{article.profiles.full_name || 'Unknown'}</span>
+                    <span>{article.profiles?.full_name || 'Unknown'}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1">
