@@ -77,6 +77,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
     setLoading(true);
     try {
       const insertData = {
+        user_id: user.id,
         skill_id: formData.skill_id,
         skill_level: formData.skill_level as any,
         is_teaching: formData.is_teaching,

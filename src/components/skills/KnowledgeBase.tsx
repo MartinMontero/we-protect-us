@@ -61,7 +61,23 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
 
       if (error) throw error;
 
-      let filteredData = (data || []) as Article[];
+      // Map the data to match our interface
+      const mappedData: Article[] = (data || []).map(article => ({
+        id: article.id,
+        title: article.title || '',
+        content: article.content || '',
+        tags: article.tags || [],
+        is_featured: article.is_featured || false,
+        view_count: article.view_count || 0,
+        like_count: article.like_count || 0,
+        created_at: article.created_at || '',
+        profiles: article.profiles ? {
+          full_name: article.profiles.full_name || '',
+          avatar_url: article.profiles.avatar_url || ''
+        } : null
+      }));
+
+      let filteredData = mappedData;
 
       if (searchQuery) {
         filteredData = filteredData.filter(

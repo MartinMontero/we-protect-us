@@ -63,14 +63,28 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
 
       if (error) throw error;
 
-      let filteredData = (data || []).map(project => ({
-        ...project,
+      // Map the data to match our interface
+      const mappedData: Project[] = (data || []).map(project => ({
+        id: project.id,
+        title: project.title || '',
+        description: project.description || '',
         project_images: Array.isArray(project.project_images) 
-          ? project.project_images 
+          ? project.project_images as string[]
           : project.project_images 
             ? [project.project_images as string]
-            : []
-      })) as Project[];
+            : [],
+        project_video_url: project.project_video_url || '',
+        source_code_url: project.source_code_url || '',
+        demo_url: project.demo_url || '',
+        collaboration_open: project.collaboration_open || false,
+        created_at: project.created_at || '',
+        profiles: project.profiles ? {
+          full_name: project.profiles.full_name || '',
+          avatar_url: project.profiles.avatar_url || ''
+        } : null
+      }));
+
+      let filteredData = mappedData;
 
       if (searchQuery) {
         filteredData = filteredData.filter(

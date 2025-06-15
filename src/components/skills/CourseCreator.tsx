@@ -69,9 +69,29 @@ export const CourseCreator: React.FC = () => {
 
       if (error) throw error;
       
-      // Type assertion to handle the Supabase response
-      const typedData = (data || []) as Course[];
-      setCourses(typedData);
+      // Map the data to match our interface
+      const mappedData: Course[] = (data || []).map(course => ({
+        id: course.id,
+        title: course.title || '',
+        description: course.description || '',
+        difficulty_level: course.difficulty_level,
+        learning_format: course.learning_format,
+        max_participants: course.max_participants || 10,
+        duration_weeks: course.duration_weeks || 4,
+        price: course.price || 0,
+        location_type: course.location_type,
+        status: course.status || 'draft',
+        featured_image_url: course.featured_image_url || '',
+        created_at: course.created_at || '',
+        creator_id: course.creator_id,
+        profiles: course.profiles ? {
+          full_name: course.profiles.full_name || '',
+          avatar_url: course.profiles.avatar_url || ''
+        } : null,
+        course_enrollments: course.course_enrollments || []
+      }));
+      
+      setCourses(mappedData);
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast({
