@@ -29,7 +29,9 @@ export const MutualAidMap: React.FC = () => {
     post && 
     typeof post.id === 'string' && 
     typeof post.latitude === 'number' && 
-    typeof post.longitude === 'number'
+    typeof post.longitude === 'number' &&
+    !isNaN(post.latitude) &&
+    !isNaN(post.longitude)
   ) : [];
 
   console.log('MutualAidMap render - validPosts:', validPosts.length);
@@ -48,20 +50,13 @@ export const MutualAidMap: React.FC = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           
-          {validPosts.length > 0 && validPosts.map((post) => {
-            try {
-              return (
-                <MapMarker
-                  key={post.id}
-                  post={post}
-                  onPostClick={handleMarkerClick}
-                />
-              );
-            } catch (error) {
-              console.error('Error rendering marker for post:', post.id, error);
-              return null;
-            }
-          })}
+          {validPosts.map((post) => (
+            <MapMarker
+              key={post.id}
+              post={post}
+              onPostClick={handleMarkerClick}
+            />
+          ))}
         </MapContainer>
       </div>
 
