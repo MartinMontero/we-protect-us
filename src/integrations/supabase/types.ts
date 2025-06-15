@@ -57,6 +57,60 @@ export type Database = {
           },
         ]
       }
+      advocacy_campaigns: {
+        Row: {
+          action_items: Json | null
+          campaign_name: string
+          contact_officials: Json | null
+          created_at: string | null
+          current_signatures: number | null
+          description: string | null
+          id: string
+          meeting_schedule: Json | null
+          organizer_id: string
+          petition_text: string | null
+          resources: Json | null
+          status: string | null
+          target_outcome: string | null
+          target_signatures: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          action_items?: Json | null
+          campaign_name: string
+          contact_officials?: Json | null
+          created_at?: string | null
+          current_signatures?: number | null
+          description?: string | null
+          id?: string
+          meeting_schedule?: Json | null
+          organizer_id: string
+          petition_text?: string | null
+          resources?: Json | null
+          status?: string | null
+          target_outcome?: string | null
+          target_signatures?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          action_items?: Json | null
+          campaign_name?: string
+          contact_officials?: Json | null
+          created_at?: string | null
+          current_signatures?: number | null
+          description?: string | null
+          id?: string
+          meeting_schedule?: Json | null
+          organizer_id?: string
+          petition_text?: string | null
+          resources?: Json | null
+          status?: string | null
+          target_outcome?: string | null
+          target_signatures?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       bulk_order_participants: {
         Row: {
           bulk_order_id: string
@@ -1388,6 +1442,345 @@ export type Database = {
         }
         Relationships: []
       }
+      energy_assets: {
+        Row: {
+          asset_name: string
+          asset_type: Database["public"]["Enums"]["energy_asset_type"]
+          capacity_kw: number | null
+          created_at: string | null
+          id: string
+          installation_date: string | null
+          is_shared: boolean | null
+          location_lat: number
+          location_lng: number
+          maintenance_schedule: Json | null
+          manufacturer: string | null
+          model: string | null
+          owner_id: string
+          production_data: Json | null
+          sharing_terms: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          asset_name: string
+          asset_type: Database["public"]["Enums"]["energy_asset_type"]
+          capacity_kw?: number | null
+          created_at?: string | null
+          id?: string
+          installation_date?: string | null
+          is_shared?: boolean | null
+          location_lat: number
+          location_lng: number
+          maintenance_schedule?: Json | null
+          manufacturer?: string | null
+          model?: string | null
+          owner_id: string
+          production_data?: Json | null
+          sharing_terms?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          asset_name?: string
+          asset_type?: Database["public"]["Enums"]["energy_asset_type"]
+          capacity_kw?: number | null
+          created_at?: string | null
+          id?: string
+          installation_date?: string | null
+          is_shared?: boolean | null
+          location_lat?: number
+          location_lng?: number
+          maintenance_schedule?: Json | null
+          manufacturer?: string | null
+          model?: string | null
+          owner_id?: string
+          production_data?: Json | null
+          sharing_terms?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      energy_audits: {
+        Row: {
+          address: string
+          audit_date: string | null
+          auditor_id: string | null
+          baseline_usage: Json | null
+          completed_improvements: string[] | null
+          created_at: string | null
+          energy_score: number | null
+          estimated_savings: number | null
+          follow_up_date: string | null
+          homeowner_id: string
+          id: string
+          priority_improvements: string[] | null
+          recommendations: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          audit_date?: string | null
+          auditor_id?: string | null
+          baseline_usage?: Json | null
+          completed_improvements?: string[] | null
+          created_at?: string | null
+          energy_score?: number | null
+          estimated_savings?: number | null
+          follow_up_date?: string | null
+          homeowner_id: string
+          id?: string
+          priority_improvements?: string[] | null
+          recommendations?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          audit_date?: string | null
+          auditor_id?: string | null
+          baseline_usage?: Json | null
+          completed_improvements?: string[] | null
+          created_at?: string | null
+          energy_score?: number | null
+          estimated_savings?: number | null
+          follow_up_date?: string | null
+          homeowner_id?: string
+          id?: string
+          priority_improvements?: string[] | null
+          recommendations?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      energy_education: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          created_at: string | null
+          difficulty_rating: number | null
+          estimated_time_hours: number | null
+          helpful_votes: number | null
+          id: string
+          required_tools: string[] | null
+          resource_links: Json | null
+          safety_warnings: string[] | null
+          skill_level: Database["public"]["Enums"]["skill_level"] | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          video_url: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          content: string
+          created_at?: string | null
+          difficulty_rating?: number | null
+          estimated_time_hours?: number | null
+          helpful_votes?: number | null
+          id?: string
+          required_tools?: string[] | null
+          resource_links?: Json | null
+          safety_warnings?: string[] | null
+          skill_level?: Database["public"]["Enums"]["skill_level"] | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string | null
+          difficulty_rating?: number | null
+          estimated_time_hours?: number | null
+          helpful_votes?: number | null
+          id?: string
+          required_tools?: string[] | null
+          resource_links?: Json | null
+          safety_warnings?: string[] | null
+          skill_level?: Database["public"]["Enums"]["skill_level"] | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      energy_installers: {
+        Row: {
+          average_rating: number | null
+          certifications: string[] | null
+          company_name: string
+          contact_person: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          phone: string | null
+          pricing_info: Json | null
+          service_areas: string[] | null
+          services: string[] | null
+          total_reviews: number | null
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          average_rating?: number | null
+          certifications?: string[] | null
+          company_name: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          pricing_info?: Json | null
+          service_areas?: string[] | null
+          services?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          average_rating?: number | null
+          certifications?: string[] | null
+          company_name?: string
+          contact_person?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          pricing_info?: Json | null
+          service_areas?: string[] | null
+          services?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      energy_projects: {
+        Row: {
+          benefits: Json | null
+          coordinator_id: string
+          created_at: string | null
+          current_participants: number | null
+          description: string | null
+          estimated_cost: number | null
+          estimated_savings: number | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          project_name: string
+          project_type: Database["public"]["Enums"]["energy_project_type"]
+          requirements: Json | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          target_participants: number | null
+          timeline_end: string | null
+          timeline_start: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          benefits?: Json | null
+          coordinator_id: string
+          created_at?: string | null
+          current_participants?: number | null
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_savings?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          project_name: string
+          project_type: Database["public"]["Enums"]["energy_project_type"]
+          requirements?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          target_participants?: number | null
+          timeline_end?: string | null
+          timeline_start?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          benefits?: Json | null
+          coordinator_id?: string
+          created_at?: string | null
+          current_participants?: number | null
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_savings?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          project_name?: string
+          project_type?: Database["public"]["Enums"]["energy_project_type"]
+          requirements?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          target_participants?: number | null
+          timeline_end?: string | null
+          timeline_start?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      energy_resources: {
+        Row: {
+          booking_instructions: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_available: boolean | null
+          location_lat: number | null
+          location_lng: number | null
+          owner_id: string
+          rental_period: string | null
+          rental_rate: number | null
+          requirements: string | null
+          resource_name: string
+          resource_type: Database["public"]["Enums"]["resource_type"]
+          safety_notes: string | null
+          tags: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_instructions?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          location_lat?: number | null
+          location_lng?: number | null
+          owner_id: string
+          rental_period?: string | null
+          rental_rate?: number | null
+          requirements?: string | null
+          resource_name: string
+          resource_type: Database["public"]["Enums"]["resource_type"]
+          safety_notes?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_instructions?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          location_lat?: number | null
+          location_lng?: number | null
+          owner_id?: string
+          rental_period?: string | null
+          rental_rate?: number | null
+          requirements?: string | null
+          resource_name?: string
+          resource_type?: Database["public"]["Enums"]["resource_type"]
+          safety_notes?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       evacuation_routes: {
         Row: {
           accessibility_level: string
@@ -2094,6 +2487,50 @@ export type Database = {
         }
         Relationships: []
       }
+      installer_reviews: {
+        Row: {
+          completion_date: string | null
+          created_at: string | null
+          id: string
+          installer_id: string
+          project_type: string | null
+          rating: number | null
+          review_text: string | null
+          reviewer_id: string
+          would_recommend: boolean | null
+        }
+        Insert: {
+          completion_date?: string | null
+          created_at?: string | null
+          id?: string
+          installer_id: string
+          project_type?: string | null
+          rating?: number | null
+          review_text?: string | null
+          reviewer_id: string
+          would_recommend?: boolean | null
+        }
+        Update: {
+          completion_date?: string | null
+          created_at?: string | null
+          id?: string
+          installer_id?: string
+          project_type?: string | null
+          rating?: number | null
+          review_text?: string | null
+          reviewer_id?: string
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "installer_reviews_installer_id_fkey"
+            columns: ["installer_id"]
+            isOneToOne: false
+            referencedRelation: "energy_installers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_references: {
         Row: {
           contacted_date: string | null
@@ -2697,6 +3134,50 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resource_bookings: {
+        Row: {
+          borrower_id: string
+          created_at: string | null
+          end_date: string
+          id: string
+          notes: string | null
+          purpose: string | null
+          resource_id: string
+          start_date: string
+          status: string | null
+        }
+        Insert: {
+          borrower_id: string
+          created_at?: string | null
+          end_date: string
+          id?: string
+          notes?: string | null
+          purpose?: string | null
+          resource_id: string
+          start_date: string
+          status?: string | null
+        }
+        Update: {
+          borrower_id?: string
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          notes?: string | null
+          purpose?: string | null
+          resource_id?: string
+          start_date?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_bookings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "energy_resources"
             referencedColumns: ["id"]
           },
         ]
@@ -3572,6 +4053,51 @@ export type Database = {
           },
         ]
       }
+      utility_data: {
+        Row: {
+          account_number: string | null
+          carbon_footprint_kg: number | null
+          cost_amount: number | null
+          created_at: string | null
+          id: string
+          meter_reading: number | null
+          rate_schedule: string | null
+          reading_date: string
+          time_of_use_data: Json | null
+          usage_kwh: number | null
+          user_id: string
+          utility_provider: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          carbon_footprint_kg?: number | null
+          cost_amount?: number | null
+          created_at?: string | null
+          id?: string
+          meter_reading?: number | null
+          rate_schedule?: string | null
+          reading_date: string
+          time_of_use_data?: Json | null
+          usage_kwh?: number | null
+          user_id: string
+          utility_provider?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          carbon_footprint_kg?: number | null
+          cost_amount?: number | null
+          created_at?: string | null
+          id?: string
+          meter_reading?: number | null
+          rate_schedule?: string | null
+          reading_date?: string
+          time_of_use_data?: Json | null
+          usage_kwh?: number | null
+          user_id?: string
+          utility_provider?: string | null
+        }
+        Relationships: []
+      }
       visit_logs: {
         Row: {
           actual_end_time: string | null
@@ -3970,6 +4496,18 @@ export type Database = {
         | "relative"
         | "family_friend"
         | "other"
+      energy_asset_type:
+        | "solar_panel"
+        | "battery"
+        | "ev_charger"
+        | "generator"
+        | "wind_turbine"
+      energy_project_type:
+        | "solar_group_buy"
+        | "weatherization"
+        | "microgrid"
+        | "efficiency"
+        | "storage"
       food_asset_type:
         | "garden"
         | "fruit_tree"
@@ -3992,6 +4530,12 @@ export type Database = {
         | "financial"
         | "emotional_support"
       plot_status: "available" | "assigned" | "reserved" | "maintenance"
+      project_status:
+        | "planning"
+        | "organizing"
+        | "active"
+        | "completed"
+        | "cancelled"
       reservation_status:
         | "pending"
         | "approved"
@@ -3999,6 +4543,7 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "overdue"
+      resource_type: "tool" | "equipment" | "material" | "service" | "knowledge"
       session_status:
         | "scheduled"
         | "checked_in"
@@ -4015,6 +4560,7 @@ export type Database = {
         | "homework_help"
         | "music_activities"
         | "outdoor_activities"
+      skill_level: "beginner" | "intermediate" | "advanced" | "expert"
       soil_type: "clay" | "sandy" | "loamy" | "rocky" | "amended"
       sun_exposure: "full_sun" | "partial_sun" | "partial_shade" | "full_shade"
       tool_category:
@@ -4186,6 +4732,20 @@ export const Constants = {
         "family_friend",
         "other",
       ],
+      energy_asset_type: [
+        "solar_panel",
+        "battery",
+        "ev_charger",
+        "generator",
+        "wind_turbine",
+      ],
+      energy_project_type: [
+        "solar_group_buy",
+        "weatherization",
+        "microgrid",
+        "efficiency",
+        "storage",
+      ],
       food_asset_type: [
         "garden",
         "fruit_tree",
@@ -4210,6 +4770,13 @@ export const Constants = {
         "emotional_support",
       ],
       plot_status: ["available", "assigned", "reserved", "maintenance"],
+      project_status: [
+        "planning",
+        "organizing",
+        "active",
+        "completed",
+        "cancelled",
+      ],
       reservation_status: [
         "pending",
         "approved",
@@ -4218,6 +4785,7 @@ export const Constants = {
         "cancelled",
         "overdue",
       ],
+      resource_type: ["tool", "equipment", "material", "service", "knowledge"],
       session_status: [
         "scheduled",
         "checked_in",
@@ -4236,6 +4804,7 @@ export const Constants = {
         "music_activities",
         "outdoor_activities",
       ],
+      skill_level: ["beginner", "intermediate", "advanced", "expert"],
       soil_type: ["clay", "sandy", "loamy", "rocky", "amended"],
       sun_exposure: ["full_sun", "partial_sun", "partial_shade", "full_shade"],
       tool_category: [

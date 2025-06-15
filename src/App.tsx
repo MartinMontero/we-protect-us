@@ -24,6 +24,7 @@ import Settings from "./pages/Settings";
 import AuthPage from "./pages/AuthPage";
 import ElderCare from "./pages/ElderCare";
 import { DisasterPreparedness } from "./pages/DisasterPreparedness";
+import { EnergyDemocracy } from "./pages/EnergyDemocracy";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
                   <Route path="/home" element={<HomePage />} />
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/food-security" element={<FoodSecurity />} />
+                  <Route path="/energy-democracy" element={<EnergyDemocracy />} />
                   <Route path="/mutual-aid" element={<MutualAid />} />
                   <Route path="/tool-library" element={<ToolLibrary />} />
                   <Route path="/community-garden" element={<CommunityGarden />} />

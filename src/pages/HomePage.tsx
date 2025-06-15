@@ -40,6 +40,14 @@ const features = [
     implemented: true
   },
   {
+    icon: Zap,
+    title: 'Energy Democracy',
+    description: 'Solar coordination, efficiency programs, and community energy resilience.',
+    color: 'from-yellow-500 to-orange-500',
+    path: '/energy-democracy',
+    implemented: true
+  },
+  {
     icon: Heart,
     title: 'Mutual Aid Networks',
     description: 'Connect with neighbors to share resources, skills, and support during times of need.',
