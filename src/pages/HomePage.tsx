@@ -1,15 +1,19 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
-  ArrowRight, 
-  Users, 
-  Shield, 
   Heart, 
-  BarChart3,
-  Sparkles
+  Shield, 
+  Users, 
+  DollarSign, 
+  Map,
+  ArrowRight,
+  Zap,
+  Globe,
+  Lock
 } from 'lucide-react';
 
 const features = [
@@ -32,10 +36,34 @@ const features = [
     color: 'from-purple-500 to-pink-500'
   },
   {
-    icon: BarChart3,
-    title: 'Democratic Governance',
-    description: 'Transparent decision-making tools for truly democratic community organizing.',
+    icon: DollarSign,
+    title: 'Economic Justice',
+    description: 'Support and promote economic policies that benefit all members of the community.',
     color: 'from-green-500 to-emerald-500'
+  },
+  {
+    icon: Map,
+    title: 'Community Mapping',
+    description: 'Create and share maps of community assets, resources, and vulnerabilities.',
+    color: 'from-yellow-500 to-amber-500'
+  },
+  {
+    icon: Zap,
+    title: 'Emergency Preparedness',
+    description: 'Develop and implement emergency response plans to protect community members during disasters.',
+    color: 'from-pink-500 to-fuchsia-500'
+  },
+  {
+    icon: Globe,
+    title: 'Global Solidarity',
+    description: 'Connect with other communities around the world to share resources, knowledge, and support.',
+    color: 'from-cyan-500 to-sky-500'
+  },
+  {
+    icon: Lock,
+    title: 'Community Security',
+    description: 'Implement and enforce community security measures to protect against threats and attacks.',
+    color: 'from-rose-500 to-pink-500'
   }
 ];
 

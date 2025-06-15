@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { UserMenu } from '@/components/layout/UserMenu';
 import { 
   BarChart3, 
   FileText, 
