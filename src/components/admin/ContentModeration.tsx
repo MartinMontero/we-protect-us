@@ -13,7 +13,7 @@ interface PostWithProfile {
   id: string;
   title: string;
   description: string;
-  post_type: string;
+  category: string;
   status: string;
   created_at: string;
   profiles: {
@@ -39,15 +39,24 @@ const ContentModeration = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as PostWithProfile[];
+      return data.map(post => ({
+        ...post,
+        post_type: post.category // Map category to post_type for compatibility
+      })) as PostWithProfile[];
     },
   });
 
   const updatePostMutation = useMutation({
     mutationFn: async ({ postId, status }: { postId: string; status: string }) => {
+      // Map status values to valid enum values
+      let validStatus = status;
+      if (!['open', 'in_progress', 'fulfilled', 'expired'].includes(status)) {
+        validStatus = status === 'active' ? 'open' : 'expired';
+      }
+
       const { error } = await supabase
         .from('mutual_aid_posts')
-        .update({ status })
+        .update({ status: validStatus })
         .eq('id', postId);
 
       if (error) throw error;
@@ -96,7 +105,7 @@ const ContentModeration = () => {
                     By {post.profiles?.pseudonym || 'Unknown User'} • {new Date(post.created_at).toLocaleDateString()}
                   </CardDescription>
                 </div>
-                <Badge variant={post.status === 'active' ? 'default' : 'secondary'}>
+                <Badge variant={post.status === 'open' ? 'default' : 'secondary'}>
                   {post.status}
                 </Badge>
               </div>
@@ -125,7 +134,7 @@ const ContentModeration = () => {
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      onClick={() => handleModeration(post.id, 'active')}
+                      onClick={() => handleModeration(post.id, 'open')}
                       disabled={updatePostMutation.isPending}
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
@@ -134,7 +143,7 @@ const ContentModeration = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleModeration(post.id, 'hidden')}
+                      onClick={() => handleModeration(post.id, 'expired')}
                       disabled={updatePostMutation.isPending}
                     >
                       <XCircle className="h-4 w-4 mr-2" />
@@ -143,7 +152,7 @@ const ContentModeration = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleModeration(post.id, 'flagged')}
+                      onClick={() => handleModeration(post.id, 'in_progress')}
                       disabled={updatePostMutation.isPending}
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />

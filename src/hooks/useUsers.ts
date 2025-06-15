@@ -14,7 +14,7 @@ export interface UserProfile {
   location_lng: number;
   trust_score: number;
   created_at: string;
-  // Note: avatar_url is not available in the profiles table
+  care_points_balance?: number;
 }
 
 export const useUsers = () => {
@@ -29,7 +29,21 @@ export const useUsers = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as UserProfile[];
+      
+      // Map the database fields to our interface
+      return data.map(profile => ({
+        id: profile.id,
+        pseudonym: profile.pseudonym || 'Anonymous',
+        bio: profile.bio || '',
+        skills: profile.skills || [],
+        interests: profile.interests || [],
+        address: profile.address || '',
+        location_lat: profile.location_lat || 0,
+        location_lng: profile.location_lng || 0,
+        trust_score: profile.trust_score || 0,
+        created_at: profile.created_at,
+        care_points_balance: profile.care_points_balance || 0
+      })) as UserProfile[];
     },
     enabled: !!user,
   });
@@ -46,7 +60,20 @@ export const useUsers = () => {
         .single();
 
       if (error) throw error;
-      return data as UserProfile;
+      
+      return {
+        id: data.id,
+        pseudonym: data.pseudonym || 'Anonymous',
+        bio: data.bio || '',
+        skills: data.skills || [],
+        interests: data.interests || [],
+        address: data.address || '',
+        location_lat: data.location_lat || 0,
+        location_lng: data.location_lng || 0,
+        trust_score: data.trust_score || 0,
+        created_at: data.created_at,
+        care_points_balance: data.care_points_balance || 0
+      } as UserProfile;
     },
     enabled: !!user?.id,
   });

@@ -61,7 +61,7 @@ export const UserManagement: React.FC = () => {
                   <TableHead>User</TableHead>
                   <TableHead>Bio</TableHead>
                   <TableHead>Trust Score</TableHead>
-                  <TableHead>Time Bank Hours</TableHead>
+                  <TableHead>Care Points</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -91,7 +91,7 @@ export const UserManagement: React.FC = () => {
                         {user.trust_score}/10
                       </Badge>
                     </TableCell>
-                    <TableCell>{user.time_bank_hours || 0}h</TableCell>
+                    <TableCell>{user.care_points_balance || 0}</TableCell>
                     <TableCell>
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>

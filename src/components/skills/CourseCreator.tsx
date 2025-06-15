@@ -20,7 +20,7 @@ const CourseCreator = () => {
     title: '',
     description: '',
     difficulty_level: 'beginner' as 'beginner' | 'intermediate' | 'advanced' | 'expert',
-    learning_format: 'workshop' as 'workshop' | 'online' | 'self_paced',
+    learning_format: 'one_on_one' as 'one_on_one' | 'small_group' | 'large_class' | 'self_paced' | 'apprenticeship',
     duration_weeks: 4,
     max_participants: 20,
     location_type: 'in_person' as 'in_person' | 'virtual' | 'hybrid',
@@ -52,7 +52,7 @@ const CourseCreator = () => {
         title: '',
         description: '',
         difficulty_level: 'beginner',
-        learning_format: 'workshop',
+        learning_format: 'one_on_one',
         duration_weeks: 4,
         max_participants: 20,
         location_type: 'in_person',
@@ -134,9 +134,11 @@ const CourseCreator = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="workshop">Workshop</SelectItem>
-                  <SelectItem value="online">Online</SelectItem>
+                  <SelectItem value="one_on_one">One on One</SelectItem>
+                  <SelectItem value="small_group">Small Group</SelectItem>
+                  <SelectItem value="large_class">Large Class</SelectItem>
                   <SelectItem value="self_paced">Self Paced</SelectItem>
+                  <SelectItem value="apprenticeship">Apprenticeship</SelectItem>
                 </SelectContent>
               </Select>
             </div>

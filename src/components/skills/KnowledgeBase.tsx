@@ -37,7 +37,16 @@ const KnowledgeBase = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as ArticleWithProfile[];
+      
+      // Map the data to match our interface
+      return data.map(article => ({
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        tags: article.tags || [],
+        created_at: article.created_at,
+        profiles: article.profiles ? { pseudonym: article.profiles.pseudonym } : null
+      })) as ArticleWithProfile[];
     },
   });
 
