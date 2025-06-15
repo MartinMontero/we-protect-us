@@ -27,6 +27,7 @@ import ElderCare from "./pages/ElderCare";
 import { DisasterPreparedness } from "./pages/DisasterPreparedness";
 import { EnergyDemocracy } from "./pages/EnergyDemocracy";
 import CommunityDefense from "./pages/CommunityDefense";
+import SkillsPage from "./pages/SkillsPage";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
                   <Route path="/security-governance" element={<SecurityGovernancePage />} />
                   <Route path="/community-sovereignty" element={<CommunitySovereignty />} />
                   <Route path="/community-defense" element={<CommunityDefense />} />
+                  <Route path="/skills" element={<SkillsPage />} />
                   <Route path="/reports" element={<ReportsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<Settings />} />
