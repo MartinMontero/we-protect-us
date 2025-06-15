@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -91,7 +90,12 @@ export const PowerMappingTutorial: React.FC = () => {
     }
   };
 
-  const tutorialSteps = [
+  const tutorialSteps: Array<{
+    stage: 'identify' | 'analyze' | 'strategize';
+    title: string;
+    description: string;
+    tasks: string[];
+  }> = [
     {
       stage: 'identify',
       title: 'Identify Key Players',

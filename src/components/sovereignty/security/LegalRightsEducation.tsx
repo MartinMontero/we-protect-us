@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Scale, AlertTriangle, Shield, BookOpen, Phone } from 'lucide-react';
+import { Scale, AlertTriangle, Shield, BookOpen, Phone, Users } from 'lucide-react';
 
 interface LegalRightsEducationProps {
   securityMode: 'standard' | 'high_risk';
