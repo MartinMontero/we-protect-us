@@ -38,9 +38,9 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <Router>
-                <div className="min-h-screen bg-background text-foreground font-sans antialiased">
+                <div className="min-h-screen bg-background text-foreground">
                   <Navigation />
-                  <main id="main-content" className="w-full">
+                  <main className="w-full">
                     <Toaster />
                     <Routes>
                       <Route path="/" element={<Index />} />
