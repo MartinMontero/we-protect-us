@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MutualAidMap } from '@/components/mutual-aid/MutualAidMap';
 import { SolidarityProjections } from '@/components/mutual-aid/SolidarityProjections';
 import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
+import { TrustBuilding } from '@/components/mutual-aid/TrustBuilding';
 import { Button } from '@/components/ui/button';
-import { Plus, Map, BarChart3, Users } from 'lucide-react';
+import { Plus, Map, BarChart3, Users, Handshake } from 'lucide-react';
 
 const MutualAid = () => {
   return (
@@ -30,10 +30,14 @@ const MutualAid = () => {
       </div>
 
       <Tabs defaultValue="map" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="map" className="gap-2">
             <Map className="w-4 h-4" />
             Resource Map
+          </TabsTrigger>
+          <TabsTrigger value="trust" className="gap-2">
+            <Handshake className="w-4 h-4" />
+            Trust Building
           </TabsTrigger>
           <TabsTrigger value="projections" className="gap-2">
             <BarChart3 className="w-4 h-4" />
@@ -101,6 +105,10 @@ const MutualAid = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="trust" className="space-y-4">
+          <TrustBuilding />
         </TabsContent>
 
         <TabsContent value="projections" className="space-y-4">
