@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,8 +13,7 @@ interface Course {
   id: string;
   title: string;
   description: string;
-  content: any;
-  duration_hours: number;
+  duration_weeks: number;
   difficulty_level: string;
   status: string;
   created_at: string;
@@ -42,7 +42,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
   const fetchCourses = async () => {
     try {
       let query = supabase
-        .from('learning_courses')
+        .from('courses')
         .select(`
           *,
           profiles (
@@ -77,8 +77,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
           id: course.id,
           title: course.title || '',
           description: course.description || '',
-          content: course.content,
-          duration_hours: course.duration_hours || 0,
+          duration_weeks: course.duration_weeks || 0,
           difficulty_level: course.difficulty_level || '',
           status: course.status || '',
           created_at: course.created_at || '',
@@ -173,7 +172,7 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  {course.duration_hours}h
+                  {course.duration_weeks}w
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />

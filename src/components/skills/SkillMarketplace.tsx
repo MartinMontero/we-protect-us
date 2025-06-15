@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,26 +6,21 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, MapPin, Clock, DollarSign, Users } from 'lucide-react';
+import { MessageCircle, MapPin, DollarSign, Plus, User, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SkillOfferModal } from './SkillOfferModal';
 
-interface UserSkill {
+interface Skill {
   id: string;
-  user_id: string;
+  title: string;
+  description: string;
+  category: string;
   skill_level: string;
+  hourly_rate?: number;
+  location_type: string;
   is_teaching: boolean;
   is_learning: boolean;
-  teaching_styles: string[];
-  preferred_location: string[];
-  hourly_rate: number;
-  bio: string;
-  years_experience: number;
-  skills_catalog?: {
-    skill_name: string;
-    category: string;
-    description: string;
-  } | null;
+  created_at: string;
   profiles?: {
     full_name: string;
     avatar_url: string;
@@ -38,27 +34,23 @@ interface SkillMarketplaceProps {
 export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery }) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [skills, setSkills] = useState<UserSkill[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showOfferModal, setShowOfferModal] = useState(false);
   const [filter, setFilter] = useState<'all' | 'teaching' | 'learning'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [showOfferModal, setShowOfferModal] = useState(false);
 
   useEffect(() => {
     fetchSkills();
-  }, [filter, categoryFilter]);
+  }, [filter, searchQuery, categoryFilter]);
 
   const fetchSkills = async () => {
     try {
       let query = supabase
-        .from('user_skills')
+        .from('skill_offerings')
         .select(`
           *,
-          skills_catalog (
-            skill_name,
-            category,
-            description
-          ),
+          skills!inner(title, description, category),
           profiles (
             full_name,
             avatar_url
@@ -71,12 +63,11 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
         query = query.eq('is_learning', true);
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Map the data to match our interface
-      const mappedData: UserSkill[] = (data || []).map(skill => {
+      const mappedData: Skill[] = (data || []).map(skill => {
         const profiles = skill.profiles;
         const profileData = profiles && 
           typeof profiles === 'object' && 
@@ -87,41 +78,31 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
           
         return {
           id: skill.id,
-          user_id: skill.user_id,
+          title: skill.skills?.title || '',
+          description: skill.skills?.description || '',
+          category: skill.skills?.category || '',
           skill_level: skill.skill_level || '',
+          hourly_rate: skill.hourly_rate,
+          location_type: skill.preferred_location?.[0] || 'virtual',
           is_teaching: skill.is_teaching || false,
           is_learning: skill.is_learning || false,
-          teaching_styles: skill.teaching_styles || [],
-          preferred_location: skill.preferred_location || [],
-          hourly_rate: skill.hourly_rate || 0,
-          bio: skill.bio || '',
-          years_experience: skill.years_experience || 0,
-          skills_catalog: skill.skills_catalog ? {
-            skill_name: skill.skills_catalog.skill_name || '',
-            category: skill.skills_catalog.category || '',
-            description: skill.skills_catalog.description || ''
-          } : null,
-          profiles: profileData ? {
-            full_name: profileData.full_name || '',
-            avatar_url: profileData.avatar_url || ''
-          } : null
+          created_at: skill.created_at || '',
+          profiles: profileData
         };
       });
 
       let filteredData = mappedData;
 
       if (categoryFilter !== 'all') {
-        filteredData = filteredData.filter(
-          skill => skill.skills_catalog?.category === categoryFilter
-        );
+        filteredData = filteredData.filter(skill => skill.category === categoryFilter);
       }
 
       if (searchQuery) {
         filteredData = filteredData.filter(
           skill => 
-            skill.skills_catalog?.skill_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            skill.skills_catalog?.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            skill.bio?.toLowerCase().includes(searchQuery.toLowerCase())
+            skill.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            skill.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            skill.category.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
 
@@ -148,39 +129,35 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
     }
   };
 
-  const categories = ['all', 'Programming', 'Design', 'Business', 'Languages', 'Creative', 'Health & Wellness'];
-
   if (loading) {
     return <div className="flex items-center justify-center h-32">Loading skills...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex flex-wrap gap-4">
-          <Select value={filter} onValueChange={(value: any) => setFilter(value)}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Skills</SelectItem>
-              <SelectItem value="teaching">Teaching</SelectItem>
-              <SelectItem value="learning">Learning</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>
-                  {category === 'all' ? 'All Categories' : category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2">
+          <Button
+            variant={filter === 'all' ? 'default' : 'outline'}
+            onClick={() => setFilter('all')}
+            size="sm"
+          >
+            All Skills
+          </Button>
+          <Button
+            variant={filter === 'teaching' ? 'default' : 'outline'}
+            onClick={() => setFilter('teaching')}
+            size="sm"
+          >
+            Teaching
+          </Button>
+          <Button
+            variant={filter === 'learning' ? 'default' : 'outline'}
+            onClick={() => setFilter('learning')}
+            size="sm"
+          >
+            Learning
+          </Button>
         </div>
 
         <Button onClick={() => setShowOfferModal(true)} className="gap-2">
@@ -193,73 +170,61 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
         {skills.map((skill) => (
           <Card key={skill.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{skill.skills_catalog?.skill_name}</CardTitle>
-                  <p className="text-sm text-gray-600">{skill.skills_catalog?.category}</p>
-                </div>
-                <div className="flex gap-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg line-clamp-2">{skill.title}</CardTitle>
+                <div className="flex flex-col gap-1">
+                  <Badge className={getSkillLevelColor(skill.skill_level)}>
+                    {skill.skill_level}
+                  </Badge>
                   {skill.is_teaching && (
-                    <Badge variant="outline" className="text-xs">Teaching</Badge>
+                    <Badge variant="default" className="text-xs">
+                      Teaching
+                    </Badge>
                   )}
                   {skill.is_learning && (
-                    <Badge variant="outline" className="text-xs">Learning</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      Learning
+                    </Badge>
                   )}
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Badge className={getSkillLevelColor(skill.skill_level)}>
-                  {skill.skill_level}
-                </Badge>
+              <p className="text-sm text-gray-600 line-clamp-3">{skill.description}</p>
+
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  {skill.location_type}
+                </div>
                 {skill.hourly_rate && (
-                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
                     <DollarSign className="w-4 h-4" />
                     ${skill.hourly_rate}/hr
                   </div>
                 )}
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4" />
+                  4.8
+                </div>
               </div>
 
-              {skill.bio && (
-                <p className="text-sm text-gray-700 line-clamp-3">{skill.bio}</p>
-              )}
-
-              <div className="flex items-center gap-4 text-xs text-gray-500">
-                {skill.years_experience > 0 && (
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {skill.years_experience} years
-                  </div>
-                )}
-                
-                {skill.preferred_location?.length > 0 && (
-                  <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {skill.preferred_location.join(', ')}
-                  </div>
-                )}
-              </div>
-
-              {skill.teaching_styles?.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {skill.teaching_styles.map((style, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {style.replace('_', ' ')}
-                    </Badge>
-                  ))}
+              {skill.profiles && (
+                <div className="flex items-center gap-2 pt-2 border-t">
+                  <img 
+                    src={skill.profiles.avatar_url || '/placeholder-avatar.png'} 
+                    alt={skill.profiles.full_name}
+                    className="w-6 h-6 rounded-full"
+                  />
+                  <span className="text-sm text-gray-600">{skill.profiles.full_name}</span>
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
-                  Connect
-                </Button>
-                <Button size="sm" variant="outline" className="flex-1">
-                  View Profile
-                </Button>
-              </div>
+              <Button className="w-full gap-2">
+                <MessageCircle className="w-4 h-4" />
+                Connect
+              </Button>
             </CardContent>
           </Card>
         ))}
@@ -267,24 +232,28 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
 
       {skills.length === 0 && (
         <Card className="p-8 text-center">
-          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium mb-2">No Skills Found</h3>
           <p className="text-gray-600 mb-4">
             {searchQuery 
               ? `No skills match "${searchQuery}"`
-              : "Be the first to share a skill in this community"
+              : filter === 'teaching'
+                ? "No one is teaching skills yet"
+                : filter === 'learning'
+                ? "No one is looking to learn skills yet"
+                : "No skills available yet"
             }
           </p>
           <Button onClick={() => setShowOfferModal(true)}>
-            Share Your First Skill
+            Offer Your First Skill
           </Button>
         </Card>
       )}
 
-      <SkillOfferModal 
-        open={showOfferModal} 
+      <SkillOfferModal
+        open={showOfferModal}
         onOpenChange={setShowOfferModal}
-        onSkillAdded={fetchSkills}
+        onSkillCreated={fetchSkills}
       />
     </div>
   );

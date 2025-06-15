@@ -1,10 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { BookOpen, Plus, Eye, Heart, Calendar } from 'lucide-react';
+import { BookOpen, Plus, User, Calendar, ThumbsUp, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CreateArticleModal } from './CreateArticleModal';
 
@@ -12,11 +15,10 @@ interface Article {
   id: string;
   title: string;
   content: string;
+  category: string;
   tags: string[];
-  is_featured: boolean;
-  view_count: number;
-  like_count: number;
   created_at: string;
+  helpful_votes: number;
   profiles?: {
     full_name: string;
     avatar_url: string;
@@ -33,11 +35,12 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'featured' | 'my-articles'>('all');
+  const [filter, setFilter] = useState<'all' | 'my-articles'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   useEffect(() => {
     fetchArticles();
-  }, [filter, searchQuery]);
+  }, [filter, searchQuery, categoryFilter]);
 
   const fetchArticles = async () => {
     try {
@@ -51,17 +54,18 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
           )
         `);
 
-      if (filter === 'featured') {
-        query = query.eq('is_featured', true);
-      } else if (filter === 'my-articles' && user) {
+      if (filter === 'my-articles' && user) {
         query = query.eq('author_id', user.id);
       }
 
-      const { data, error } = await query.order('created_at', { ascending: false });
+      if (categoryFilter !== 'all') {
+        query = query.eq('category', categoryFilter);
+      }
+
+      const { data, error } = await query.order('helpful_votes', { ascending: false });
 
       if (error) throw error;
 
-      // Map the data to match our interface
       const mappedData: Article[] = (data || []).map(article => {
         const profiles = article.profiles;
         const profileData = profiles && 
@@ -75,11 +79,10 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
           id: article.id,
           title: article.title || '',
           content: article.content || '',
+          category: article.category || '',
           tags: article.tags || [],
-          is_featured: article.is_featured || false,
-          view_count: article.view_count || 0,
-          like_count: article.like_count || 0,
           created_at: article.created_at || '',
+          helpful_votes: article.helpful_votes || 0,
           profiles: profileData
         };
       });
@@ -91,7 +94,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
           article => 
             article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             article.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            article.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+            article.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
         );
       }
 
@@ -108,48 +111,8 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
     }
   };
 
-  const likeArticle = async (articleId: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to like articles",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('knowledge_articles')
-        .update({ 
-          like_count: articles.find(a => a.id === articleId)?.like_count + 1 || 1 
-        })
-        .eq('id', articleId);
-
-      if (error) throw error;
-
-      setArticles(prev => prev.map(article => 
-        article.id === articleId 
-          ? { ...article, like_count: article.like_count + 1 }
-          : article
-      ));
-
-      toast({
-        title: "Thanks!",
-        description: "Article liked successfully"
-      });
-    } catch (error) {
-      console.error('Error liking article:', error);
-      toast({
-        title: "Error",
-        description: "Failed to like article",
-        variant: "destructive"
-      });
-    }
-  };
-
   if (loading) {
-    return <div className="flex items-center justify-center h-32">Loading knowledge base...</div>;
+    return <div className="flex items-center justify-center h-32">Loading articles...</div>;
   }
 
   return (
@@ -162,13 +125,6 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
             size="sm"
           >
             All Articles
-          </Button>
-          <Button
-            variant={filter === 'featured' ? 'default' : 'outline'}
-            onClick={() => setFilter('featured')}
-            size="sm"
-          >
-            Featured
           </Button>
           <Button
             variant={filter === 'my-articles' ? 'default' : 'outline'}
@@ -185,80 +141,42 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid gap-6">
         {articles.map((article) => (
           <Card key={article.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex justify-between items-start">
-                <CardTitle className="text-lg line-clamp-2">{article.title}</CardTitle>
-                {article.is_featured && (
-                  <Badge className="bg-yellow-100 text-yellow-800">Featured</Badge>
+                <CardTitle className="text-xl">{article.title}</CardTitle>
+                <Badge variant="secondary">{article.category}</Badge>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                {article.profiles && (
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    <span>{article.profiles.full_name}</span>
+                  </div>
                 )}
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>{new Date(article.created_at).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <ThumbsUp className="w-4 h-4" />
+                  <span>{article.helpful_votes}</span>
+                </div>
               </div>
             </CardHeader>
-
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600 line-clamp-4">
-                {article.content.substring(0, 200)}...
-              </p>
-
-              {article.tags && article.tags.length > 0 && (
+            <CardContent>
+              <p className="text-gray-700 mb-4 line-clamp-3">{article.content}</p>
+              {article.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
-                  {article.tags.slice(0, 3).map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                  {article.tags.map((tag, idx) => (
+                    <Badge key={idx} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
                   ))}
-                  {article.tags.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{article.tags.length - 3}
-                    </Badge>
-                  )}
                 </div>
               )}
-
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {article.view_count}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4" />
-                    {article.like_count}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(article.created_at).toLocaleDateString()}
-                </div>
-              </div>
-
-              {article.profiles && (
-                <div className="flex items-center gap-2 pt-2 border-t">
-                  <img 
-                    src={article.profiles.avatar_url || '/placeholder-avatar.png'} 
-                    alt={article.profiles.full_name}
-                    className="w-6 h-6 rounded-full"
-                  />
-                  <span className="text-sm text-gray-600">{article.profiles.full_name}</span>
-                </div>
-              )}
-
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
-                  Read More
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={() => likeArticle(article.id)}
-                  className="gap-1"
-                >
-                  <Heart className="w-4 h-4" />
-                  Like
-                </Button>
-              </div>
             </CardContent>
           </Card>
         ))}
@@ -277,7 +195,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
             }
           </p>
           <Button onClick={() => setShowCreateModal(true)}>
-            Write the First Article
+            Write Your First Article
           </Button>
         </Card>
       )}
