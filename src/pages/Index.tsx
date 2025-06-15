@@ -6,11 +6,11 @@ import { CTASection } from '@/components/home/CTASection';
 
 const Index: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <main id="main-content" className="min-h-screen bg-background">
       <HeroSection />
       <FeaturesGrid />
       <CTASection />
-    </div>
+    </main>
   );
 };
 

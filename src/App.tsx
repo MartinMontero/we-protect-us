@@ -40,7 +40,7 @@ function App() {
               <Router>
                 <div className="min-h-screen bg-background text-foreground">
                   <Navigation />
-                  <main className="w-full">
+                  <div className="w-full">
                     <Toaster />
                     <Routes>
                       <Route path="/" element={<Index />} />
@@ -119,7 +119,7 @@ function App() {
                         <DisasterPreparedness />
                       } />
                     </Routes>
-                  </main>
+                  </div>
                 </div>
               </Router>
             </TooltipProvider>
