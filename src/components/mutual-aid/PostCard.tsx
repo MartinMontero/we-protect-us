@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Users, Heart, Calendar, Tag } from 'lucide-react';
 import { MutualAidPost } from '@/types/mutualAid';
+import { PerspectivesTrigger } from './perspectives/PerspectivesTrigger';
 
 interface PostCardProps {
   post: MutualAidPost;
@@ -136,13 +137,16 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onViewDetails }) => {
               <Heart className="w-4 h-4 text-red-500" />
             )}
           </div>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onViewDetails(post)}
-          >
-            View Details
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onViewDetails(post)}
+            >
+              View Details
+            </Button>
+            <PerspectivesTrigger post={post} />
+          </div>
         </div>
       </CardContent>
     </Card>

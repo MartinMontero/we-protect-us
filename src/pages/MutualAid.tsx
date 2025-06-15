@@ -7,11 +7,30 @@ import { SolidarityProjections } from '@/components/mutual-aid/SolidarityProject
 import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
 import { TrustBuilding } from '@/components/mutual-aid/TrustBuilding';
 import { CommunityLibrary } from '@/components/mutual-aid/education/CommunityLibrary';
+import { CreatePostDialog } from '@/components/mutual-aid/CreatePostDialog';
+import { PostCard } from '@/components/mutual-aid/PostCard';
+import { useMutualAidPosts } from '@/hooks/useMutualAidPosts';
+import { useMutualAidData } from '@/components/mutual-aid/hooks/useMutualAidData';
+import { useAuth } from '@/contexts/AuthContext';
 import { FoodShareTooltip } from '@/components/mutual-aid/education/ContextualTooltips';
 import { Button } from '@/components/ui/button';
-import { Plus, Map, BarChart3, Users, Handshake, BookOpen } from 'lucide-react';
+import { Plus, Map, BarChart3, Users, Handshake, BookOpen, Grid } from 'lucide-react';
+import { MutualAidPost } from '@/types/mutualAid';
 
 const MutualAid = () => {
+  const { user } = useAuth();
+  const authenticatedData = useMutualAidPosts();
+  const mockData = useMutualAidData();
+  
+  // Use authenticated data if user is logged in, otherwise use mock data
+  const { posts, loading } = user ? authenticatedData : mockData;
+  
+  const [selectedPost, setSelectedPost] = useState<MutualAidPost | null>(null);
+
+  const handleViewDetails = (post: MutualAidPost) => {
+    setSelectedPost(post);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -26,19 +45,20 @@ const MutualAid = () => {
         <div className="flex gap-3">
           <CommunityLens />
           <FoodShareTooltip>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              Create Request/Offer
-            </Button>
+            <CreatePostDialog />
           </FoodShareTooltip>
         </div>
       </div>
 
       <Tabs defaultValue="map" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="map" className="gap-2">
             <Map className="w-4 h-4" />
             Resource Map
+          </TabsTrigger>
+          <TabsTrigger value="posts" className="gap-2">
+            <Grid className="w-4 h-4" />
+            All Posts
           </TabsTrigger>
           <TabsTrigger value="trust" className="gap-2">
             <Handshake className="w-4 h-4" />
@@ -114,6 +134,39 @@ const MutualAid = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="posts" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Grid className="w-5 h-5" />
+                All Mutual Aid Posts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {posts.map((post) => (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))}
+                  {posts.length === 0 && (
+                    <div className="col-span-full text-center py-8 text-gray-500">
+                      No mutual aid posts found. Create the first one!
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="trust" className="space-y-4">
