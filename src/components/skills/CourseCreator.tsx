@@ -1,232 +1,173 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Play, Clock, Users, Star, Plus } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { CreateCourseModal } from './CreateCourseModal';
 
-interface Course {
-  id: string;
+interface CourseData {
   title: string;
   description: string;
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
+  learning_format: 'online' | 'in_person' | 'hybrid';
+  location_type: 'remote' | 'local' | 'regional';
   duration_weeks: number;
-  difficulty_level: string;
-  status: string;
-  created_at: string;
-  profiles?: {
-    full_name: string;
-    avatar_url: string;
-  } | null;
+  max_participants: number;
+  price: number;
 }
 
-interface CourseCreatorProps {
-  searchQuery: string;
-}
-
-export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => {
+export const CourseCreator: React.FC = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'my-courses' | 'enrolled'>('all');
+  const [courseData, setCourseData] = useState<CourseData>({
+    title: '',
+    description: '',
+    difficulty_level: 'beginner',
+    learning_format: 'online',
+    location_type: 'remote',
+    duration_weeks: 4,
+    max_participants: 10,
+    price: 0,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchCourses();
-  }, [filter, searchQuery]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
 
-  const fetchCourses = async () => {
+    setIsSubmitting(true);
     try {
-      let query = supabase
+      const { error } = await supabase
         .from('courses')
-        .select(`
-          *,
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `);
-
-      if (filter === 'my-courses' && user) {
-        query = query.eq('creator_id', user.id);
-      } else if (filter === 'enrolled' && user) {
-        query = query.eq('status', 'published');
-      } else {
-        query = query.eq('status', 'published');
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
+        .insert([{
+          ...courseData,
+          creator_id: user.id,
+          status: 'draft',
+        }]);
 
       if (error) throw error;
-      
-      // Map the data to match our interface
-      const mappedData: Course[] = (data || []).map(course => {
-        const profiles = course.profiles;
-        const profileData = profiles && 
-          profiles !== null &&
-          typeof profiles === 'object' && 
-          'full_name' in profiles
-          ? profiles as { full_name: string; avatar_url: string }
-          : null;
-          
-        return {
-          id: course.id,
-          title: course.title || '',
-          description: course.description || '',
-          duration_weeks: course.duration_weeks || 0,
-          difficulty_level: course.difficulty_level || '',
-          status: course.status || '',
-          created_at: course.created_at || '',
-          profiles: profileData
-        };
+
+      // Reset form
+      setCourseData({
+        title: '',
+        description: '',
+        difficulty_level: 'beginner',
+        learning_format: 'online',
+        location_type: 'remote',
+        duration_weeks: 4,
+        max_participants: 10,
+        price: 0,
       });
 
-      let filteredData = mappedData;
-
-      if (searchQuery) {
-        filteredData = filteredData.filter(
-          course => 
-            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-
-      setCourses(filteredData);
+      console.log('Course created successfully');
     } catch (error) {
-      console.error('Error fetching courses:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load courses",
-        variant: "destructive"
-      });
+      console.error('Error creating course:', error);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const getDifficultyColor = (level: string) => {
-    switch (level) {
-      case 'beginner': return 'bg-green-100 text-green-800';
-      case 'intermediate': return 'bg-blue-100 text-blue-800';
-      case 'advanced': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const handleInputChange = (field: keyof CourseData, value: any) => {
+    setCourseData(prev => ({ ...prev, [field]: value }));
   };
-
-  if (loading) {
-    return <div className="flex items-center justify-center h-32">Loading courses...</div>;
-  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <Button
-            variant={filter === 'all' ? 'default' : 'outline'}
-            onClick={() => setFilter('all')}
-            size="sm"
-          >
-            All Courses
+    <Card>
+      <CardHeader>
+        <CardTitle>Create New Course</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Course Title</label>
+            <Input
+              value={courseData.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              placeholder="Enter course title"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Description</label>
+            <Textarea
+              value={courseData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              placeholder="Describe your course"
+              rows={4}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Difficulty Level</label>
+              <select
+                value={courseData.difficulty_level}
+                onChange={(e) => handleInputChange('difficulty_level', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Learning Format</label>
+              <select
+                value={courseData.learning_format}
+                onChange={(e) => handleInputChange('learning_format', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="online">Online</option>
+                <option value="in_person">In Person</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Duration (weeks)</label>
+              <Input
+                type="number"
+                value={courseData.duration_weeks}
+                onChange={(e) => handleInputChange('duration_weeks', parseInt(e.target.value))}
+                min="1"
+                max="52"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Max Participants</label>
+              <Input
+                type="number"
+                value={courseData.max_participants}
+                onChange={(e) => handleInputChange('max_participants', parseInt(e.target.value))}
+                min="1"
+                max="100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Price ($)</label>
+              <Input
+                type="number"
+                value={courseData.price}
+                onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? 'Creating...' : 'Create Course'}
           </Button>
-          <Button
-            variant={filter === 'my-courses' ? 'default' : 'outline'}
-            onClick={() => setFilter('my-courses')}
-            size="sm"
-          >
-            My Courses
-          </Button>
-          <Button
-            variant={filter === 'enrolled' ? 'default' : 'outline'}
-            onClick={() => setFilter('enrolled')}
-            size="sm"
-          >
-            Enrolled
-          </Button>
-        </div>
-
-        <Button onClick={() => setShowCreateModal(true)} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Create Course
-        </Button>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
-          <Card key={course.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                <Badge className={getDifficultyColor(course.difficulty_level)}>
-                  {course.difficulty_level}
-                </Badge>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600 line-clamp-3">{course.description}</p>
-
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {course.duration_weeks}w
-                </div>
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
-                  Enrolled
-                </div>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4" />
-                  4.5
-                </div>
-              </div>
-
-              {course.profiles && (
-                <div className="flex items-center gap-2 pt-2 border-t">
-                  <img 
-                    src={course.profiles.avatar_url || '/placeholder-avatar.png'} 
-                    alt={course.profiles.full_name || 'User'}
-                    className="w-6 h-6 rounded-full"
-                  />
-                  <span className="text-sm text-gray-600">{course.profiles.full_name || 'Unknown'}</span>
-                </div>
-              )}
-
-              <Button className="w-full gap-2">
-                <Play className="w-4 h-4" />
-                Start Learning
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {courses.length === 0 && (
-        <Card className="p-8 text-center">
-          <Play className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No Courses Found</h3>
-          <p className="text-gray-600 mb-4">
-            {searchQuery 
-              ? `No courses match "${searchQuery}"`
-              : filter === 'my-courses'
-                ? "You haven't created any courses yet"
-                : "No courses available yet"
-            }
-          </p>
-          <Button onClick={() => setShowCreateModal(true)}>
-            Create Your First Course
-          </Button>
-        </Card>
-      )}
-
-      <CreateCourseModal
-        open={showCreateModal}
-        onOpenChange={setShowCreateModal}
-        onCourseCreated={fetchCourses}
-      />
-    </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };

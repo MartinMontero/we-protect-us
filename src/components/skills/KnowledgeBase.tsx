@@ -1,167 +1,161 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { BookOpen, Search, Filter, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { BookOpen, Plus, User, Calendar, ThumbsUp, Search } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { CreateArticleModal } from './CreateArticleModal';
 
 interface Article {
   id: string;
   title: string;
   content: string;
+  category: string;
   tags: string[];
+  author_id: string;
   created_at: string;
-  like_count: number;
-  profiles?: {
+  helpful_votes: number;
+  author?: {
     full_name: string;
-    avatar_url: string;
-  } | null;
+    pseudonym: string;
+  };
 }
 
-interface KnowledgeBaseProps {
-  searchQuery: string;
-}
-
-export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+export const KnowledgeBase: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'my-articles'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   useEffect(() => {
     fetchArticles();
-  }, [filter, searchQuery]);
+  }, []);
 
   const fetchArticles = async () => {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('knowledge_articles')
         .select(`
           *,
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `);
-
-      if (filter === 'my-articles' && user) {
-        query = query.eq('author_id', user.id);
-      }
-
-      const { data, error } = await query.order('like_count', { ascending: false });
+          profiles:author_id(full_name, pseudonym)
+        `)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const mappedData: Article[] = (data || []).map(article => {
-        const profiles = article.profiles;
-        const profileData = profiles && 
-          profiles !== null &&
-          typeof profiles === 'object' && 
-          'full_name' in profiles
-          ? profiles as { full_name: string; avatar_url: string }
-          : null;
-          
+      const mappedArticles: Article[] = (data || []).map(article => {
+        // Safely extract author profile
+        const author = article.profiles && 
+          article.profiles !== null &&
+          typeof article.profiles === 'object' &&
+          'full_name' in article.profiles
+          ? article.profiles as { full_name: string; pseudonym: string }
+          : undefined;
+
         return {
           id: article.id,
-          title: article.title || '',
-          content: article.content || '',
+          title: article.title,
+          content: article.content,
+          category: article.category,
           tags: article.tags || [],
-          created_at: article.created_at || '',
-          like_count: article.like_count || 0,
-          profiles: profileData
+          author_id: article.author_id,
+          created_at: article.created_at,
+          helpful_votes: article.helpful_votes || 0,
+          author,
         };
       });
 
-      let filteredData = mappedData;
-
-      if (searchQuery) {
-        filteredData = filteredData.filter(
-          article => 
-            article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            article.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            article.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      }
-
-      setArticles(filteredData);
+      setArticles(mappedArticles);
     } catch (error) {
       console.error('Error fetching articles:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load articles",
-        variant: "destructive"
-      });
     } finally {
       setLoading(false);
     }
   };
 
+  const filteredArticles = articles.filter(article => {
+    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         article.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const categories = ['all', ...Array.from(new Set(articles.map(a => a.category)))];
+
   if (loading) {
-    return <div className="flex items-center justify-center h-32">Loading articles...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <Button
-            variant={filter === 'all' ? 'default' : 'outline'}
-            onClick={() => setFilter('all')}
-            size="sm"
-          >
-            All Articles
-          </Button>
-          <Button
-            variant={filter === 'my-articles' ? 'default' : 'outline'}
-            onClick={() => setFilter('my-articles')}
-            size="sm"
-          >
-            My Articles
-          </Button>
-        </div>
+      {/* Search and Filter Bar */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search articles..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-3 py-2 border rounded-md bg-white"
+            >
+              {categories.map(category => (
+                <option key={category} value={category}>
+                  {category === 'all' ? 'All Categories' : category}
+                </option>
+              ))}
+            </select>
+            <Button className="gap-2">
+              <Plus className="w-4 h-4" />
+              New Article
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Button onClick={() => setShowCreateModal(true)} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Write Article
-        </Button>
-      </div>
-
+      {/* Articles Grid */}
       <div className="grid gap-6">
-        {articles.map((article) => (
-          <Card key={article.id} className="hover:shadow-lg transition-shadow">
+        {filteredArticles.map((article) => (
+          <Card key={article.id} className="hover:shadow-md transition-shadow">
             <CardHeader>
-              <CardTitle className="text-xl">{article.title}</CardTitle>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                {article.profiles && (
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>{article.profiles.full_name || 'Unknown'}</span>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg">{article.title}</CardTitle>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="secondary">{article.category}</Badge>
+                    <span className="text-sm text-gray-500">
+                      by {article.author?.full_name || article.author?.pseudonym || 'Anonymous'}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {new Date(article.created_at).toLocaleDateString()}
+                    </span>
                   </div>
-                )}
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>{new Date(article.created_at).toLocaleDateString()}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <ThumbsUp className="w-4 h-4" />
-                  <span>{article.like_count}</span>
+                <div className="text-sm text-gray-500">
+                  {article.helpful_votes} helpful votes
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-4 line-clamp-3">{article.content}</p>
+              <p className="text-gray-600 mb-4 line-clamp-3">
+                {article.content.substring(0, 200)}...
+              </p>
               {article.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
-                  {article.tags.map((tag, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
+                  {article.tags.map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
                   ))}
@@ -170,31 +164,19 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
             </CardContent>
           </Card>
         ))}
+
+        {filteredArticles.length === 0 && (
+          <Card className="p-8 text-center">
+            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">No Articles Found</h3>
+            <p className="text-gray-600 mb-4">
+              {searchTerm || selectedCategory !== 'all' 
+                ? 'Try adjusting your search or filter criteria.' 
+                : 'Be the first to contribute to the knowledge base!'}
+            </p>
+          </Card>
+        )}
       </div>
-
-      {articles.length === 0 && (
-        <Card className="p-8 text-center">
-          <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No Articles Found</h3>
-          <p className="text-gray-600 mb-4">
-            {searchQuery 
-              ? `No articles match "${searchQuery}"`
-              : filter === 'my-articles'
-                ? "You haven't written any articles yet"
-                : "No articles available yet"
-            }
-          </p>
-          <Button onClick={() => setShowCreateModal(true)}>
-            Write Your First Article
-          </Button>
-        </Card>
-      )}
-
-      <CreateArticleModal
-        open={showCreateModal}
-        onOpenChange={setShowCreateModal}
-        onArticleCreated={fetchArticles}
-      />
     </div>
   );
 };
