@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +40,14 @@ export const TrustBuilding: React.FC = () => {
         .limit(6);
 
       if (error) throw error;
-      setCaregivers(data || []);
+      
+      // Transform data to match interface
+      const transformedData: CaregiverProfile[] = (data || []).map(item => ({
+        ...item,
+        reviews: item.caregiver_reviews || []
+      }));
+      
+      setCaregivers(transformedData);
     } catch (error) {
       console.error('Error loading caregivers:', error);
     } finally {

@@ -18,10 +18,10 @@ interface CareSession {
   status: string;
   care_requests: {
     location_address: string;
-  };
+  } | null;
   profiles: {
     pseudonym: string;
-  };
+  } | null;
 }
 
 export const MyCareSessionsDialog: React.FC<MyCareSessionsDialogProps> = ({
@@ -54,7 +54,15 @@ export const MyCareSessionsDialog: React.FC<MyCareSessionsDialogProps> = ({
         .order('scheduled_start', { ascending: true });
 
       if (error) throw error;
-      setSessions(data || []);
+      
+      // Transform data to match interface
+      const transformedData: CareSession[] = (data || []).map(item => ({
+        ...item,
+        care_requests: Array.isArray(item.care_requests) ? item.care_requests[0] : item.care_requests,
+        profiles: Array.isArray(item.profiles) ? item.profiles[0] : item.profiles
+      }));
+      
+      setSessions(transformedData);
     } catch (error) {
       console.error('Error loading sessions:', error);
     } finally {

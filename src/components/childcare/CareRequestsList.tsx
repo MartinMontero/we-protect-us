@@ -21,7 +21,7 @@ interface CareRequest {
   profiles: {
     pseudonym: string;
     verification_status: string;
-  };
+  } | null;
 }
 
 export const CareRequestsList: React.FC = () => {
@@ -45,7 +45,14 @@ export const CareRequestsList: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data || []);
+      
+      // Transform data to match interface
+      const transformedData: CareRequest[] = (data || []).map(item => ({
+        ...item,
+        profiles: Array.isArray(item.profiles) ? item.profiles[0] : item.profiles
+      }));
+      
+      setRequests(transformedData);
     } catch (error) {
       toast({
         title: "Error loading requests",
