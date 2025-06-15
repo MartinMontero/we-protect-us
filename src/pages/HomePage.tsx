@@ -15,63 +15,90 @@ import {
   Zap,
   Globe,
   Lock,
-  Sparkles
+  Sparkles,
+  Vote
 } from 'lucide-react';
 
 const features = [
   {
-    icon: Users,
+    icon: Heart,
     title: 'Mutual Aid Networks',
     description: 'Connect with neighbors to share resources, skills, and support during times of need.',
-    color: 'from-blue-500 to-cyan-500'
+    color: 'from-blue-500 to-cyan-500',
+    path: '/mutual-aid',
+    implemented: true
   },
   {
     icon: Shield,
     title: 'Community Security',
     description: 'Security training and surveillance detection for community protection and safety.',
-    color: 'from-red-500 to-orange-500'
-  },
-  {
-    icon: Heart,
-    title: 'Solidarity Economy',
-    description: 'Build alternative economic systems based on cooperation and community wealth.',
-    color: 'from-purple-500 to-pink-500'
+    color: 'from-red-500 to-orange-500',
+    path: '/security-governance',
+    implemented: true
   },
   {
     icon: DollarSign,
-    title: 'Economic Justice',
-    description: 'Support and promote economic policies that benefit all members of the community.',
-    color: 'from-green-500 to-emerald-500'
+    title: 'Solidarity Economy',
+    description: 'Build alternative economic systems based on cooperation and community wealth.',
+    color: 'from-purple-500 to-pink-500',
+    path: '/community-wealth',
+    implemented: true
+  },
+  {
+    icon: Vote,
+    title: 'Democratic Organizing',
+    description: 'Tools for consensus building, event mobilization, and collaborative action.',
+    color: 'from-green-500 to-emerald-500',
+    path: '/organizing',
+    implemented: true
   },
   {
     icon: Map,
     title: 'Community Mapping',
     description: 'Create and share maps of community assets, resources, and vulnerabilities.',
-    color: 'from-yellow-500 to-amber-500'
+    color: 'from-yellow-500 to-amber-500',
+    path: '/community',
+    implemented: false
   },
   {
     icon: Zap,
     title: 'Emergency Preparedness',
     description: 'Develop and implement emergency response plans to protect community members during disasters.',
-    color: 'from-pink-500 to-fuchsia-500'
+    color: 'from-pink-500 to-fuchsia-500',
+    path: '/emergency',
+    implemented: false
   },
   {
     icon: Globe,
     title: 'Global Solidarity',
     description: 'Connect with other communities around the world to share resources, knowledge, and support.',
-    color: 'from-cyan-500 to-sky-500'
+    color: 'from-cyan-500 to-sky-500',
+    path: '/global',
+    implemented: false
   },
   {
     icon: Lock,
-    title: 'Community Security',
-    description: 'Implement and enforce community security measures to protect against threats and attacks.',
-    color: 'from-rose-500 to-pink-500'
+    title: 'Community Sovereignty',
+    description: 'Build community autonomy through education, governance, and security coordination.',
+    color: 'from-rose-500 to-pink-500',
+    path: '/community-sovereignty',
+    implemented: true
   }
 ];
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  const handleFeatureClick = (feature: typeof features[0]) => {
+    if (feature.implemented) {
+      if (user) {
+        navigate(feature.path);
+      } else {
+        navigate('/auth');
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -136,17 +163,42 @@ export const HomePage: React.FC = () => {
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Card key={index} className="group border-0 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <Card 
+                  key={index} 
+                  className={`group border-0 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                    feature.implemented ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'
+                  }`}
+                  onClick={() => handleFeatureClick(feature)}
+                >
                   <CardContent className="p-8">
-                    <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.color} mb-6`}>
-                      <Icon className="w-6 h-6 text-white" />
+                    <div className="flex items-start justify-between mb-6">
+                      <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.color}`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      {feature.implemented ? (
+                        <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                          Available
+                        </div>
+                      ) : (
+                        <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-medium">
+                          Coming Soon
+                        </div>
+                      )}
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-red-600 transition-colors duration-200">
+                    <h3 className={`text-xl font-bold text-slate-900 mb-3 transition-colors duration-200 ${
+                      feature.implemented ? 'group-hover:text-red-600' : ''
+                    }`}>
                       {feature.title}
                     </h3>
                     <p className="text-slate-600 leading-relaxed">
                       {feature.description}
                     </p>
+                    {feature.implemented && (
+                      <div className="flex items-center mt-4 text-red-600 font-medium">
+                        <span>Explore Tool</span>
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               );

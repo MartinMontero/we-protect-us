@@ -11,6 +11,10 @@ import { ReportsPage } from '@/pages/ReportsPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { SecurityGovernancePage } from '@/pages/SecurityGovernancePage';
 import MutualAid from '@/pages/MutualAid';
+import CommunityWealth from '@/pages/CommunityWealth';
+import CommunitySovereignty from '@/pages/CommunitySovereignty';
+import Organizing from '@/pages/Organizing';
+import Community from '@/pages/Community';
 import AuthPage from '@/pages/AuthPage';
 
 function App() {
@@ -39,12 +43,22 @@ function App() {
             } />
             <Route path="/community-wealth" element={
               <ProtectedRoute>
-                <div className="p-8"><h1>Community Wealth (Coming Soon)</h1></div>
+                <CommunityWealth />
+              </ProtectedRoute>
+            } />
+            <Route path="/community-sovereignty" element={
+              <ProtectedRoute>
+                <CommunitySovereignty />
               </ProtectedRoute>
             } />
             <Route path="/organizing" element={
               <ProtectedRoute>
-                <div className="p-8"><h1>Organizing (Coming Soon)</h1></div>
+                <Organizing />
+              </ProtectedRoute>
+            } />
+            <Route path="/community" element={
+              <ProtectedRoute>
+                <Community />
               </ProtectedRoute>
             } />
             <Route path="/reports" element={<ReportsPage />} />

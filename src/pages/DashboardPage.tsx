@@ -12,7 +12,9 @@ import {
   Map,
   DollarSign,
   AlertTriangle,
-  Handshake
+  Handshake,
+  Vote,
+  Globe
 } from 'lucide-react';
 
 const quickActions = [
@@ -40,7 +42,7 @@ const quickActions = [
   {
     title: 'Democratic Organizing',
     description: 'Participate in transparent community governance',
-    icon: Users,
+    icon: Vote,
     path: '/organizing',
     color: 'from-blue-500 to-purple-500'
   }
@@ -111,7 +113,11 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4">
+              <Button 
+                variant="outline" 
+                className="w-full mt-4"
+                onClick={() => navigate('/reports')}
+              >
                 View All Activity
               </Button>
             </CardContent>
@@ -127,7 +133,10 @@ export const DashboardPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <div 
+                  className="flex justify-between items-center p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                  onClick={() => navigate('/mutual-aid')}
+                >
                   <div className="flex items-center gap-2">
                     <Heart className="w-4 h-4 text-green-600" />
                     <span className="text-sm font-medium">Active Mutual Aid</span>
@@ -135,7 +144,10 @@ export const DashboardPage: React.FC = () => {
                   <span className="text-green-600 font-semibold">23 requests</span>
                 </div>
                 
-                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                <div 
+                  className="flex justify-between items-center p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
+                  onClick={() => navigate('/security-governance')}
+                >
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-blue-600" />
                     <span className="text-sm font-medium">Security Training</span>
@@ -143,7 +155,10 @@ export const DashboardPage: React.FC = () => {
                   <span className="text-blue-600 font-semibold">Next: Tomorrow</span>
                 </div>
                 
-                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <div 
+                  className="flex justify-between items-center p-3 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
+                  onClick={() => navigate('/organizing')}
+                >
                   <div className="flex items-center gap-2">
                     <Handshake className="w-4 h-4 text-purple-600" />
                     <span className="text-sm font-medium">Active Proposals</span>
