@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,6 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Users },
     { href: '/community', label: 'Community Map', icon: Map },
     { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
     { href: '/sovereignty', label: 'Community Sovereignty', icon: Shield },
