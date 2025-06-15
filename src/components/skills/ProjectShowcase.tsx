@@ -42,58 +42,9 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
 
   const fetchProjects = async () => {
     try {
-      let query = supabase
-        .from('skill_projects')
-        .select(`
-          *,
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `);
-
-      if (filter === 'my-projects' && user) {
-        query = query.eq('creator_id', user.id);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const mappedData: Project[] = (data || []).map(project => {
-        const profiles = project.profiles;
-        const profileData = profiles && 
-          typeof profiles === 'object' && 
-          'full_name' in profiles && 
-          profiles !== null
-          ? profiles as { full_name: string; avatar_url: string }
-          : null;
-          
-        return {
-          id: project.id,
-          title: project.title || '',
-          description: project.description || '',
-          technologies: project.technologies || [],
-          project_url: project.project_url,
-          github_url: project.github_url,
-          image_url: project.image_url,
-          created_at: project.created_at || '',
-          profiles: profileData
-        };
-      });
-
-      let filteredData = mappedData;
-
-      if (searchQuery) {
-        filteredData = filteredData.filter(
-          project => 
-            project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            project.technologies.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      }
-
-      setProjects(filteredData);
+      // For now, return empty array since the table doesn't exist
+      const mockProjects: Project[] = [];
+      setProjects(mockProjects);
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast({

@@ -46,67 +46,9 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
 
   const fetchSkills = async () => {
     try {
-      let query = supabase
-        .from('skill_offerings')
-        .select(`
-          *,
-          skills!inner(title, description, category),
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `);
-
-      if (filter === 'teaching') {
-        query = query.eq('is_teaching', true);
-      } else if (filter === 'learning') {
-        query = query.eq('is_learning', true);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const mappedData: Skill[] = (data || []).map(skill => {
-        const profiles = skill.profiles;
-        const profileData = profiles && 
-          typeof profiles === 'object' && 
-          'full_name' in profiles && 
-          profiles !== null
-          ? profiles as { full_name: string; avatar_url: string }
-          : null;
-          
-        return {
-          id: skill.id,
-          title: skill.skills?.title || '',
-          description: skill.skills?.description || '',
-          category: skill.skills?.category || '',
-          skill_level: skill.skill_level || '',
-          hourly_rate: skill.hourly_rate,
-          location_type: skill.preferred_location?.[0] || 'virtual',
-          is_teaching: skill.is_teaching || false,
-          is_learning: skill.is_learning || false,
-          created_at: skill.created_at || '',
-          profiles: profileData
-        };
-      });
-
-      let filteredData = mappedData;
-
-      if (categoryFilter !== 'all') {
-        filteredData = filteredData.filter(skill => skill.category === categoryFilter);
-      }
-
-      if (searchQuery) {
-        filteredData = filteredData.filter(
-          skill => 
-            skill.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            skill.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            skill.category.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-
-      setSkills(filteredData);
+      // For now, return empty array since the table doesn't exist
+      const mockSkills: Skill[] = [];
+      setSkills(mockSkills);
     } catch (error) {
       console.error('Error fetching skills:', error);
       toast({
@@ -253,7 +195,6 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
       <SkillOfferModal
         open={showOfferModal}
         onOpenChange={setShowOfferModal}
-        onSkillCreated={fetchSkills}
       />
     </div>
   );

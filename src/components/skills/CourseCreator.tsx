@@ -67,9 +67,9 @@ export const CourseCreator: React.FC<CourseCreatorProps> = ({ searchQuery }) => 
       const mappedData: Course[] = (data || []).map(course => {
         const profiles = course.profiles;
         const profileData = profiles && 
+          profiles !== null &&
           typeof profiles === 'object' && 
-          'full_name' in profiles && 
-          profiles !== null
+          'full_name' in profiles
           ? profiles as { full_name: string; avatar_url: string }
           : null;
           

@@ -15,10 +15,9 @@ interface Article {
   id: string;
   title: string;
   content: string;
-  category: string;
   tags: string[];
   created_at: string;
-  helpful_votes: number;
+  like_count: number;
   profiles?: {
     full_name: string;
     avatar_url: string;
@@ -36,11 +35,10 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [filter, setFilter] = useState<'all' | 'my-articles'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
   useEffect(() => {
     fetchArticles();
-  }, [filter, searchQuery, categoryFilter]);
+  }, [filter, searchQuery]);
 
   const fetchArticles = async () => {
     try {
@@ -58,20 +56,16 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
         query = query.eq('author_id', user.id);
       }
 
-      if (categoryFilter !== 'all') {
-        query = query.eq('category', categoryFilter);
-      }
-
-      const { data, error } = await query.order('helpful_votes', { ascending: false });
+      const { data, error } = await query.order('like_count', { ascending: false });
 
       if (error) throw error;
 
       const mappedData: Article[] = (data || []).map(article => {
         const profiles = article.profiles;
         const profileData = profiles && 
+          profiles !== null &&
           typeof profiles === 'object' && 
-          'full_name' in profiles && 
-          profiles !== null
+          'full_name' in profiles
           ? profiles as { full_name: string; avatar_url: string }
           : null;
           
@@ -79,10 +73,9 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
           id: article.id,
           title: article.title || '',
           content: article.content || '',
-          category: article.category || '',
           tags: article.tags || [],
           created_at: article.created_at || '',
-          helpful_votes: article.helpful_votes || 0,
+          like_count: article.like_count || 0,
           profiles: profileData
         };
       });
@@ -145,10 +138,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
         {articles.map((article) => (
           <Card key={article.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-xl">{article.title}</CardTitle>
-                <Badge variant="secondary">{article.category}</Badge>
-              </div>
+              <CardTitle className="text-xl">{article.title}</CardTitle>
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 {article.profiles && (
                   <div className="flex items-center gap-2">
@@ -162,7 +152,7 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
                 </div>
                 <div className="flex items-center gap-1">
                   <ThumbsUp className="w-4 h-4" />
-                  <span>{article.helpful_votes}</span>
+                  <span>{article.like_count}</span>
                 </div>
               </div>
             </CardHeader>
