@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +28,7 @@ import { DisasterPreparedness } from "./pages/DisasterPreparedness";
 import { EnergyDemocracy } from "./pages/EnergyDemocracy";
 import CommunityDefense from "./pages/CommunityDefense";
 import SkillsPage from "./pages/SkillsPage";
+import IntegrationsPage from "./pages/IntegrationsPage";
 import './lib/i18n';
 
 const queryClient = new QueryClient({
@@ -71,6 +71,7 @@ const App = () => (
                     <Route path="/community-sovereignty" element={<CommunitySovereignty />} />
                     <Route path="/community-defense" element={<CommunityDefense />} />
                     <Route path="/skills" element={<SkillsPage />} />
+                    <Route path="/integrations" element={<IntegrationsPage />} />
                     <Route path="/reports" element={<ReportsPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/settings" element={<Settings />} />

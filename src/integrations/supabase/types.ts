@@ -1616,6 +1616,72 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_activations: {
+        Row: {
+          activated_by: string | null
+          activation_location_lat: number
+          activation_location_lng: number
+          activation_radius_km: number | null
+          bridgefy_enabled: boolean | null
+          created_at: string | null
+          deactivated_at: string | null
+          deactivated_by: string | null
+          description: string | null
+          emergency_type: string
+          id: string
+          is_active: boolean | null
+          recovery_mode_enabled: boolean | null
+          ushahidi_enabled: boolean | null
+        }
+        Insert: {
+          activated_by?: string | null
+          activation_location_lat: number
+          activation_location_lng: number
+          activation_radius_km?: number | null
+          bridgefy_enabled?: boolean | null
+          created_at?: string | null
+          deactivated_at?: string | null
+          deactivated_by?: string | null
+          description?: string | null
+          emergency_type: string
+          id?: string
+          is_active?: boolean | null
+          recovery_mode_enabled?: boolean | null
+          ushahidi_enabled?: boolean | null
+        }
+        Update: {
+          activated_by?: string | null
+          activation_location_lat?: number
+          activation_location_lng?: number
+          activation_radius_km?: number | null
+          bridgefy_enabled?: boolean | null
+          created_at?: string | null
+          deactivated_at?: string | null
+          deactivated_by?: string | null
+          description?: string | null
+          emergency_type?: string
+          id?: string
+          is_active?: boolean | null
+          recovery_mode_enabled?: boolean | null
+          ushahidi_enabled?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_activations_activated_by_fkey"
+            columns: ["activated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emergency_activations_deactivated_by_fkey"
+            columns: ["deactivated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emergency_alerts: {
         Row: {
           affected_areas: string[] | null
@@ -2878,6 +2944,45 @@ export type Database = {
           },
         ]
       }
+      integration_config: {
+        Row: {
+          api_endpoint: string | null
+          api_key_name: string | null
+          configuration: Json | null
+          created_at: string | null
+          health_status: string | null
+          id: string
+          is_enabled: boolean | null
+          last_health_check: string | null
+          service_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          api_endpoint?: string | null
+          api_key_name?: string | null
+          configuration?: Json | null
+          created_at?: string | null
+          health_status?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_health_check?: string | null
+          service_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          api_endpoint?: string | null
+          api_key_name?: string | null
+          configuration?: Json | null
+          created_at?: string | null
+          health_status?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_health_check?: string | null
+          service_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       knowledge_articles: {
         Row: {
           author_id: string
@@ -3367,6 +3472,50 @@ export type Database = {
           },
         ]
       }
+      mesh_connections: {
+        Row: {
+          connection_strength: number | null
+          created_at: string | null
+          device_id: string
+          id: string
+          is_emergency_mode: boolean | null
+          last_seen_at: string | null
+          location_lat: number | null
+          location_lng: number | null
+          user_id: string | null
+        }
+        Insert: {
+          connection_strength?: number | null
+          created_at?: string | null
+          device_id: string
+          id?: string
+          is_emergency_mode?: boolean | null
+          last_seen_at?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          connection_strength?: number | null
+          created_at?: string | null
+          device_id?: string
+          id?: string
+          is_emergency_mode?: boolean | null
+          last_seen_at?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mesh_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mutual_aid_posts: {
         Row: {
           category: Database["public"]["Enums"]["need_category"]
@@ -3461,6 +3610,53 @@ export type Database = {
           state?: string
         }
         Relationships: []
+      }
+      offline_messages: {
+        Row: {
+          content: Json
+          created_at: string | null
+          delivered_at: string | null
+          expires_at: string | null
+          id: string
+          mesh_device_id: string | null
+          message_type: string
+          priority: number | null
+          recipient_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          delivered_at?: string | null
+          expires_at?: string | null
+          id?: string
+          mesh_device_id?: string | null
+          message_type: string
+          priority?: number | null
+          recipient_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          delivered_at?: string | null
+          expires_at?: string | null
+          id?: string
+          mesh_device_id?: string | null
+          message_type?: string
+          priority?: number | null
+          recipient_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organizing_campaigns: {
         Row: {
@@ -4102,6 +4298,113 @@ export type Database = {
             columns: ["resource_id"]
             isOneToOne: false
             referencedRelation: "energy_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resource_distributions: {
+        Row: {
+          created_at: string | null
+          delivered_at: string | null
+          delivery_location_lat: number | null
+          delivery_location_lng: number | null
+          donor_id: string | null
+          donor_signature: string | null
+          id: string
+          notes: string | null
+          picked_up_at: string | null
+          pickup_location_lat: number | null
+          pickup_location_lng: number | null
+          qr_code: string | null
+          quantity: number | null
+          recipient_id: string | null
+          recipient_signature: string | null
+          resource_id: string | null
+          scheduled_delivery_at: string | null
+          scheduled_pickup_at: string | null
+          status: string | null
+          updated_at: string | null
+          verification_photo_url: string | null
+          volunteer_id: string | null
+          volunteer_signature: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          delivered_at?: string | null
+          delivery_location_lat?: number | null
+          delivery_location_lng?: number | null
+          donor_id?: string | null
+          donor_signature?: string | null
+          id?: string
+          notes?: string | null
+          picked_up_at?: string | null
+          pickup_location_lat?: number | null
+          pickup_location_lng?: number | null
+          qr_code?: string | null
+          quantity?: number | null
+          recipient_id?: string | null
+          recipient_signature?: string | null
+          resource_id?: string | null
+          scheduled_delivery_at?: string | null
+          scheduled_pickup_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          verification_photo_url?: string | null
+          volunteer_id?: string | null
+          volunteer_signature?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          delivered_at?: string | null
+          delivery_location_lat?: number | null
+          delivery_location_lng?: number | null
+          donor_id?: string | null
+          donor_signature?: string | null
+          id?: string
+          notes?: string | null
+          picked_up_at?: string | null
+          pickup_location_lat?: number | null
+          pickup_location_lng?: number | null
+          qr_code?: string | null
+          quantity?: number | null
+          recipient_id?: string | null
+          recipient_signature?: string | null
+          resource_id?: string | null
+          scheduled_delivery_at?: string | null
+          scheduled_pickup_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          verification_photo_url?: string | null
+          volunteer_id?: string | null
+          volunteer_signature?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_distributions_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_distributions_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_distributions_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "community_resources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_distributions_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5245,6 +5548,44 @@ export type Database = {
           },
         ]
       }
+      ushahidi_sync: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          last_synced_at: string | null
+          local_incident_id: string | null
+          sync_status: string | null
+          ushahidi_post_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_synced_at?: string | null
+          local_incident_id?: string | null
+          sync_status?: string | null
+          ushahidi_post_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          last_synced_at?: string | null
+          local_incident_id?: string | null
+          sync_status?: string | null
+          ushahidi_post_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ushahidi_sync_local_incident_id_fkey"
+            columns: ["local_incident_id"]
+            isOneToOne: false
+            referencedRelation: "damage_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       utility_data: {
         Row: {
           account_number: string | null
@@ -5503,6 +5844,60 @@ export type Database = {
           volunteer_id?: string
         }
         Relationships: []
+      }
+      volunteer_matches: {
+        Row: {
+          accepted_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          factors: Json | null
+          id: string
+          match_score: number | null
+          need_id: string | null
+          notified_at: string | null
+          status: string | null
+          volunteer_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          factors?: Json | null
+          id?: string
+          match_score?: number | null
+          need_id?: string | null
+          notified_at?: string | null
+          status?: string | null
+          volunteer_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          factors?: Json | null
+          id?: string
+          match_score?: number | null
+          need_id?: string | null
+          notified_at?: string | null
+          status?: string | null
+          volunteer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_matches_need_id_fkey"
+            columns: ["need_id"]
+            isOneToOne: false
+            referencedRelation: "mutual_aid_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "volunteer_matches_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       volunteer_profiles: {
         Row: {
