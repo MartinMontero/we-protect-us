@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { TimeBank } from './tracking/TimeBank';
@@ -12,16 +11,12 @@ import { ValueProjections } from './visualization/ValueProjections';
 import { SolidarityEconomics } from './education/SolidarityEconomics';
 import { CooperativeTemplates } from './education/CooperativeTemplates';
 import { InvestmentSimulator } from './education/InvestmentSimulator';
+import { WealthMetricsCards } from './dashboard/WealthMetricsCards';
+import { EducationCards } from './dashboard/EducationCards';
 import { 
   Clock, 
-  DollarSign, 
-  Users, 
   TrendingUp, 
-  AlertTriangle, 
-  Calendar,
-  BookOpen,
-  Building,
-  Calculator
+  BookOpen
 } from 'lucide-react';
 
 export const CommunityWealthDashboard: React.FC = () => {
@@ -84,82 +79,7 @@ export const CommunityWealthDashboard: React.FC = () => {
         </TabsList>
 
         <TabsContent value="tracking" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-blue-600" />
-                  Time Banking
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Total Hours</span>
-                    <span className="font-medium">2,847</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Active Members</span>
-                    <span className="font-medium">142</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Skills Available</span>
-                    <span className="font-medium">68</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-green-600" />
-                  Community Currency
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">In Circulation</span>
-                    <span className="font-medium">$47,320</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Velocity</span>
-                    <span className="font-medium">3.2x/month</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Businesses</span>
-                    <span className="font-medium">28</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-purple-600" />
-                  Cooperatives
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Active Co-ops</span>
-                    <span className="font-medium">7</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Total Assets</span>
-                    <span className="font-medium">$890K</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Member-Owners</span>
-                    <span className="font-medium">89</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <WealthMetricsCards />
 
           <Tabs defaultValue="timebank" className="w-full">
             <TabsList>
@@ -191,58 +111,7 @@ export const CommunityWealthDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="education" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-blue-600" />
-                  Micro-Lessons
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-3">
-                  Interactive lessons on solidarity economics fundamentals
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  Start Learning
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building className="w-5 h-5 text-green-600" />
-                  Co-op Templates
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-3">
-                  Ready-to-use templates for starting cooperatives
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  Browse Templates
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calculator className="w-5 h-5 text-purple-600" />
-                  Investment Simulator
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-3">
-                  Model community investment scenarios and outcomes
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  Run Simulation
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <EducationCards />
 
           <Tabs defaultValue="lessons" className="w-full">
             <TabsList>
