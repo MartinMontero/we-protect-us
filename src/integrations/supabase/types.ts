@@ -6084,7 +6084,7 @@ export type Database = {
         Returns: undefined
       }
       get_user_role: {
-        Args: { user_id: string }
+        Args: Record<PropertyKey, never> | { user_id: string }
         Returns: string
       }
       get_users_with_roles: {
