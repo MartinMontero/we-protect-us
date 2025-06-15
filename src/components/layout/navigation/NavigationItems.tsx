@@ -19,8 +19,16 @@ import { cn } from '@/lib/utils';
 
 export const NavigationItems: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { hasPermission, loading: rolesLoading } = useRoles();
+
+  console.log('NavigationItems DEBUG:', {
+    user: user?.id,
+    authLoading,
+    rolesLoading,
+    currentPath: location.pathname,
+    hasAdminPermission: hasPermission('admin')
+  });
 
   // Always show integrations and admin for authenticated users, let the ProtectedRoute handle access control
   const navItems = [
@@ -36,9 +44,13 @@ export const NavigationItems: React.FC = () => {
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
-  if (!user) return null;
+  // Don't render anything if user is not authenticated
+  if (!user) {
+    console.log('NavigationItems: No user, returning null');
+    return null;
+  }
 
-  console.log('NavigationItems rendering with user:', user?.id, 'hasPermission admin:', hasPermission('admin'), 'rolesLoading:', rolesLoading);
+  console.log('NavigationItems: Rendering', navItems.length, 'items for user:', user.id);
 
   return (
     <>
@@ -46,6 +58,8 @@ export const NavigationItems: React.FC = () => {
         const Icon = item.icon;
         const isActive = location.pathname === item.href || 
           (item.href === '/admin' && location.pathname.startsWith('/admin'));
+        
+        console.log('Rendering nav item:', item.label, 'href:', item.href, 'isActive:', isActive);
         
         return (
           <Link
