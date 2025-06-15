@@ -59,7 +59,6 @@ export const CourseCreator: React.FC = () => {
       if (filter === 'my-courses' && user) {
         query = query.eq('creator_id', user.id);
       } else if (filter === 'enrolled' && user) {
-        // This would need a more complex query to get enrolled courses
         query = query.eq('status', 'published');
       } else {
         query = query.eq('status', 'published');
@@ -71,8 +70,12 @@ export const CourseCreator: React.FC = () => {
       
       // Map the data to match our interface
       const mappedData: Course[] = (data || []).map(course => {
-        const profileData = course.profiles && typeof course.profiles === 'object' && 'full_name' in course.profiles 
-          ? course.profiles as { full_name: string; avatar_url: string }
+        const profiles = course.profiles;
+        const profileData = profiles && 
+          typeof profiles === 'object' && 
+          'full_name' in profiles && 
+          profiles !== null
+          ? profiles as { full_name: string; avatar_url: string }
           : null;
           
         return {

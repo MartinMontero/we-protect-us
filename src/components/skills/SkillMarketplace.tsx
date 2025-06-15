@@ -77,8 +77,12 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
 
       // Map the data to match our interface
       const mappedData: UserSkill[] = (data || []).map(skill => {
-        const profileData = skill.profiles && typeof skill.profiles === 'object' && 'full_name' in skill.profiles 
-          ? skill.profiles as { full_name: string; avatar_url: string }
+        const profiles = skill.profiles;
+        const profileData = profiles && 
+          typeof profiles === 'object' && 
+          'full_name' in profiles && 
+          profiles !== null
+          ? profiles as { full_name: string; avatar_url: string }
           : null;
           
         return {

@@ -63,8 +63,12 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ searchQuery }) => 
 
       // Map the data to match our interface
       const mappedData: Article[] = (data || []).map(article => {
-        const profileData = article.profiles && typeof article.profiles === 'object' && 'full_name' in article.profiles 
-          ? article.profiles as { full_name: string; avatar_url: string }
+        const profiles = article.profiles;
+        const profileData = profiles && 
+          typeof profiles === 'object' && 
+          'full_name' in profiles && 
+          profiles !== null
+          ? profiles as { full_name: string; avatar_url: string }
           : null;
           
         return {

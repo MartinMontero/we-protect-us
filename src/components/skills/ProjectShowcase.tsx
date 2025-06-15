@@ -65,8 +65,12 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
 
       // Map the data to match our interface
       const mappedData: Project[] = (data || []).map(project => {
-        const profileData = project.profiles && typeof project.profiles === 'object' && 'full_name' in project.profiles 
-          ? project.profiles as { full_name: string; avatar_url: string }
+        const profiles = project.profiles;
+        const profileData = profiles && 
+          typeof profiles === 'object' && 
+          'full_name' in profiles && 
+          profiles !== null
+          ? profiles as { full_name: string; avatar_url: string }
           : null;
           
         return {
