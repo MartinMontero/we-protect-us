@@ -1,39 +1,18 @@
 
-export interface MutualAidPost {
-  id: string;
-  title: string;
-  description: string;
-  location_lat?: number;
-  location_lng?: number;
-  type: 'request' | 'offer';
-  category: string;
-  urgency: 'low' | 'medium' | 'high' | 'critical';
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
-  contact_info?: string;
-  tags?: string[];
-  time_commitment_hours?: number;
-  radius_km?: number;
-  skills_needed?: string[];
-  expires_at?: string;
-  profiles?: {
-    pseudonym?: string;
-    vulnerability_factors?: string[];
-  };
-}
+// Re-export from the unified types
+export type {
+  PostType,
+  UrgencyLevel,
+  FulfillmentStatus,
+  NeedCategory,
+  MutualAidPost,
+  CreatePostData,
+  UpdatePostData,
+  MapMarkerProps,
+  PostDetailsProps
+} from '@/types/mutualAid';
 
-export interface MapMarkerProps {
-  post: MutualAidPost;
-  onPostClick: (post: MutualAidPost) => void;
-}
-
-export interface PostDetailsProps {
-  post: MutualAidPost;
-  onClose: () => void;
-}
-
+// Additional types specific to the mutual aid components
 export interface TrustEconomicsMetrics {
   socialCapitalGain: number;
   networkStrengthening: number;

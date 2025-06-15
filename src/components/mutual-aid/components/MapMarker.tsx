@@ -2,13 +2,8 @@
 import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import { MutualAidPost } from '../types';
+import { MapMarkerProps } from '@/types/mutualAid';
 import { PostDetails } from './PostDetails';
-
-interface MapMarkerProps {
-  post: MutualAidPost;
-  onPostClick: (post: MutualAidPost) => void;
-}
 
 export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
   const createCustomIcon = (type: string, urgency: string) => {
@@ -25,13 +20,15 @@ export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
     };
 
     const color = getMarkerColor(type, urgency);
+    const iconLetter = type === 'request' ? 'R' : 'O';
+    
     return new Icon({
       iconUrl: `data:image/svg+xml;base64,${btoa(`
         <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
           <path fill="${color}" stroke="#fff" stroke-width="2" d="M12.5 0C5.6 0 0 5.6 0 12.5S12.5 41 12.5 41s12.5-23.9 12.5-28.5S19.4 0 12.5 0z"/>
           <circle fill="#fff" cx="12.5" cy="12.5" r="6"/>
-          <text x="12.5" y="16" text-anchor="middle" font-size="10" fill="${color}">
-            ${type === 'request' ? 'R' : 'O'}
+          <text x="12.5" y="16" text-anchor="middle" font-size="8" font-weight="bold" fill="${color}">
+            ${iconLetter}
           </text>
         </svg>
       `)}`,
@@ -41,7 +38,9 @@ export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
     });
   };
 
-  if (!post.location_lat || !post.location_lng) {
+  if (!post.location_lat || !post.location_lng || 
+      isNaN(post.location_lat) || isNaN(post.location_lng)) {
+    console.warn('Invalid coordinates for post:', post.id, post.location_lat, post.location_lng);
     return null;
   }
 
@@ -53,11 +52,13 @@ export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
         click: () => onPostClick(post)
       }}
     >
-      <Popup>
-        <PostDetails 
-          post={post} 
-          onClose={() => {/* popup closes automatically */}} 
-        />
+      <Popup maxWidth={400} className="custom-popup">
+        <div className="p-2">
+          <PostDetails 
+            post={post} 
+            onClose={() => {/* popup closes automatically */}} 
+          />
+        </div>
       </Popup>
     </Marker>
   );
