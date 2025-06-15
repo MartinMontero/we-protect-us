@@ -8,22 +8,22 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-import HomePage from '@/pages/HomePage';
+import { HomePage } from '@/pages/HomePage';
 import AuthPage from '@/pages/AuthPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import DashboardPage from '@/pages/DashboardPage';
 import MutualAid from '@/pages/MutualAid';
 import CommunityDefense from '@/pages/CommunityDefense';
-import FoodSecurity from '@/pages/FoodSecurity';
-import EnergyDemocracy from '@/pages/EnergyDemocracy';
-import ToolLibrary from '@/pages/ToolLibrary';
+import { FoodSecurity } from '@/pages/FoodSecurity';
+import { EnergyDemocracy } from '@/pages/EnergyDemocracy';
+import { ToolLibrary } from '@/pages/ToolLibrary';
 import SkillsPage from '@/pages/SkillsPage';
 import Settings from '@/pages/Settings';
 import AdminPage from '@/pages/AdminPage';
 import Organizing from '@/pages/Organizing';
 import CommunityWealth from '@/pages/CommunityWealth';
 import CommunitySovereignty from '@/pages/CommunitySovereignty';
-import DisasterPreparedness from '@/pages/DisasterPreparedness';
+import { DisasterPreparedness } from '@/pages/DisasterPreparedness';
 import OnboardingPage from '@/pages/OnboardingPage';
 import IntegrationsPage from '@/pages/IntegrationsPage';
 
