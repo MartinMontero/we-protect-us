@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,8 @@ import {
   Shield,
   Settings,
   Menu,
-  X
+  X,
+  DollarSign
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +26,7 @@ const Navigation = () => {
   const navItems = [
     { href: '/community', label: 'Community Map', icon: Map },
     { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
+    { href: '/wealth', label: 'Community Wealth', icon: DollarSign },
     { href: '/sovereignty', label: 'Community Sovereignty', icon: Shield },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
