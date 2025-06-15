@@ -2,265 +2,213 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { WelcomeChecklist } from '@/components/onboarding/WelcomeChecklist';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   Heart, 
   Shield, 
   Users, 
   AlertTriangle, 
-  Apple, 
-  Zap, 
+  Calendar,
+  MessageCircle,
   ArrowRight,
-  Clock,
-  CheckCircle,
-  MapPin,
-  MessageCircle
+  Plus,
+  TrendingUp
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-interface DashboardCard {
-  title: string;
-  icon: React.ElementType;
-  path: string;
-  status: 'active' | 'urgent' | 'normal';
-  stats?: {
-    label: string;
-    value: number;
-    total?: number;
-  };
-  recentActivity?: string;
-  color: string;
-}
 
 const DashboardOverview = () => {
-  const dashboardCards: DashboardCard[] = [
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // Check if user is new (you might want to store this in user profile)
+  const isNewUser = true; // This would come from user data
+  
+  const quickActions = [
     {
-      title: 'Emergency Preparedness',
-      icon: AlertTriangle,
-      path: '/disaster-preparedness',
-      status: 'urgent',
-      stats: { label: 'Active Alerts', value: 2 },
-      recentActivity: 'Weather warning issued 2 hours ago',
-      color: 'from-red-500 to-orange-500'
-    },
-    {
-      title: 'Mutual Aid Network',
+      title: 'Post Mutual Aid Request',
+      description: 'Share what you need or offer help',
       icon: Heart,
-      path: '/mutual-aid',
-      status: 'active',
-      stats: { label: 'Open Requests', value: 12, total: 45 },
-      recentActivity: 'New help request posted 30 min ago',
-      color: 'from-blue-500 to-cyan-500'
+      action: () => navigate('/mutual-aid'),
+      color: 'bg-red-100 text-red-600'
     },
     {
-      title: 'Food Security',
-      icon: Apple,
-      path: '/food-security',
-      status: 'normal',
-      stats: { label: 'Food Assets', value: 8 },
-      recentActivity: 'Community garden harvest ready',
-      color: 'from-green-500 to-emerald-500'
-    },
-    {
-      title: 'Community Defense',
+      title: 'Join Defense Campaign',
+      description: 'Get involved in community organizing',
       icon: Shield,
-      path: '/community-defense',
-      status: 'normal',
-      stats: { label: 'Active Campaigns', value: 3 },
-      recentActivity: 'Tenant meeting scheduled for Friday',
-      color: 'from-purple-500 to-pink-500'
+      action: () => navigate('/community-defense'),
+      color: 'bg-blue-100 text-blue-600'
     },
     {
-      title: 'Energy Democracy',
-      icon: Zap,
-      path: '/energy-democracy',
-      status: 'normal',
-      stats: { label: 'Solar Projects', value: 5 },
-      recentActivity: 'New solar installation completed',
-      color: 'from-yellow-500 to-orange-500'
-    },
-    {
-      title: 'Tool Library',
-      icon: Users,
-      path: '/tool-library',
-      status: 'active',
-      stats: { label: 'Available Tools', value: 24, total: 30 },
-      recentActivity: 'Drill returned by Maria S.',
-      color: 'from-orange-500 to-amber-500'
+      title: 'Find Local Events',
+      description: 'Connect with neighbors at events',
+      icon: Calendar,
+      action: () => navigate('/organizing'),
+      color: 'bg-green-100 text-green-600'
     }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'active': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-green-100 text-green-800';
+  const recentActivity = [
+    {
+      type: 'mutual-aid',
+      title: 'New resource request in your area',
+      time: '2 hours ago',
+      urgent: false
+    },
+    {
+      type: 'defense',
+      title: 'Eviction defense action tomorrow',
+      time: '4 hours ago',
+      urgent: true
+    },
+    {
+      type: 'event',
+      title: 'Community meeting this weekend',
+      time: '1 day ago',
+      urgent: false
     }
-  };
+  ];
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Community Dashboard</h1>
-        <p className="text-gray-600 mt-2">
-          Monitor and coordinate mutual aid, community defense, and solidarity efforts
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Welcome back, {user?.user_metadata?.pseudonym || 'Comrade'}!
+        </h1>
+        <p className="text-gray-600">
+          Your community organizing dashboard. Stay connected, build power, protect each other.
         </p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Active Members</p>
-                <p className="text-2xl font-bold">234</p>
-              </div>
-              <Users className="w-8 h-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Requests Fulfilled</p>
-                <p className="text-2xl font-bold">156</p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Response Time</p>
-                <p className="text-2xl font-bold">2.3h</p>
-              </div>
-              <Clock className="w-8 h-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Trust Network</p>
-                <p className="text-2xl font-bold">89%</p>
-              </div>
-              <Heart className="w-8 h-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* New User Checklist */}
+          {isNewUser && (
+            <WelcomeChecklist />
+          )}
 
-      {/* Platform Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardCards.map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <Card key={index} className="group hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${card.color}`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <Badge className={getStatusColor(card.status)}>
-                    {card.status}
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg group-hover:text-red-600 transition-colors">
-                  {card.title}
-                </CardTitle>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                {card.stats && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">{card.stats.label}</span>
-                      <span className="font-bold">
-                        {card.stats.value}
-                        {card.stats.total && `/${card.stats.total}`}
-                      </span>
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="w-5 h-5" />
+                Quick Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {quickActions.map((action, index) => {
+                  const Icon = action.icon;
+                  return (
+                    <Card 
+                      key={index}
+                      className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={action.action}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`p-2 rounded-full ${action.color}`}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-gray-900 mb-1">
+                            {action.title}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {action.description}
+                          </p>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Community Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex-shrink-0">
+                      {activity.type === 'mutual-aid' && <Heart className="w-5 h-5 text-red-600" />}
+                      {activity.type === 'defense' && <Shield className="w-5 h-5 text-blue-600" />}
+                      {activity.type === 'event' && <Calendar className="w-5 h-5 text-green-600" />}
                     </div>
-                    {card.stats.total && (
-                      <Progress 
-                        value={(card.stats.value / card.stats.total) * 100} 
-                        className="h-2"
-                      />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900">{activity.title}</p>
+                      <p className="text-sm text-gray-600">{activity.time}</p>
+                    </div>
+                    {activity.urgent && (
+                      <Badge variant="destructive" className="flex-shrink-0">
+                        Urgent
+                      </Badge>
                     )}
                   </div>
-                )}
-                
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Clock className="w-4 h-4" />
-                  <span>{card.recentActivity}</span>
-                </div>
-                
-                <Button asChild className="w-full group-hover:bg-red-600 transition-colors">
-                  <Link to={card.path} className="flex items-center justify-center gap-2">
-                    View Platform
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Recent Activity Feed */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="w-5 h-5" />
-            Recent Community Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-              <Heart className="w-5 h-5 text-blue-600 mt-1" />
-              <div>
-                <p className="font-medium">New mutual aid request</p>
-                <p className="text-sm text-gray-600">
-                  Community member needs help with groceries - Mission District
-                </p>
-                <p className="text-xs text-gray-500 mt-1">30 minutes ago</p>
+        {/* Sidebar Content */}
+        <div className="space-y-6">
+          {/* Community Stats */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Your Impact</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">12</div>
+                <p className="text-sm text-gray-600">People helped</p>
               </div>
-            </div>
-            
-            <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-1" />
-              <div>
-                <p className="font-medium">Weather alert issued</p>
-                <p className="text-sm text-gray-600">
-                  High wind warning for Bay Area - check emergency supplies
-                </p>
-                <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">3</div>
+                <p className="text-sm text-gray-600">Active campaigns</p>
               </div>
-            </div>
-            
-            <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-              <Apple className="w-5 h-5 text-green-600 mt-1" />
-              <div>
-                <p className="font-medium">Community harvest ready</p>
-                <p className="text-sm text-gray-600">
-                  Tomatoes and squash available at 24th Street Garden
-                </p>
-                <p className="text-xs text-gray-500 mt-1">4 hours ago</p>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">8</div>
+                <p className="text-sm text-gray-600">Events attended</p>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+
+          {/* Emergency Alerts */}
+          <Card className="border-orange-200 bg-orange-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-orange-800">
+                <AlertTriangle className="w-5 h-5" />
+                Emergency Alerts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-orange-700 mb-3">
+                No active emergency alerts in your area.
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full border-orange-300 text-orange-700"
+                onClick={() => navigate('/disaster-preparedness')}
+              >
+                View Preparedness Resources
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
