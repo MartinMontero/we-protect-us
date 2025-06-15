@@ -11,6 +11,7 @@ import Community from "./pages/Community";
 import MutualAid from "./pages/MutualAid";
 import CommunityWealth from "./pages/CommunityWealth";
 import CommunitySovereignty from "./pages/CommunitySovereignty";
+import Organizing from "./pages/Organizing";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="/mutual-aid" element={<MutualAid />} />
                 <Route path="/wealth" element={<CommunityWealth />} />
                 <Route path="/sovereignty" element={<CommunitySovereignty />} />
+                <Route path="/organizing" element={<Organizing />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
