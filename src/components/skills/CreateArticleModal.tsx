@@ -20,7 +20,7 @@ interface CreateArticleModalProps {
   onArticleCreated: () => void;
 }
 
-export const CreateArticleModal: React.FC<CreateArticleModalProps> = ({
+const CreateArticleModal: React.FC<CreateArticleModalProps> = ({
   open,
   onOpenChange,
   onArticleCreated
@@ -140,3 +140,5 @@ export const CreateArticleModal: React.FC<CreateArticleModalProps> = ({
     </Dialog>
   );
 };
+
+export default CreateArticleModal;
