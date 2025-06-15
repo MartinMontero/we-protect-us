@@ -41,12 +41,17 @@ export const MutualAidMap: React.FC = () => {
           <MapMarker
             key={post.id}
             post={post}
-            onMarkerClick={handleMarkerClick}
+            onPostClick={handleMarkerClick}
           />
         ))}
       </MapContainer>
 
-      {selectedPost && <PostDetails post={selectedPost} />}
+      {selectedPost && (
+        <PostDetails 
+          post={selectedPost} 
+          onClose={() => setSelectedPost(null)} 
+        />
+      )}
     </div>
   );
 };
