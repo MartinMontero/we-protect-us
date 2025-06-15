@@ -69,7 +69,7 @@ export const AnalyticsCharts: React.FC = () => {
       // Fetch posts data
       const { data: posts } = await supabase
         .from('mutual_aid_posts')
-        .select('post_type, created_at');
+        .select('category, created_at');
 
       // Fetch time bank transactions
       const { data: transactions } = await supabase
@@ -79,12 +79,12 @@ export const AnalyticsCharts: React.FC = () => {
       // Process user growth data
       const userGrowthData = generateUserGrowthData(profiles || [], timeRange);
       
-      // Process activity data
+      // Process activity data by category instead of post_type
       const activityData = [
-        { name: 'Offers', value: posts?.filter(p => p.post_type === 'offer').length || 0, color: '#3b82f6' },
-        { name: 'Requests', value: posts?.filter(p => p.post_type === 'request').length || 0, color: '#10b981' },
-        { name: 'Time Bank', value: transactions?.length || 0, color: '#f59e0b' },
-        { name: 'Other', value: Math.floor(Math.random() * 20) + 5, color: '#8b5cf6' },
+        { name: 'Food', value: posts?.filter(p => p.category === 'food').length || 0, color: '#3b82f6' },
+        { name: 'Housing', value: posts?.filter(p => p.category === 'housing').length || 0, color: '#10b981' },
+        { name: 'Transportation', value: posts?.filter(p => p.category === 'transportation').length || 0, color: '#f59e0b' },
+        { name: 'Other', value: posts?.filter(p => !['food', 'housing', 'transportation'].includes(p.category)).length || 0, color: '#8b5cf6' },
       ];
 
       // Process time bank data

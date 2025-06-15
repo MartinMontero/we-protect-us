@@ -19,7 +19,7 @@ interface VolunteerMatch {
   mutual_aid_post?: {
     title: string;
     description: string;
-    post_type: string;
+    category: string;
   } | null;
 }
 
@@ -37,8 +37,8 @@ export const VolunteerMatchingPanel: React.FC = () => {
         .from('volunteer_matches')
         .select(`
           *,
-          volunteer_profile:volunteer_id(full_name, skills),
-          mutual_aid_post:need_id(title, description, post_type)
+          volunteer_profile:volunteer_id(username, skills),
+          mutual_aid_post:need_id(title, description, category)
         `)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -50,8 +50,11 @@ export const VolunteerMatchingPanel: React.FC = () => {
         const volunteerProfile = match.volunteer_profile && 
           match.volunteer_profile !== null &&
           typeof match.volunteer_profile === 'object' &&
-          'full_name' in match.volunteer_profile
-          ? match.volunteer_profile as { full_name: string; skills: string[] }
+          'username' in match.volunteer_profile
+          ? {
+              full_name: match.volunteer_profile.username || 'Unknown',
+              skills: match.volunteer_profile.skills || []
+            }
           : null;
 
         // Safely extract mutual aid post
@@ -59,7 +62,11 @@ export const VolunteerMatchingPanel: React.FC = () => {
           match.mutual_aid_post !== null &&
           typeof match.mutual_aid_post === 'object' &&
           'title' in match.mutual_aid_post
-          ? match.mutual_aid_post as { title: string; description: string; post_type: string }
+          ? {
+              title: match.mutual_aid_post.title || 'Unknown Post',
+              description: match.mutual_aid_post.description || '',
+              category: match.mutual_aid_post.category || 'general'
+            }
           : null;
 
         return {

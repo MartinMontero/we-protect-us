@@ -31,8 +31,8 @@ export const useTimeBankTransactions = () => {
         .from('time_bank_transactions')
         .select(`
           *,
-          giver_profile:giver_id(full_name, avatar_url),
-          receiver_profile:receiver_id(full_name, avatar_url)
+          giver_profile:giver_id(username, avatar_url),
+          receiver_profile:receiver_id(username, avatar_url)
         `)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -44,16 +44,22 @@ export const useTimeBankTransactions = () => {
         const giverProfile = transaction.giver_profile && 
           transaction.giver_profile !== null &&
           typeof transaction.giver_profile === 'object' &&
-          'full_name' in transaction.giver_profile
-          ? transaction.giver_profile as { full_name: string; avatar_url: string }
+          'username' in transaction.giver_profile
+          ? {
+              full_name: transaction.giver_profile.username || 'Unknown',
+              avatar_url: transaction.giver_profile.avatar_url || ''
+            }
           : null;
 
         // Safely extract receiver profile  
         const receiverProfile = transaction.receiver_profile &&
           transaction.receiver_profile !== null &&
           typeof transaction.receiver_profile === 'object' &&
-          'full_name' in transaction.receiver_profile
-          ? transaction.receiver_profile as { full_name: string; avatar_url: string }
+          'username' in transaction.receiver_profile
+          ? {
+              full_name: transaction.receiver_profile.username || 'Unknown',
+              avatar_url: transaction.receiver_profile.avatar_url || ''
+            }
           : null;
 
         return {

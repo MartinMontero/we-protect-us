@@ -12,8 +12,8 @@ interface CourseData {
   title: string;
   description: string;
   difficulty_level: 'beginner' | 'intermediate' | 'advanced';
-  learning_format: 'online' | 'in_person' | 'hybrid';
-  location_type: 'remote' | 'local' | 'regional';
+  learning_format: 'one_on_one' | 'small_group' | 'large_class' | 'self_paced' | 'apprenticeship';
+  location_type: 'local' | 'regional';
   duration_weeks: number;
   max_participants: number;
   price: number;
@@ -25,8 +25,8 @@ export const CourseCreator: React.FC = () => {
     title: '',
     description: '',
     difficulty_level: 'beginner',
-    learning_format: 'online',
-    location_type: 'remote',
+    learning_format: 'one_on_one',
+    location_type: 'local',
     duration_weeks: 4,
     max_participants: 10,
     price: 0,
@@ -41,11 +41,10 @@ export const CourseCreator: React.FC = () => {
     try {
       const { error } = await supabase
         .from('courses')
-        .insert([{
+        .insert({
           ...courseData,
           creator_id: user.id,
-          status: 'draft',
-        }]);
+        });
 
       if (error) throw error;
 
@@ -54,8 +53,8 @@ export const CourseCreator: React.FC = () => {
         title: '',
         description: '',
         difficulty_level: 'beginner',
-        learning_format: 'online',
-        location_type: 'remote',
+        learning_format: 'one_on_one',
+        location_type: 'local',
         duration_weeks: 4,
         max_participants: 10,
         price: 0,
@@ -121,9 +120,11 @@ export const CourseCreator: React.FC = () => {
                 onChange={(e) => handleInputChange('learning_format', e.target.value)}
                 className="w-full p-2 border rounded-md"
               >
-                <option value="online">Online</option>
-                <option value="in_person">In Person</option>
-                <option value="hybrid">Hybrid</option>
+                <option value="one_on_one">One on One</option>
+                <option value="small_group">Small Group</option>
+                <option value="large_class">Large Class</option>
+                <option value="self_paced">Self Paced</option>
+                <option value="apprenticeship">Apprenticeship</option>
               </select>
             </div>
           </div>

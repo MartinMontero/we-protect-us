@@ -11,11 +11,10 @@ interface Article {
   id: string;
   title: string;
   content: string;
-  category: string;
   tags: string[];
   author_id: string;
   created_at: string;
-  helpful_votes: number;
+  like_count: number;
   author?: {
     full_name: string;
     pseudonym: string;
@@ -26,7 +25,6 @@ export const KnowledgeBase: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   useEffect(() => {
     fetchArticles();
@@ -38,7 +36,7 @@ export const KnowledgeBase: React.FC = () => {
         .from('knowledge_articles')
         .select(`
           *,
-          profiles:author_id(full_name, pseudonym)
+          profiles:author_id(username, pseudonym)
         `)
         .order('created_at', { ascending: false });
 
@@ -49,19 +47,21 @@ export const KnowledgeBase: React.FC = () => {
         const author = article.profiles && 
           article.profiles !== null &&
           typeof article.profiles === 'object' &&
-          'full_name' in article.profiles
-          ? article.profiles as { full_name: string; pseudonym: string }
+          'username' in article.profiles
+          ? {
+              full_name: article.profiles.username || 'Unknown',
+              pseudonym: article.profiles.pseudonym || 'Anonymous'
+            }
           : undefined;
 
         return {
           id: article.id,
           title: article.title,
           content: article.content,
-          category: article.category,
           tags: article.tags || [],
           author_id: article.author_id,
           created_at: article.created_at,
-          helpful_votes: article.helpful_votes || 0,
+          like_count: article.like_count || 0,
           author,
         };
       });
@@ -77,11 +77,8 @@ export const KnowledgeBase: React.FC = () => {
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
-
-  const categories = ['all', ...Array.from(new Set(articles.map(a => a.category)))];
 
   if (loading) {
     return (
@@ -106,17 +103,6 @@ export const KnowledgeBase: React.FC = () => {
                 className="pl-10"
               />
             </div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border rounded-md bg-white"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category === 'all' ? 'All Categories' : category}
-                </option>
-              ))}
-            </select>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
               New Article
@@ -134,7 +120,6 @@ export const KnowledgeBase: React.FC = () => {
                 <div>
                   <CardTitle className="text-lg">{article.title}</CardTitle>
                   <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="secondary">{article.category}</Badge>
                     <span className="text-sm text-gray-500">
                       by {article.author?.full_name || article.author?.pseudonym || 'Anonymous'}
                     </span>
@@ -144,7 +129,7 @@ export const KnowledgeBase: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-sm text-gray-500">
-                  {article.helpful_votes} helpful votes
+                  {article.like_count} likes
                 </div>
               </div>
             </CardHeader>
@@ -170,8 +155,8 @@ export const KnowledgeBase: React.FC = () => {
             <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">No Articles Found</h3>
             <p className="text-gray-600 mb-4">
-              {searchTerm || selectedCategory !== 'all' 
-                ? 'Try adjusting your search or filter criteria.' 
+              {searchTerm 
+                ? 'Try adjusting your search criteria.' 
                 : 'Be the first to contribute to the knowledge base!'}
             </p>
           </Card>

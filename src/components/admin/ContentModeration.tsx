@@ -13,8 +13,8 @@ interface MutualAidPost {
   id: string;
   title: string;
   description: string;
-  post_type: 'offer' | 'request';
-  status: 'active' | 'flagged' | 'resolved' | 'removed';
+  category: string;
+  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
   created_at: string;
   user_id: string;
   reported_count: number;
@@ -28,7 +28,7 @@ interface MutualAidPost {
 export const ContentModeration: React.FC = () => {
   const [posts, setPosts] = useState<MutualAidPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'flagged' | 'pending'>('flagged');
+  const [filter, setFilter] = useState<'all' | 'flagged' | 'pending'>('all');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -42,15 +42,9 @@ export const ContentModeration: React.FC = () => {
         .from('mutual_aid_posts')
         .select(`
           *,
-          profiles:user_id(full_name, pseudonym, avatar_url)
+          profiles:user_id(username, pseudonym, avatar_url)
         `)
         .order('created_at', { ascending: false });
-
-      if (filter === 'flagged') {
-        query = query.eq('status', 'flagged');
-      } else if (filter === 'pending') {
-        query = query.in('status', ['flagged', 'pending']);
-      }
 
       const { data, error } = await query.limit(50);
 
@@ -60,12 +54,16 @@ export const ContentModeration: React.FC = () => {
         id: post.id,
         title: post.title,
         description: post.description,
-        post_type: post.post_type,
-        status: post.status || 'active',
+        category: post.category,
+        status: post.status || 'open',
         created_at: post.created_at,
         user_id: post.user_id,
-        reported_count: post.reported_count || 0,
-        profiles: post.profiles as any,
+        reported_count: 0, // Default since column doesn't exist
+        profiles: post.profiles ? {
+          full_name: post.profiles.username || 'Unknown',
+          pseudonym: post.profiles.pseudonym || 'Anonymous',
+          avatar_url: post.profiles.avatar_url || ''
+        } : undefined,
       }));
 
       setPosts(mappedPosts);
@@ -78,7 +76,7 @@ export const ContentModeration: React.FC = () => {
 
   const handleModerationAction = async (postId: string, action: 'approve' | 'remove' | 'flag') => {
     try {
-      const newStatus = action === 'approve' ? 'active' : action === 'remove' ? 'removed' : 'flagged';
+      const newStatus = action === 'approve' ? 'open' : action === 'remove' ? 'expired' : 'open';
       
       const { error } = await supabase
         .from('mutual_aid_posts')
@@ -106,16 +104,16 @@ export const ContentModeration: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'flagged': return 'bg-red-100 text-red-800';
-      case 'removed': return 'bg-gray-100 text-gray-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'open': return 'bg-green-100 text-green-800';
+      case 'in_progress': return 'bg-yellow-100 text-yellow-800';
+      case 'fulfilled': return 'bg-blue-100 text-blue-800';
+      case 'expired': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getPostTypeColor = (type: string) => {
-    return type === 'offer' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
+  const getCategoryColor = (category: string) => {
+    return 'bg-blue-100 text-blue-800';
   };
 
   if (loading) {
@@ -139,6 +137,12 @@ export const ContentModeration: React.FC = () => {
           {/* Filter Tabs */}
           <div className="flex gap-2 mb-6">
             <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
+              onClick={() => setFilter('all')}
+            >
+              All Posts
+            </Button>
+            <Button
               variant={filter === 'flagged' ? 'default' : 'outline'}
               onClick={() => setFilter('flagged')}
             >
@@ -150,18 +154,12 @@ export const ContentModeration: React.FC = () => {
             >
               Pending Review
             </Button>
-            <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
-              onClick={() => setFilter('all')}
-            >
-              All Posts
-            </Button>
           </div>
 
           {/* Posts List */}
           <div className="space-y-4">
             {posts.map((post) => (
-              <Card key={post.id} className="border-l-4 border-l-red-400">
+              <Card key={post.id} className="border-l-4 border-l-blue-400">
                 <CardContent className="pt-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex-1">
@@ -180,8 +178,8 @@ export const ContentModeration: React.FC = () => {
                             @{post.profiles?.pseudonym || 'unknown'}
                           </span>
                         </div>
-                        <Badge className={getPostTypeColor(post.post_type)}>
-                          {post.post_type}
+                        <Badge className={getCategoryColor(post.category)}>
+                          {post.category}
                         </Badge>
                         <Badge className={getStatusColor(post.status)}>
                           {post.status}

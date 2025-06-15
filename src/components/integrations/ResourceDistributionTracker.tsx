@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,8 +40,8 @@ export const ResourceDistributionTracker: React.FC = () => {
         .from('resource_distributions')
         .select(`
           *,
-          donor_profile:profiles!donor_id(full_name, pseudonym),
-          recipient_profile:profiles!recipient_id(full_name, pseudonym)
+          donor_profile:profiles!donor_id(username, pseudonym),
+          recipient_profile:profiles!recipient_id(username, pseudonym)
         `)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -52,16 +53,22 @@ export const ResourceDistributionTracker: React.FC = () => {
         const donorProfile = dist.donor_profile && 
           dist.donor_profile !== null &&
           typeof dist.donor_profile === 'object' &&
-          'full_name' in dist.donor_profile
-          ? dist.donor_profile as { full_name: string; pseudonym: string }
+          'username' in dist.donor_profile
+          ? {
+              full_name: dist.donor_profile.username || 'Unknown',
+              pseudonym: dist.donor_profile.pseudonym || 'Anonymous'
+            }
           : null;
 
         // Safely extract recipient profile  
         const recipientProfile = dist.recipient_profile &&
           dist.recipient_profile !== null &&
           typeof dist.recipient_profile === 'object' &&
-          'full_name' in dist.recipient_profile
-          ? dist.recipient_profile as { full_name: string; pseudonym: string }
+          'username' in dist.recipient_profile
+          ? {
+              full_name: dist.recipient_profile.username || 'Unknown',
+              pseudonym: dist.recipient_profile.pseudonym || 'Anonymous'
+            }
           : null;
 
         return {
