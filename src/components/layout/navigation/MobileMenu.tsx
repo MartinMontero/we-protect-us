@@ -13,7 +13,8 @@ import {
   Users,
   Settings,
   LogIn,
-  Crown
+  Crown,
+  Puzzle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LanguageToggle } from '@/components/LanguageToggle';
@@ -38,6 +39,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
     { href: '/energy-democracy', label: 'Energy', icon: Zap },
     { href: '/tool-library', label: 'Tools', icon: Wrench },
     { href: '/skills', label: 'Skills', icon: Users },
+    { href: '/integrations', label: 'Integrations', icon: Puzzle },
     ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Crown }] : []),
     { href: '/settings', label: 'Settings', icon: Settings },
   ];

@@ -25,6 +25,7 @@ import CommunityWealth from '@/pages/CommunityWealth';
 import CommunitySovereignty from '@/pages/CommunitySovereignty';
 import DisasterPreparedness from '@/pages/DisasterPreparedness';
 import OnboardingPage from '@/pages/OnboardingPage';
+import IntegrationsPage from '@/pages/IntegrationsPage';
 
 function App() {
   const queryClient = new QueryClient();
@@ -89,6 +90,11 @@ function App() {
                     <Route path="/admin/*" element={
                       <ProtectedRoute>
                         <AdminPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/integrations" element={
+                      <ProtectedRoute>
+                        <IntegrationsPage />
                       </ProtectedRoute>
                     } />
                     <Route path="/organizing" element={

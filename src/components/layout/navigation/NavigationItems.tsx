@@ -12,7 +12,8 @@ import {
   Wrench,
   Users,
   Settings,
-  Crown
+  Crown,
+  Puzzle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -29,6 +30,7 @@ export const NavigationItems: React.FC = () => {
     { href: '/energy-democracy', label: 'Energy', icon: Zap },
     { href: '/tool-library', label: 'Tools', icon: Wrench },
     { href: '/skills', label: 'Skills', icon: Users },
+    { href: '/integrations', label: 'Integrations', icon: Puzzle },
     ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Crown }] : []),
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
