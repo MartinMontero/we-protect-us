@@ -8,7 +8,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-import { HomePage } from '@/pages/HomePage';
+import Index from '@/pages/Index';
 import AuthPage from '@/pages/AuthPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import DashboardPage from '@/pages/DashboardPage';
@@ -43,7 +43,7 @@ function App() {
                   <main id="main-content" className="w-full">
                     <Toaster />
                     <Routes>
-                      <Route path="/" element={<HomePage />} />
+                      <Route path="/" element={<Index />} />
                       <Route path="/auth" element={<AuthPage />} />
                       <Route path="/onboarding" element={
                         <ProtectedRoute>
