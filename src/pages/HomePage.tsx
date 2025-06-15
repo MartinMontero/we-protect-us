@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +14,8 @@ import {
   ArrowRight,
   Zap,
   Globe,
-  Lock
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
 const features = [
