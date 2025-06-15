@@ -514,6 +514,56 @@ export type Database = {
         }
         Relationships: []
       }
+      celebration_reminders: {
+        Row: {
+          celebration_date: string
+          celebration_type: string
+          created_at: string | null
+          description: string | null
+          elder_id: string
+          id: string
+          is_recurring: boolean | null
+          notification_recipients: string[] | null
+          recurring_interval: string | null
+          reminder_days_before: number[] | null
+          title: string
+        }
+        Insert: {
+          celebration_date: string
+          celebration_type: string
+          created_at?: string | null
+          description?: string | null
+          elder_id: string
+          id?: string
+          is_recurring?: boolean | null
+          notification_recipients?: string[] | null
+          recurring_interval?: string | null
+          reminder_days_before?: number[] | null
+          title: string
+        }
+        Update: {
+          celebration_date?: string
+          celebration_type?: string
+          created_at?: string | null
+          description?: string | null
+          elder_id?: string
+          id?: string
+          is_recurring?: boolean | null
+          notification_recipients?: string[] | null
+          recurring_interval?: string | null
+          reminder_days_before?: number[] | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "celebration_reminders_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       children: {
         Row: {
           allergies: string[] | null
@@ -729,6 +779,173 @@ export type Database = {
           },
         ]
       }
+      elder_group_activities: {
+        Row: {
+          accessibility_features: string[] | null
+          activity_type: string | null
+          cost_per_person: number | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          location_address: string | null
+          location_type: string | null
+          materials_needed: string[] | null
+          max_participants: number | null
+          organizer_id: string
+          scheduled_date: string
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_features?: string[] | null
+          activity_type?: string | null
+          cost_per_person?: number | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location_address?: string | null
+          location_type?: string | null
+          materials_needed?: string[] | null
+          max_participants?: number | null
+          organizer_id: string
+          scheduled_date: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_features?: string[] | null
+          activity_type?: string | null
+          cost_per_person?: number | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location_address?: string | null
+          location_type?: string | null
+          materials_needed?: string[] | null
+          max_participants?: number | null
+          organizer_id?: string
+          scheduled_date?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      elder_group_activity_participants: {
+        Row: {
+          activity_id: string
+          attendance_status: string | null
+          id: string
+          participant_id: string
+          participant_type: string
+          registration_date: string | null
+          special_needs: string | null
+          transportation_needed: boolean | null
+        }
+        Insert: {
+          activity_id: string
+          attendance_status?: string | null
+          id?: string
+          participant_id: string
+          participant_type: string
+          registration_date?: string | null
+          special_needs?: string | null
+          transportation_needed?: boolean | null
+        }
+        Update: {
+          activity_id?: string
+          attendance_status?: string | null
+          id?: string
+          participant_id?: string
+          participant_type?: string
+          registration_date?: string | null
+          special_needs?: string | null
+          transportation_needed?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "elder_group_activity_participants_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "elder_group_activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      elder_profiles: {
+        Row: {
+          accessibility_needs: string[] | null
+          address: string | null
+          created_at: string | null
+          date_of_birth: string
+          dietary_preferences: string[] | null
+          dietary_restrictions: string[] | null
+          elder_id: string
+          emergency_contact_primary: Json | null
+          emergency_contact_secondary: Json | null
+          full_name: string
+          hobbies: string[] | null
+          id: string
+          interests: string[] | null
+          language_preferences: string[] | null
+          medical_notes: string | null
+          mobility_level: string | null
+          phone_number: string | null
+          preferred_visit_types: string[] | null
+          special_instructions: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_needs?: string[] | null
+          address?: string | null
+          created_at?: string | null
+          date_of_birth: string
+          dietary_preferences?: string[] | null
+          dietary_restrictions?: string[] | null
+          elder_id: string
+          emergency_contact_primary?: Json | null
+          emergency_contact_secondary?: Json | null
+          full_name: string
+          hobbies?: string[] | null
+          id?: string
+          interests?: string[] | null
+          language_preferences?: string[] | null
+          medical_notes?: string | null
+          mobility_level?: string | null
+          phone_number?: string | null
+          preferred_visit_types?: string[] | null
+          special_instructions?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_needs?: string[] | null
+          address?: string | null
+          created_at?: string | null
+          date_of_birth?: string
+          dietary_preferences?: string[] | null
+          dietary_restrictions?: string[] | null
+          elder_id?: string
+          emergency_contact_primary?: Json | null
+          emergency_contact_secondary?: Json | null
+          full_name?: string
+          hobbies?: string[] | null
+          id?: string
+          interests?: string[] | null
+          language_preferences?: string[] | null
+          medical_notes?: string | null
+          mobility_level?: string | null
+          phone_number?: string | null
+          preferred_visit_types?: string[] | null
+          special_instructions?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           address: string | null
@@ -772,6 +989,44 @@ export type Database = {
             columns: ["child_id"]
             isOneToOne: false
             referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_connections: {
+        Row: {
+          created_at: string | null
+          elder_id: string
+          emergency_contact_priority: number | null
+          family_member_id: string
+          id: string
+          notification_preferences: Json | null
+          relationship: string
+        }
+        Insert: {
+          created_at?: string | null
+          elder_id: string
+          emergency_contact_priority?: number | null
+          family_member_id: string
+          id?: string
+          notification_preferences?: Json | null
+          relationship: string
+        }
+        Update: {
+          created_at?: string | null
+          elder_id?: string
+          emergency_contact_priority?: number | null
+          family_member_id?: string
+          id?: string
+          notification_preferences?: Json | null
+          relationship?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_connections_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1497,6 +1752,69 @@ export type Database = {
           },
         ]
       }
+      senior_resources: {
+        Row: {
+          accessibility_features: string[] | null
+          address: string | null
+          category: string
+          contact_email: string | null
+          contact_phone: string | null
+          cost_info: string | null
+          created_at: string | null
+          description: string | null
+          eligibility_requirements: string | null
+          hours_of_operation: Json | null
+          id: string
+          languages_supported: string[] | null
+          rating: number | null
+          resource_name: string
+          service_area: string[] | null
+          updated_at: string | null
+          verified: boolean | null
+          website_url: string | null
+        }
+        Insert: {
+          accessibility_features?: string[] | null
+          address?: string | null
+          category: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          cost_info?: string | null
+          created_at?: string | null
+          description?: string | null
+          eligibility_requirements?: string | null
+          hours_of_operation?: Json | null
+          id?: string
+          languages_supported?: string[] | null
+          rating?: number | null
+          resource_name: string
+          service_area?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website_url?: string | null
+        }
+        Update: {
+          accessibility_features?: string[] | null
+          address?: string | null
+          category?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          cost_info?: string | null
+          created_at?: string | null
+          description?: string | null
+          eligibility_requirements?: string | null
+          hours_of_operation?: Json | null
+          id?: string
+          languages_supported?: string[] | null
+          rating?: number | null
+          resource_name?: string
+          service_area?: string[] | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       solidarity_metrics: {
         Row: {
           active_participants: number | null
@@ -1532,6 +1850,116 @@ export type Database = {
           wealth_circulated?: number | null
         }
         Relationships: []
+      }
+      story_recordings: {
+        Row: {
+          created_at: string | null
+          date_recorded: string | null
+          description: string | null
+          elder_id: string
+          family_access_only: boolean | null
+          id: string
+          is_public: boolean | null
+          recorded_by: string
+          recording_url: string | null
+          title: string
+          topics: string[] | null
+          transcript: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date_recorded?: string | null
+          description?: string | null
+          elder_id: string
+          family_access_only?: boolean | null
+          id?: string
+          is_public?: boolean | null
+          recorded_by: string
+          recording_url?: string | null
+          title: string
+          topics?: string[] | null
+          transcript?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date_recorded?: string | null
+          description?: string | null
+          elder_id?: string
+          family_access_only?: boolean | null
+          id?: string
+          is_public?: boolean | null
+          recorded_by?: string
+          recording_url?: string | null
+          title?: string
+          topics?: string[] | null
+          transcript?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_recordings_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_matches: {
+        Row: {
+          created_at: string | null
+          elder_id: string
+          end_date: string | null
+          id: string
+          match_score: number | null
+          match_type: string | null
+          notes: string | null
+          start_date: string | null
+          status: string | null
+          updated_at: string | null
+          volunteer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          elder_id: string
+          end_date?: string | null
+          id?: string
+          match_score?: number | null
+          match_type?: string | null
+          notes?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          volunteer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          elder_id?: string
+          end_date?: string | null
+          id?: string
+          match_score?: number | null
+          match_type?: string | null
+          notes?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_matches_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_matches_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       time_bank_transactions: {
         Row: {
@@ -1879,6 +2307,205 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      visit_logs: {
+        Row: {
+          actual_end_time: string | null
+          actual_start_time: string | null
+          created_at: string | null
+          elder_id: string
+          elder_mood: string | null
+          emergency_triggered: boolean | null
+          family_notification_sent: boolean | null
+          follow_up_needed: boolean | null
+          follow_up_notes: string | null
+          id: string
+          photos: string[] | null
+          tasks_completed: string[] | null
+          visit_notes: string | null
+          visit_request_id: string
+          volunteer_id: string
+        }
+        Insert: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          elder_id: string
+          elder_mood?: string | null
+          emergency_triggered?: boolean | null
+          family_notification_sent?: boolean | null
+          follow_up_needed?: boolean | null
+          follow_up_notes?: string | null
+          id?: string
+          photos?: string[] | null
+          tasks_completed?: string[] | null
+          visit_notes?: string | null
+          visit_request_id: string
+          volunteer_id: string
+        }
+        Update: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          elder_id?: string
+          elder_mood?: string | null
+          emergency_triggered?: boolean | null
+          family_notification_sent?: boolean | null
+          follow_up_needed?: boolean | null
+          follow_up_notes?: string | null
+          id?: string
+          photos?: string[] | null
+          tasks_completed?: string[] | null
+          visit_notes?: string | null
+          visit_request_id?: string
+          volunteer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_logs_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visit_logs_visit_request_id_fkey"
+            columns: ["visit_request_id"]
+            isOneToOne: false
+            referencedRelation: "visit_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visit_logs_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visit_requests: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          elder_id: string
+          id: string
+          location_address: string | null
+          location_type: string | null
+          requested_by: string
+          scheduled_date: string
+          special_requirements: string[] | null
+          status: string | null
+          updated_at: string | null
+          urgency_level: string | null
+          visit_type: string
+          volunteer_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          elder_id: string
+          id?: string
+          location_address?: string | null
+          location_type?: string | null
+          requested_by: string
+          scheduled_date: string
+          special_requirements?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          urgency_level?: string | null
+          visit_type: string
+          volunteer_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          elder_id?: string
+          id?: string
+          location_address?: string | null
+          location_type?: string | null
+          requested_by?: string
+          scheduled_date?: string
+          special_requirements?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          urgency_level?: string | null
+          visit_type?: string
+          volunteer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visit_requests_elder_id_fkey"
+            columns: ["elder_id"]
+            isOneToOne: false
+            referencedRelation: "elder_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visit_requests_volunteer_id_fkey"
+            columns: ["volunteer_id"]
+            isOneToOne: false
+            referencedRelation: "volunteer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      volunteer_profiles: {
+        Row: {
+          availability_days: string[] | null
+          availability_times: Json | null
+          background_check_date: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          languages_spoken: string[] | null
+          max_hours_per_week: number | null
+          phone_number: string | null
+          references_verified: boolean | null
+          skills: string[] | null
+          specializations: string[] | null
+          transportation_available: boolean | null
+          updated_at: string | null
+          volunteer_id: string
+        }
+        Insert: {
+          availability_days?: string[] | null
+          availability_times?: Json | null
+          background_check_date?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          languages_spoken?: string[] | null
+          max_hours_per_week?: number | null
+          phone_number?: string | null
+          references_verified?: boolean | null
+          skills?: string[] | null
+          specializations?: string[] | null
+          transportation_available?: boolean | null
+          updated_at?: string | null
+          volunteer_id: string
+        }
+        Update: {
+          availability_days?: string[] | null
+          availability_times?: Json | null
+          background_check_date?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          languages_spoken?: string[] | null
+          max_hours_per_week?: number | null
+          phone_number?: string | null
+          references_verified?: boolean | null
+          skills?: string[] | null
+          specializations?: string[] | null
+          transportation_available?: boolean | null
+          updated_at?: string | null
+          volunteer_id?: string
+        }
+        Relationships: []
       }
       work_parties: {
         Row: {
