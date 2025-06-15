@@ -24,6 +24,9 @@ export const MutualAidMap: React.FC = () => {
     return <LoadingSpinner />;
   }
 
+  // Ensure we have valid posts array
+  const validPosts = Array.isArray(posts) ? posts : [];
+
   return (
     <div className="h-full w-full">
       <MapContainer
@@ -37,7 +40,7 @@ export const MutualAidMap: React.FC = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        {posts && posts.length > 0 && posts.map((post) => (
+        {validPosts.map((post) => (
           <MapMarker
             key={post.id}
             post={post}
