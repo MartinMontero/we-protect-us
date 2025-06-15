@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
@@ -17,6 +16,7 @@ import Organizing from '@/pages/Organizing';
 import Community from '@/pages/Community';
 import AuthPage from '@/pages/AuthPage';
 import { ToolLibrary } from '@/pages/ToolLibrary';
+import { CommunityGarden } from '@/pages/CommunityGarden';
 
 function App() {
   return (
@@ -65,6 +65,11 @@ function App() {
             <Route path="/tool-library" element={
               <ProtectedRoute>
                 <ToolLibrary />
+              </ProtectedRoute>
+            } />
+            <Route path="/garden" element={
+              <ProtectedRoute>
+                <CommunityGarden />
               </ProtectedRoute>
             } />
             <Route path="/reports" element={<ReportsPage />} />

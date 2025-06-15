@@ -9,6 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bulk_order_participants: {
+        Row: {
+          bulk_order_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          participant_id: string
+          quantity_requested: number
+        }
+        Insert: {
+          bulk_order_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          participant_id: string
+          quantity_requested: number
+        }
+        Update: {
+          bulk_order_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          participant_id?: string
+          quantity_requested?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_order_participants_bulk_order_id_fkey"
+            columns: ["bulk_order_id"]
+            isOneToOne: false
+            referencedRelation: "bulk_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bulk_order_participants_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bulk_orders: {
+        Row: {
+          created_at: string | null
+          current_quantity: number | null
+          id: string
+          item_name: string
+          minimum_quantity: number | null
+          notes: string | null
+          order_deadline: string | null
+          organizer_id: string
+          status: string | null
+          supplier: string | null
+          unit_price: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_quantity?: number | null
+          id?: string
+          item_name: string
+          minimum_quantity?: number | null
+          notes?: string | null
+          order_deadline?: string | null
+          organizer_id: string
+          status?: string | null
+          supplier?: string | null
+          unit_price?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          current_quantity?: number | null
+          id?: string
+          item_name?: string
+          minimum_quantity?: number | null
+          notes?: string | null
+          order_deadline?: string | null
+          organizer_id?: string
+          status?: string | null
+          supplier?: string | null
+          unit_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_orders_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       case_studies: {
         Row: {
           created_at: string | null
@@ -53,6 +145,262 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      compost_bins: {
+        Row: {
+          bin_name: string
+          created_at: string | null
+          current_stage: string | null
+          estimated_ready_date: string | null
+          id: string
+          last_turned_date: string | null
+          location_description: string | null
+          notes: string | null
+          temperature: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          bin_name: string
+          created_at?: string | null
+          current_stage?: string | null
+          estimated_ready_date?: string | null
+          id?: string
+          last_turned_date?: string | null
+          location_description?: string | null
+          notes?: string | null
+          temperature?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          bin_name?: string
+          created_at?: string | null
+          current_stage?: string | null
+          estimated_ready_date?: string | null
+          id?: string
+          last_turned_date?: string | null
+          location_description?: string | null
+          notes?: string | null
+          temperature?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      current_plantings: {
+        Row: {
+          actual_harvest_date: string | null
+          companion_plants: string[] | null
+          created_at: string | null
+          crop_name: string
+          expected_harvest_date: string | null
+          gardener_id: string
+          id: string
+          notes: string | null
+          planted_date: string
+          plot_id: string
+          variety: string | null
+        }
+        Insert: {
+          actual_harvest_date?: string | null
+          companion_plants?: string[] | null
+          created_at?: string | null
+          crop_name: string
+          expected_harvest_date?: string | null
+          gardener_id: string
+          id?: string
+          notes?: string | null
+          planted_date: string
+          plot_id: string
+          variety?: string | null
+        }
+        Update: {
+          actual_harvest_date?: string | null
+          companion_plants?: string[] | null
+          created_at?: string | null
+          crop_name?: string
+          expected_harvest_date?: string | null
+          gardener_id?: string
+          id?: string
+          notes?: string | null
+          planted_date?: string
+          plot_id?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "current_plantings_gardener_id_fkey"
+            columns: ["gardener_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "current_plantings_plot_id_fkey"
+            columns: ["plot_id"]
+            isOneToOne: false
+            referencedRelation: "garden_plots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garden_knowledge: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          created_at: string | null
+          helpful_votes: number | null
+          id: string
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          content: string
+          created_at?: string | null
+          helpful_votes?: number | null
+          id?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string | null
+          helpful_votes?: number | null
+          id?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garden_knowledge_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garden_plots: {
+        Row: {
+          assigned_date: string | null
+          coordinates: Json | null
+          created_at: string | null
+          current_gardener_id: string | null
+          id: string
+          notes: string | null
+          plot_number: string
+          raised_bed: boolean | null
+          size_sqft: number
+          soil_type: Database["public"]["Enums"]["soil_type"]
+          status: Database["public"]["Enums"]["plot_status"] | null
+          sun_exposure: Database["public"]["Enums"]["sun_exposure"]
+          updated_at: string | null
+          water_access: boolean | null
+        }
+        Insert: {
+          assigned_date?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          current_gardener_id?: string | null
+          id?: string
+          notes?: string | null
+          plot_number: string
+          raised_bed?: boolean | null
+          size_sqft: number
+          soil_type: Database["public"]["Enums"]["soil_type"]
+          status?: Database["public"]["Enums"]["plot_status"] | null
+          sun_exposure: Database["public"]["Enums"]["sun_exposure"]
+          updated_at?: string | null
+          water_access?: boolean | null
+        }
+        Update: {
+          assigned_date?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          current_gardener_id?: string | null
+          id?: string
+          notes?: string | null
+          plot_number?: string
+          raised_bed?: boolean | null
+          size_sqft?: number
+          soil_type?: Database["public"]["Enums"]["soil_type"]
+          status?: Database["public"]["Enums"]["plot_status"] | null
+          sun_exposure?: Database["public"]["Enums"]["sun_exposure"]
+          updated_at?: string | null
+          water_access?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garden_plots_current_gardener_id_fkey"
+            columns: ["current_gardener_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      harvest_sharing: {
+        Row: {
+          available_date: string | null
+          claimed_at: string | null
+          claimed_by: string | null
+          created_at: string | null
+          crop_name: string
+          gardener_id: string
+          id: string
+          location_description: string | null
+          notes: string | null
+          quantity: string
+          unit: string
+        }
+        Insert: {
+          available_date?: string | null
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string | null
+          crop_name: string
+          gardener_id: string
+          id?: string
+          location_description?: string | null
+          notes?: string | null
+          quantity: string
+          unit: string
+        }
+        Update: {
+          available_date?: string | null
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string | null
+          crop_name?: string
+          gardener_id?: string
+          id?: string
+          location_description?: string | null
+          notes?: string | null
+          quantity?: string
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harvest_sharing_claimed_by_fkey"
+            columns: ["claimed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harvest_sharing_gardener_id_fkey"
+            columns: ["gardener_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mutual_aid_posts: {
         Row: {
@@ -149,6 +497,95 @@ export type Database = {
         }
         Relationships: []
       }
+      plot_history: {
+        Row: {
+          created_at: string | null
+          crops_grown: string[] | null
+          end_date: string | null
+          gardener_id: string | null
+          id: string
+          notes: string | null
+          plot_id: string
+          start_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          crops_grown?: string[] | null
+          end_date?: string | null
+          gardener_id?: string | null
+          id?: string
+          notes?: string | null
+          plot_id: string
+          start_date: string
+        }
+        Update: {
+          created_at?: string | null
+          crops_grown?: string[] | null
+          end_date?: string | null
+          gardener_id?: string | null
+          id?: string
+          notes?: string | null
+          plot_id?: string
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plot_history_gardener_id_fkey"
+            columns: ["gardener_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plot_history_plot_id_fkey"
+            columns: ["plot_id"]
+            isOneToOne: false
+            referencedRelation: "garden_plots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plot_waitlist: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          join_date: string | null
+          notes: string | null
+          plot_preferences: Json | null
+          priority_score: number | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          join_date?: string | null
+          notes?: string | null
+          plot_preferences?: Json | null
+          priority_score?: number | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          join_date?: string | null
+          notes?: string | null
+          plot_preferences?: Json | null
+          priority_score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plot_waitlist_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -230,6 +667,56 @@ export type Database = {
           {
             foreignKeyName: "reflections_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seed_library: {
+        Row: {
+          created_at: string | null
+          crop_type: string
+          days_to_maturity: number | null
+          donated_by: string | null
+          germination_rate: number | null
+          harvest_year: number | null
+          id: string
+          planting_instructions: string | null
+          quantity_available: number | null
+          updated_at: string | null
+          variety_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          crop_type: string
+          days_to_maturity?: number | null
+          donated_by?: string | null
+          germination_rate?: number | null
+          harvest_year?: number | null
+          id?: string
+          planting_instructions?: string | null
+          quantity_available?: number | null
+          updated_at?: string | null
+          variety_name: string
+        }
+        Update: {
+          created_at?: string | null
+          crop_type?: string
+          days_to_maturity?: number | null
+          donated_by?: string | null
+          germination_rate?: number | null
+          harvest_year?: number | null
+          id?: string
+          planting_instructions?: string | null
+          quantity_available?: number | null
+          updated_at?: string | null
+          variety_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seed_library_donated_by_fkey"
+            columns: ["donated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -619,6 +1106,95 @@ export type Database = {
           },
         ]
       }
+      work_parties: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_hours: number | null
+          id: string
+          max_participants: number | null
+          organizer_id: string
+          scheduled_date: string
+          status: Database["public"]["Enums"]["work_party_status"] | null
+          tasks: Json | null
+          title: string
+          tools_needed: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          max_participants?: number | null
+          organizer_id: string
+          scheduled_date: string
+          status?: Database["public"]["Enums"]["work_party_status"] | null
+          tasks?: Json | null
+          title: string
+          tools_needed?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          max_participants?: number | null
+          organizer_id?: string
+          scheduled_date?: string
+          status?: Database["public"]["Enums"]["work_party_status"] | null
+          tasks?: Json | null
+          title?: string
+          tools_needed?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_parties_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_party_participants: {
+        Row: {
+          attended: boolean | null
+          id: string
+          participant_id: string
+          signed_up_at: string | null
+          work_party_id: string
+        }
+        Insert: {
+          attended?: boolean | null
+          id?: string
+          participant_id: string
+          signed_up_at?: string | null
+          work_party_id: string
+        }
+        Update: {
+          attended?: boolean | null
+          id?: string
+          participant_id?: string
+          signed_up_at?: string | null
+          work_party_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_party_participants_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_party_participants_work_party_id_fkey"
+            columns: ["work_party_id"]
+            isOneToOne: false
+            referencedRelation: "work_parties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -638,6 +1214,7 @@ export type Database = {
       }
     }
     Enums: {
+      crop_season: "spring" | "summer" | "fall" | "winter" | "year_round"
       fulfillment_status: "open" | "in_progress" | "fulfilled" | "expired"
       need_category:
         | "food"
@@ -650,6 +1227,7 @@ export type Database = {
         | "labor"
         | "financial"
         | "emotional_support"
+      plot_status: "available" | "assigned" | "reserved" | "maintenance"
       reservation_status:
         | "pending"
         | "approved"
@@ -657,6 +1235,8 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "overdue"
+      soil_type: "clay" | "sandy" | "loamy" | "rocky" | "amended"
+      sun_exposure: "full_sun" | "partial_sun" | "partial_shade" | "full_shade"
       tool_category:
         | "power_tools"
         | "garden_equipment"
@@ -677,6 +1257,7 @@ export type Database = {
         | "needs_repair"
         | "out_of_service"
       urgency_level: "low" | "medium" | "high" | "critical"
+      work_party_status: "planned" | "active" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -792,6 +1373,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      crop_season: ["spring", "summer", "fall", "winter", "year_round"],
       fulfillment_status: ["open", "in_progress", "fulfilled", "expired"],
       need_category: [
         "food",
@@ -805,6 +1387,7 @@ export const Constants = {
         "financial",
         "emotional_support",
       ],
+      plot_status: ["available", "assigned", "reserved", "maintenance"],
       reservation_status: [
         "pending",
         "approved",
@@ -813,6 +1396,8 @@ export const Constants = {
         "cancelled",
         "overdue",
       ],
+      soil_type: ["clay", "sandy", "loamy", "rocky", "amended"],
+      sun_exposure: ["full_sun", "partial_sun", "partial_shade", "full_shade"],
       tool_category: [
         "power_tools",
         "garden_equipment",
@@ -835,6 +1420,7 @@ export const Constants = {
         "out_of_service",
       ],
       urgency_level: ["low", "medium", "high", "critical"],
+      work_party_status: ["planned", "active", "completed", "cancelled"],
     },
   },
 } as const
