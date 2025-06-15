@@ -133,7 +133,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onViewDetails }) => {
             <Users className="w-4 h-4" />
             <span>{post.profiles?.pseudonym || 'Anonymous'}</span>
             {post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0 && (
-              <Heart className="w-4 h-4 text-red-500" title="Priority support member" />
+              <Heart className="w-4 h-4 text-red-500" />
             )}
           </div>
           <Button 

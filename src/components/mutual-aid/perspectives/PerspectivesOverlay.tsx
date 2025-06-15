@@ -63,7 +63,8 @@ export const PerspectivesOverlay: React.FC<PerspectivesOverlayProps> = ({
     let points = 6.5;
     if (post.category === 'food') points += 2.8;
     if (post.category === 'housing') points += 3.2;
-    if (post.category === 'care') points += 2.1;
+    if (post.category === 'childcare') points += 2.1;
+    if (post.category === 'healthcare') points += 2.5;
     return Math.round(points * 10) / 10;
   };
 
@@ -71,12 +72,16 @@ export const PerspectivesOverlay: React.FC<PerspectivesOverlayProps> = ({
     const baseCosts = {
       food: 80,
       housing: 200,
-      care: 120,
+      childcare: 120,
       transportation: 45,
       education: 150,
-      tools: 90
+      technology: 90,
+      healthcare: 200,
+      labor: 100,
+      financial: 150,
+      emotional_support: 120
     };
-    return baseCosts[post.category as keyof typeof baseCosts] || 75;
+    return baseCosts[post.category] || 75;
   };
 
   const calculateProfitRedirection = (post: MutualAidPost): number => {
