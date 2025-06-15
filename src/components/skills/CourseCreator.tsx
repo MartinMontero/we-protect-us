@@ -13,7 +13,7 @@ interface CourseData {
   description: string;
   difficulty_level: 'beginner' | 'intermediate' | 'advanced';
   learning_format: 'one_on_one' | 'small_group' | 'large_class' | 'self_paced' | 'apprenticeship';
-  location_type: 'local' | 'regional';
+  location_type: 'in_person' | 'virtual' | 'hybrid';
   duration_weeks: number;
   max_participants: number;
   price: number;
@@ -26,7 +26,7 @@ export const CourseCreator: React.FC = () => {
     description: '',
     difficulty_level: 'beginner',
     learning_format: 'one_on_one',
-    location_type: 'local',
+    location_type: 'in_person',
     duration_weeks: 4,
     max_participants: 10,
     price: 0,
@@ -54,7 +54,7 @@ export const CourseCreator: React.FC = () => {
         description: '',
         difficulty_level: 'beginner',
         learning_format: 'one_on_one',
-        location_type: 'local',
+        location_type: 'in_person',
         duration_weeks: 4,
         max_participants: 10,
         price: 0,
@@ -129,7 +129,20 @@ export const CourseCreator: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Location Type</label>
+              <select
+                value={courseData.location_type}
+                onChange={(e) => handleInputChange('location_type', e.target.value)}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="in_person">In Person</option>
+                <option value="virtual">Virtual</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">Duration (weeks)</label>
               <Input
@@ -140,7 +153,9 @@ export const CourseCreator: React.FC = () => {
                 max="52"
               />
             </div>
+          </div>
 
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Max Participants</label>
               <Input

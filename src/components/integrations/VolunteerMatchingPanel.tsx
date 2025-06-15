@@ -37,7 +37,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
         .from('volunteer_matches')
         .select(`
           *,
-          volunteer_profile:volunteer_id(username, skills),
+          volunteer_profile:volunteer_id(pseudonym, skills),
           mutual_aid_post:need_id(title, description, category)
         `)
         .order('created_at', { ascending: false })
@@ -50,9 +50,9 @@ export const VolunteerMatchingPanel: React.FC = () => {
         const volunteerProfile = match.volunteer_profile && 
           match.volunteer_profile !== null &&
           typeof match.volunteer_profile === 'object' &&
-          'username' in match.volunteer_profile
+          'pseudonym' in match.volunteer_profile
           ? {
-              full_name: match.volunteer_profile.username || 'Unknown',
+              full_name: match.volunteer_profile.pseudonym || 'Unknown',
               skills: match.volunteer_profile.skills || []
             }
           : null;

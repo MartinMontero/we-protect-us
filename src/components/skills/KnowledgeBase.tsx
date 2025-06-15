@@ -36,7 +36,7 @@ export const KnowledgeBase: React.FC = () => {
         .from('knowledge_articles')
         .select(`
           *,
-          profiles:author_id(username, pseudonym)
+          profiles:author_id(pseudonym)
         `)
         .order('created_at', { ascending: false });
 
@@ -47,9 +47,9 @@ export const KnowledgeBase: React.FC = () => {
         const author = article.profiles && 
           article.profiles !== null &&
           typeof article.profiles === 'object' &&
-          'username' in article.profiles
+          'pseudonym' in article.profiles
           ? {
-              full_name: article.profiles.username || 'Unknown',
+              full_name: article.profiles.pseudonym || 'Unknown',
               pseudonym: article.profiles.pseudonym || 'Anonymous'
             }
           : undefined;

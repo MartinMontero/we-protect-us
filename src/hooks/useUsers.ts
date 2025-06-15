@@ -32,12 +32,12 @@ export const useUsers = () => {
 
       const mappedUsers: User[] = (data || []).map(profile => ({
         id: profile.id,
-        full_name: profile.username || 'Unknown',
+        full_name: profile.pseudonym || 'Unknown', // Use pseudonym as display name
         pseudonym: profile.pseudonym || 'Anonymous',
-        email: profile.username, // Using username as email placeholder
-        avatar_url: profile.avatar_url,
+        email: profile.phone_number || 'N/A', // Use phone_number since email doesn't exist
+        avatar_url: profile.profile_image_url || undefined,
         created_at: profile.created_at,
-        last_sign_in_at: profile.updated_at,
+        last_sign_in_at: profile.updated_at, // Use updated_at as last activity
         skills: profile.skills || [],
         time_bank_hours: profile.time_bank_hours || 0,
         status: 'active', // Default status since not in profiles table

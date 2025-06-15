@@ -40,8 +40,8 @@ export const ResourceDistributionTracker: React.FC = () => {
         .from('resource_distributions')
         .select(`
           *,
-          donor_profile:profiles!donor_id(username, pseudonym),
-          recipient_profile:profiles!recipient_id(username, pseudonym)
+          donor_profile:profiles!donor_id(pseudonym),
+          recipient_profile:profiles!recipient_id(pseudonym)
         `)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -53,9 +53,9 @@ export const ResourceDistributionTracker: React.FC = () => {
         const donorProfile = dist.donor_profile && 
           dist.donor_profile !== null &&
           typeof dist.donor_profile === 'object' &&
-          'username' in dist.donor_profile
+          'pseudonym' in dist.donor_profile
           ? {
-              full_name: dist.donor_profile.username || 'Unknown',
+              full_name: dist.donor_profile.pseudonym || 'Unknown',
               pseudonym: dist.donor_profile.pseudonym || 'Anonymous'
             }
           : null;
@@ -64,9 +64,9 @@ export const ResourceDistributionTracker: React.FC = () => {
         const recipientProfile = dist.recipient_profile &&
           dist.recipient_profile !== null &&
           typeof dist.recipient_profile === 'object' &&
-          'username' in dist.recipient_profile
+          'pseudonym' in dist.recipient_profile
           ? {
-              full_name: dist.recipient_profile.username || 'Unknown',
+              full_name: dist.recipient_profile.pseudonym || 'Unknown',
               pseudonym: dist.recipient_profile.pseudonym || 'Anonymous'
             }
           : null;
