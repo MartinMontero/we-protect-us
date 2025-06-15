@@ -40,15 +40,19 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post, onClose }) => {
             <span>{post.profiles?.pseudonym || 'Anonymous'}</span>
           </div>
           
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            <span>{post.time_commitment_hours} hours</span>
-          </div>
+          {post.time_commitment_hours && (
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span>{post.time_commitment_hours} hours</span>
+            </div>
+          )}
           
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            <span>Within {post.radius_km}km</span>
-          </div>
+          {post.radius_km && (
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span>Within {post.radius_km}km</span>
+            </div>
+          )}
         </div>
 
         {post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0 && (

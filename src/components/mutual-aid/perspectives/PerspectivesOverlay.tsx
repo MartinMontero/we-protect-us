@@ -30,7 +30,6 @@ export const PerspectivesOverlay: React.FC<PerspectivesOverlayProps> = ({
   }, [post, isVisible]);
 
   const generateInsights = async () => {
-    // Generate contextual insights based on post data
     const trustInsight: PerspectiveInsight = {
       type: 'trust_economics',
       title: 'Trust Economics Analysis',
@@ -50,14 +49,14 @@ export const PerspectivesOverlay: React.FC<PerspectivesOverlayProps> = ({
 
   const calculateSocialCapitalGain = (post: MutualAidPost): number => {
     let baseGain = 5.2;
-    if (post.profiles?.vulnerability_factors?.length > 0) baseGain += 2.1;
+    if (post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0) baseGain += 2.1;
     if (post.urgency === 'critical') baseGain += 1.5;
-    if (post.time_commitment_hours > 2) baseGain += 1.0;
+    if (post.time_commitment_hours && post.time_commitment_hours > 2) baseGain += 1.0;
     return Math.round(baseGain * 10) / 10;
   };
 
   const calculateNetworkStrengthening = (post: MutualAidPost): number => {
-    return Math.floor(Math.random() * 6) + 3; // 3-8 connections
+    return Math.floor(Math.random() * 6) + 3;
   };
 
   const calculateResiliencePoints = (post: MutualAidPost): number => {

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
@@ -42,7 +43,7 @@ export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
 
   return (
     <Marker
-      position={[post.location_lat, post.location_lng]}
+      position={[post.latitude, post.longitude]}
       icon={createCustomIcon(post.type, post.urgency)}
       eventHandlers={{
         click: () => onPostClick(post)

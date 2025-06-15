@@ -9,10 +9,8 @@ export const useMutualAidPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Simulate API call with mock data for now
         console.log('Fetching mutual aid posts...');
         
-        // Mock data to prevent errors
         const mockPosts: MutualAidPost[] = [
           {
             id: '1',
@@ -25,7 +23,13 @@ export const useMutualAidPosts = () => {
             urgency: 'high',
             created_at: new Date().toISOString(),
             user_id: 'user1',
-            status: 'active'
+            status: 'active',
+            time_commitment_hours: 2,
+            radius_km: 5,
+            profiles: {
+              pseudonym: 'CommunityMember1',
+              vulnerability_factors: ['single_parent', 'low_income']
+            }
           },
           {
             id: '2',
@@ -38,18 +42,23 @@ export const useMutualAidPosts = () => {
             urgency: 'low',
             created_at: new Date().toISOString(),
             user_id: 'user2',
-            status: 'active'
+            status: 'active',
+            time_commitment_hours: 1,
+            radius_km: 10,
+            profiles: {
+              pseudonym: 'HelpingHand',
+              vulnerability_factors: []
+            }
           }
         ];
 
-        // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         setPosts(mockPosts);
         console.log('Posts loaded successfully:', mockPosts.length);
       } catch (error) {
         console.error('Error fetching mutual aid posts:', error);
-        setPosts([]); // Ensure we always have an array
+        setPosts([]);
       } finally {
         setLoading(false);
       }
