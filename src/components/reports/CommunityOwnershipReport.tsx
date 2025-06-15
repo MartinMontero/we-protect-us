@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Network } from 'lucide-react';
 import { GovernanceMetrics } from './ownership/GovernanceMetrics';
+import { CooperativeStructure } from './ownership/CooperativeStructure';
 import { ValueFlowChart } from './ownership/ValueFlowChart';
+import { PrinciplesCompliance } from './ownership/PrinciplesCompliance';
 
 export const CommunityOwnershipReport: React.FC = () => {
   const governanceMetrics = [
@@ -82,76 +81,9 @@ export const CommunityOwnershipReport: React.FC = () => {
   return (
     <div className="space-y-6">
       <GovernanceMetrics metrics={governanceMetrics} />
-
-      {/* Cooperative Structure */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Network className="w-5 h-5" />
-            Cooperative Structure Analysis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {cooperativeStructure.map((coop, index) => (
-              <div key={index} className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium">{coop.sector}</h4>
-                  <div className="flex gap-2">
-                    <Badge variant="outline">{coop.members} members</Badge>
-                    <Badge variant="secondary">{coop.assets}</Badge>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Governance Model:</span>
-                    <p className="text-gray-600">{coop.governance}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium">Profit Sharing:</span>
-                    <p className="text-gray-600">{coop.profitSharing}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
+      <CooperativeStructure cooperatives={cooperativeStructure} />
       <ValueFlowChart flows={valueFlows} />
-
-      {/* Ownership Principles Compliance */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cooperative Principles Compliance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <h4 className="font-medium">Rochdale Principles</h4>
-              <div className="space-y-2 text-sm">
-                {['Voluntary Membership', 'Democratic Control', 'Economic Participation', 'Autonomy & Independence'].map((principle) => (
-                  <div key={principle} className="flex items-center justify-between">
-                    <span>{principle}</span>
-                    <Badge variant="default">✓ Compliant</Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-3">
-              <h4 className="font-medium">Community Values</h4>
-              <div className="space-y-2 text-sm">
-                {['Solidarity Economy', 'Environmental Sustainability', 'Social Justice', 'Community Care'].map((value) => (
-                  <div key={value} className="flex items-center justify-between">
-                    <span>{value}</span>
-                    <Badge variant="default">✓ Active</Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <PrinciplesCompliance />
     </div>
   );
 };
