@@ -27,19 +27,14 @@ export const useRoles = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .order('assigned_at', { ascending: false })
-        .limit(1)
-        .single();
+      // Use raw SQL query to access user_roles table
+      const { data, error } = await supabase.rpc('get_user_role', { user_id: user.id });
 
-      if (error) {
+      if (error || !data) {
         // User has no role assigned, default to 'user'
         setUserRole('user');
       } else {
-        setUserRole(data.role as UserRole);
+        setUserRole(data as UserRole);
       }
     } catch (err) {
       console.error('Error fetching user role:', err);
@@ -66,13 +61,12 @@ export const useRoles = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('user_roles')
-        .upsert({
-          user_id: userId,
-          role,
-          assigned_by: user.id,
-        });
+      // Use raw SQL to insert into user_roles
+      const { error } = await supabase.rpc('assign_user_role', {
+        target_user_id: userId,
+        new_role: role,
+        assigner_id: user.id,
+      });
 
       if (error) throw error;
     } catch (err) {

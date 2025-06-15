@@ -31,13 +31,13 @@ export const useRealtime = ({
     channelRef.current = supabase
       .channel(channelName)
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event,
           schema: 'public',
           table,
           filter,
-        },
+        } as any,
         (payload) => {
           console.log(`Real-time update for ${table}:`, payload);
           

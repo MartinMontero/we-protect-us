@@ -45,8 +45,8 @@ export const useTimeBankTransactions = () => {
           typeof transaction.giver_profile === 'object' &&
           'pseudonym' in transaction.giver_profile
           ? {
-              full_name: transaction.giver_profile.pseudonym || 'Unknown',
-              avatar_url: transaction.giver_profile.avatar_url || ''
+              full_name: (transaction.giver_profile as any)?.pseudonym || 'Unknown',
+              avatar_url: (transaction.giver_profile as any)?.avatar_url || ''
             }
           : null;
 
@@ -55,8 +55,8 @@ export const useTimeBankTransactions = () => {
           typeof transaction.receiver_profile === 'object' &&
           'pseudonym' in transaction.receiver_profile
           ? {
-              full_name: transaction.receiver_profile.pseudonym || 'Unknown',
-              avatar_url: transaction.receiver_profile.avatar_url || ''
+              full_name: (transaction.receiver_profile as any)?.pseudonym || 'Unknown',
+              avatar_url: (transaction.receiver_profile as any)?.avatar_url || ''
             }
           : null;
 

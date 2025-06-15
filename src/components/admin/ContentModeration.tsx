@@ -58,9 +58,9 @@ export const ContentModeration: React.FC = () => {
           typeof post.profiles === 'object' &&
           'pseudonym' in post.profiles
           ? {
-              full_name: post.profiles.pseudonym || 'Unknown',
-              pseudonym: post.profiles.pseudonym || 'Anonymous',
-              avatar_url: post.profiles.avatar_url || undefined
+              full_name: (post.profiles as any)?.pseudonym || 'Unknown',
+              pseudonym: (post.profiles as any)?.pseudonym || 'Anonymous',
+              avatar_url: (post.profiles as any)?.avatar_url || undefined
             }
           : undefined;
 

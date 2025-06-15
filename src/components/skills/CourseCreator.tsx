@@ -38,6 +38,11 @@ export const CourseCreator: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      // Map location_type to match database enum
+      let dbLocationType: 'local' | 'remote' | 'regional' = 'local';
+      if (courseData.location_type === 'virtual') dbLocationType = 'remote';
+      if (courseData.location_type === 'hybrid') dbLocationType = 'regional';
+
       const { error } = await supabase
         .from('courses')
         .insert({
@@ -46,7 +51,7 @@ export const CourseCreator: React.FC = () => {
           description: courseData.description,
           difficulty_level: courseData.difficulty_level,
           learning_format: courseData.learning_format,
-          location_type: courseData.location_type as 'local' | 'remote' | 'regional',
+          location_type: dbLocationType,
           duration_weeks: courseData.duration_weeks,
           max_participants: courseData.max_participants,
           price: courseData.price,

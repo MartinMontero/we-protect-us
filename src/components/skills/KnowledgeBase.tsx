@@ -48,8 +48,8 @@ export const KnowledgeBase: React.FC = () => {
           typeof article.profiles === 'object' &&
           'pseudonym' in article.profiles
           ? {
-              full_name: article.profiles.pseudonym || 'Unknown',
-              pseudonym: article.profiles.pseudonym || 'Anonymous'
+              full_name: (article.profiles as any)?.pseudonym || 'Unknown',
+              pseudonym: (article.profiles as any)?.pseudonym || 'Anonymous'
             }
           : undefined;
 

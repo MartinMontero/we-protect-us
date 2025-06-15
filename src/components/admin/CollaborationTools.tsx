@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,7 +60,12 @@ export const CollaborationTools: React.FC = () => {
     },
   ]);
 
-  const [newTask, setNewTask] = useState({ title: '', description: '', assignee: '', priority: 'medium' as const });
+  const [newTask, setNewTask] = useState({ 
+    title: '', 
+    description: '', 
+    assignee: '', 
+    priority: 'medium' as Task['priority'] 
+  });
   const [newMessage, setNewMessage] = useState('');
 
   const addTask = () => {
@@ -176,7 +180,7 @@ export const CollaborationTools: React.FC = () => {
                 <p className="text-gray-600 mb-2">{task.description}</p>
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-500">
-                    Assigned to: {task.assignee} • {task.created_at.toRelativeTimeString()}
+                    Assigned to: {task.assignee} • {task.created_at.toLocaleString()}
                   </div>
                   <div className="flex gap-1">
                     {task.status !== 'completed' && (

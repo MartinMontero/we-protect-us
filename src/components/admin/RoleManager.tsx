@@ -31,22 +31,15 @@ export const RoleManager: React.FC = () => {
 
   const fetchUsersWithRoles = async () => {
     try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          assigned_at,
-          profiles:user_id(pseudonym, avatar_url)
-        `)
-        .order('assigned_at', { ascending: false });
+      // Use raw SQL to get users with roles
+      const { data, error } = await supabase.rpc('get_users_with_roles');
 
       if (error) throw error;
 
-      const mappedUsers: UserWithRole[] = (data || []).map(item => ({
+      const mappedUsers: UserWithRole[] = (data || []).map((item: any) => ({
         id: item.user_id,
-        pseudonym: (item.profiles as any)?.pseudonym || 'Unknown',
-        avatar_url: (item.profiles as any)?.avatar_url,
+        pseudonym: item.pseudonym || 'Unknown',
+        avatar_url: item.avatar_url,
         role: item.role as UserRole,
         assigned_at: item.assigned_at,
       }));
