@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Search, Phone, Mail, Globe, MapPin, Star, Car, Utensils, Heart, Home, DollarSign, Shield, Laptop } from 'lucide-react';
+import { Search, Phone, Mail, Globe, MapPin, Star, Car, Utensils, Heart, Home, DollarSign, Shield, Laptop, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface SeniorResource {

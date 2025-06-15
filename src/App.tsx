@@ -4,20 +4,20 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthContextProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
-import HomePage from "./pages/HomePage";
-import DashboardPage from "./pages/DashboardPage";
+import { HomePage } from "./pages/HomePage";
+import { DashboardPage } from "./pages/DashboardPage";
 import MutualAid from "./pages/MutualAid";
-import ToolLibrary from "./pages/ToolLibrary";
-import CommunityGarden from "./pages/CommunityGarden";
+import { ToolLibrary } from "./pages/ToolLibrary";
+import { CommunityGarden } from "./pages/CommunityGarden";
 import CommunityWealth from "./pages/CommunityWealth";
-import ChildcareCoop from "./pages/ChildcareCoop";
+import { ChildcareCoop } from "./pages/ChildcareCoop";
 import Organizing from "./pages/Organizing";
-import SecurityGovernancePage from "./pages/SecurityGovernancePage";
+import { SecurityGovernancePage } from "./pages/SecurityGovernancePage";
 import CommunitySovereignty from "./pages/CommunitySovereignty";
-import ReportsPage from "./pages/ReportsPage";
-import ProfilePage from "./pages/ProfilePage";
+import { ReportsPage } from "./pages/ReportsPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import Settings from "./pages/Settings";
 import AuthPage from "./pages/AuthPage";
 import ElderCare from "./pages/ElderCare";
@@ -27,7 +27,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthContextProvider>
+    <AuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -55,7 +55,7 @@ const App = () => (
           </div>
         </BrowserRouter>
       </TooltipProvider>
-    </AuthContextProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
