@@ -19,25 +19,20 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    // Check if we're in the browser environment
-    if (typeof window === 'undefined') {
-      return 'light';
-    }
-    
+  const [theme, setTheme] = useState<Theme>('light');
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
     const saved = localStorage.getItem('csf-theme');
     if (saved && ['light', 'dark', 'high-contrast'].includes(saved)) {
-      return saved as Theme;
+      setTheme(saved as Theme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+  }, []);
 
+  // Apply theme to document
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === 'undefined') {
-      return;
-    }
-
     const root = document.documentElement;
     
     // Remove all theme classes
@@ -48,6 +43,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Store theme preference
     localStorage.setItem('csf-theme', theme);
+    
+    console.log('Theme applied:', theme, 'Classes:', root.classList.toString());
   }, [theme]);
 
   const value = React.useMemo(() => ({
