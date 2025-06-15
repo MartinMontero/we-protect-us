@@ -38,7 +38,7 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <Router>
-                <div className="min-h-screen bg-background font-sans antialiased">
+                <div className="min-h-screen bg-background text-foreground font-sans antialiased">
                   <Navigation />
                   <main id="main-content" className="w-full">
                     <Toaster />
