@@ -44,6 +44,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
         created_at: match.created_at,
         volunteer_profile: match.volunteer_profile && 
           typeof match.volunteer_profile === 'object' &&
+          match.volunteer_profile !== null &&
           'full_name' in match.volunteer_profile
           ? {
               full_name: match.volunteer_profile.full_name || '',
@@ -53,6 +54,7 @@ export const VolunteerMatchingPanel: React.FC = () => {
           : null,
         mutual_aid_post: match.mutual_aid_post && 
           typeof match.mutual_aid_post === 'object' &&
+          match.mutual_aid_post !== null &&
           'title' in match.mutual_aid_post
           ? {
               title: match.mutual_aid_post.title || '',

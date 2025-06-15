@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,6 +57,7 @@ export const ResourceDistributionTracker: React.FC = () => {
           : null,
         donor_profile: dist.donor_profile && 
           typeof dist.donor_profile === 'object' &&
+          dist.donor_profile !== null &&
           'full_name' in dist.donor_profile
           ? {
               full_name: dist.donor_profile.full_name || '',
@@ -66,6 +66,7 @@ export const ResourceDistributionTracker: React.FC = () => {
           : null,
         recipient_profile: dist.recipient_profile && 
           typeof dist.recipient_profile === 'object' &&
+          dist.recipient_profile !== null &&
           'full_name' in dist.recipient_profile
           ? {
               full_name: dist.recipient_profile.full_name || '',
