@@ -92,7 +92,7 @@ export const SkillMarketplace: React.FC<SkillMarketplaceProps> = ({ searchQuery 
           category: skill.skills_catalog.category || '',
           description: skill.skills_catalog.description || ''
         } : null,
-        profiles: skill.profiles ? {
+        profiles: skill.profiles && typeof skill.profiles === 'object' && 'full_name' in skill.profiles ? {
           full_name: skill.profiles.full_name || '',
           avatar_url: skill.profiles.avatar_url || ''
         } : null

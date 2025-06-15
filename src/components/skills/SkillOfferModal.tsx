@@ -29,6 +29,8 @@ interface SkillOfferModalProps {
   onSkillAdded: () => void;
 }
 
+type LocationType = 'in_person' | 'virtual' | 'hybrid';
+
 export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
   open,
   onOpenChange,
@@ -44,7 +46,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
     is_teaching: false,
     is_learning: false,
     teaching_styles: [] as string[],
-    preferred_location: [] as string[],
+    preferred_location: [] as LocationType[],
     hourly_rate: '',
     bio: '',
     years_experience: ''
@@ -126,7 +128,7 @@ export const SkillOfferModal: React.FC<SkillOfferModalProps> = ({
   };
 
   const teachingStyles = ['hands_on', 'lecture', 'discussion', 'project_based', 'mentoring'];
-  const locationTypes = ['in_person', 'virtual', 'hybrid'];
+  const locationTypes: LocationType[] = ['in_person', 'virtual', 'hybrid'];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

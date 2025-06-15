@@ -78,7 +78,7 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({ searchQuery })
         demo_url: project.demo_url || '',
         collaboration_open: project.collaboration_open || false,
         created_at: project.created_at || '',
-        profiles: project.profiles ? {
+        profiles: project.profiles && typeof project.profiles === 'object' && 'full_name' in project.profiles ? {
           full_name: project.profiles.full_name || '',
           avatar_url: project.profiles.avatar_url || ''
         } : null

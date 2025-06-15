@@ -84,7 +84,7 @@ export const CourseCreator: React.FC = () => {
         featured_image_url: course.featured_image_url || '',
         created_at: course.created_at || '',
         creator_id: course.creator_id,
-        profiles: course.profiles ? {
+        profiles: course.profiles && typeof course.profiles === 'object' && 'full_name' in course.profiles ? {
           full_name: course.profiles.full_name || '',
           avatar_url: course.profiles.avatar_url || ''
         } : null,
