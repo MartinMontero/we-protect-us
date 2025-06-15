@@ -28,23 +28,43 @@ const KnowledgeBase = () => {
   const { data: articles = [], isLoading, refetch } = useQuery({
     queryKey: ['knowledge_articles'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First, get the articles
+      const { data: articlesData, error: articlesError } = await supabase
         .from('knowledge_articles')
-        .select(`
-          *,
-          author_profile:profiles!author_id(pseudonym)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      return data.map(article => ({
+      if (articlesError) throw articlesError;
+
+      // Then get author profiles separately if we have articles
+      if (!articlesData || articlesData.length === 0) {
+        return [];
+      }
+
+      const authorIds = articlesData
+        .map(article => article.author_id)
+        .filter(Boolean);
+
+      let profilesData: any[] = [];
+      if (authorIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, pseudonym')
+          .in('id', authorIds);
+
+        if (!profilesError) {
+          profilesData = profiles || [];
+        }
+      }
+
+      // Combine the data
+      return articlesData.map(article => ({
         id: article.id,
         title: article.title,
         content: article.content,
         tags: article.tags || [],
         created_at: article.created_at,
-        author_profile: article.author_profile
+        author_profile: profilesData.find(p => p.id === article.author_id) || null
       })) as ArticleWithProfile[];
     },
   });

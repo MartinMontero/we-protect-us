@@ -4,9 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import LearningDashboard from '@/components/skills/LearningDashboard';
-import SkillMarketplace from '@/components/skills/SkillMarketplace';
+import { SkillMarketplace } from '@/components/skills/SkillMarketplace';
 import KnowledgeBase from '@/components/skills/KnowledgeBase';
-import ProjectShowcase from '@/components/skills/ProjectShowcase';
+import { ProjectShowcase } from '@/components/skills/ProjectShowcase';
 
 const SkillsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,7 +53,7 @@ const SkillsPage = () => {
         </TabsContent>
 
         <TabsContent value="projects">
-          <ProjectShowcase />
+          <ProjectShowcase searchQuery={searchQuery} />
         </TabsContent>
       </Tabs>
     </div>
