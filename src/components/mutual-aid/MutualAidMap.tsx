@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { useMutualAidPosts } from './hooks/useMutualAidPosts';
 import { MapMarker } from './components/MapMarker';
@@ -37,7 +37,7 @@ export const MutualAidMap: React.FC = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        {posts.map((post) => (
+        {posts && posts.length > 0 && posts.map((post) => (
           <MapMarker
             key={post.id}
             post={post}
