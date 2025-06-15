@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
-  Home, 
   BarChart3, 
   FileText, 
   User, 
@@ -18,7 +17,6 @@ import {
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { to: '/', label: 'Home', icon: Home },
   { to: '/dashboard', label: 'Dashboard', icon: BarChart3 },
   { to: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
   { to: '/security-governance', label: 'Security & Governance', icon: Shield },
@@ -37,19 +35,19 @@ export const Navigation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-9 h-9 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Heart className="w-5 h-5 text-white" />
-            </div>
-            <div className="min-w-0">
+          <div className="flex items-center space-x-3 min-w-0 flex-shrink-0">
+            <NavLink to="/" className="flex items-center space-x-3">
+              <div className="w-9 h-9 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-white" />
+              </div>
               <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent whitespace-nowrap">
                 We Protect Us
               </span>
-            </div>
+            </NavLink>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center max-w-4xl mx-8">
+          <div className="hidden lg:flex items-center space-x-2 flex-1 justify-end max-w-none ml-8">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.to;
@@ -59,14 +57,14 @@ export const Navigation: React.FC = () => {
                   key={item.to}
                   to={item.to}
                   className={cn(
-                    "flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+                    "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap",
                     isActive 
                       ? "bg-red-50 text-red-700 shadow-sm" 
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                   )}
                 >
                   <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="whitespace-nowrap">{item.label}</span>
+                  <span>{item.label}</span>
                 </NavLink>
               );
             })}
