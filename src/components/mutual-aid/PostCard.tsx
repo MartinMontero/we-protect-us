@@ -1,127 +1,108 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MutualAidPost } from '@/hooks/useMutualAidPosts';
-import { Clock, MapPin, User, Heart, HandHeart } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { Clock, MapPin, Users, Heart } from 'lucide-react';
+import { MutualAidPost } from './types';
 
 interface PostCardProps {
   post: MutualAidPost;
-  onRespond?: (post: MutualAidPost) => void;
+  onViewDetails: (post: MutualAidPost) => void;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ post, onRespond }) => {
-  const getUrgencyColor = (urgency: string) => {
-    switch (urgency) {
-      case 'critical': return 'bg-red-600 text-white';
-      case 'high': return 'bg-orange-500 text-white';
-      case 'medium': return 'bg-yellow-500 text-black';
-      case 'low': return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
+export const PostCard: React.FC<PostCardProps> = ({ post, onViewDetails }) => {
+  const urgencyColors = {
+    low: 'bg-green-100 text-green-800',
+    medium: 'bg-yellow-100 text-yellow-800',
+    high: 'bg-orange-100 text-orange-800',
+    critical: 'bg-red-100 text-red-800'
+  };
+
+  const typeColors = {
+    request: 'bg-blue-100 text-blue-800',
+    offer: 'bg-purple-100 text-purple-800'
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes}m ago`;
+    } else if (diffInMinutes < 1440) {
+      return `${Math.floor(diffInMinutes / 60)}h ago`;
+    } else {
+      return `${Math.floor(diffInMinutes / 1440)}d ago`;
     }
   };
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      food: 'bg-green-100 text-green-800',
-      housing: 'bg-blue-100 text-blue-800',
-      transportation: 'bg-purple-100 text-purple-800',
-      childcare: 'bg-pink-100 text-pink-800',
-      healthcare: 'bg-red-100 text-red-800',
-      education: 'bg-indigo-100 text-indigo-800',
-      technology: 'bg-gray-100 text-gray-800',
-      labor: 'bg-orange-100 text-orange-800',
-      financial: 'bg-yellow-100 text-yellow-800',
-      emotional_support: 'bg-teal-100 text-teal-800',
-    };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
-
   return (
-    <Card className="w-full hover:shadow-lg transition-shadow">
+    <Card className="h-full hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            {post.type === 'request' ? (
-              <Heart className="w-5 h-5 text-red-600" />
-            ) : (
-              <HandHeart className="w-5 h-5 text-green-600" />
-            )}
-            <h3 className="font-semibold text-lg">{post.title}</h3>
-          </div>
-          <div className="flex gap-2">
-            <Badge className={getUrgencyColor(post.urgency)}>
+        <div className="flex justify-between items-start gap-2">
+          <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
+          <div className="flex gap-1 flex-shrink-0">
+            <Badge className={urgencyColors[post.urgency]} variant="secondary">
               {post.urgency}
             </Badge>
-            <Badge className={getCategoryColor(post.category)}>
-              {post.category.replace('_', ' ')}
+            <Badge className={typeColors[post.type]} variant="secondary">
+              {post.type}
             </Badge>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-4 text-sm text-gray-600">
-          <div className="flex items-center gap-1">
-            <User className="w-4 h-4" />
-            {post.profiles?.pseudonym || 'Anonymous'}
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-          </div>
-          {post.time_commitment_hours && (
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {post.time_commitment_hours}h
-            </div>
-          )}
         </div>
       </CardHeader>
       
-      <CardContent>
-        <p className="text-gray-700 mb-4">{post.description}</p>
+      <CardContent className="space-y-3">
+        <p className="text-gray-600 line-clamp-3">{post.description}</p>
         
-        {post.skills_needed && post.skills_needed.length > 0 && (
-          <div className="mb-4">
-            <p className="text-sm font-medium mb-2">Skills needed:</p>
-            <div className="flex flex-wrap gap-1">
-              {post.skills_needed.map((skill) => (
-                <Badge key={skill} variant="outline" className="text-xs">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0 && (
-          <div className="mb-4">
-            <p className="text-sm font-medium mb-2">Priority factors:</p>
-            <div className="flex flex-wrap gap-1">
-              {post.profiles.vulnerability_factors.map((factor) => (
-                <Badge key={factor} variant="secondary" className="text-xs">
-                  {factor}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between">
-          <Badge variant={post.status === 'open' ? 'default' : 'secondary'}>
-            {post.status}
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline" className="text-xs">
+            {post.category}
           </Badge>
-          
-          {post.status === 'open' && onRespond && (
-            <Button 
-              onClick={() => onRespond(post)}
-              variant={post.type === 'request' ? 'default' : 'outline'}
-              size="sm"
-            >
-              {post.type === 'request' ? 'Offer Help' : 'Request This'}
-            </Button>
+          {post.skills_needed && post.skills_needed.length > 0 && (
+            post.skills_needed.slice(0, 2).map((skill, index) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {skill}
+              </Badge>
+            ))
           )}
+        </div>
+        
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center gap-4">
+            {post.time_commitment_hours && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{post.time_commitment_hours}h</span>
+              </div>
+            )}
+            {post.location_lat && post.location_lng && (
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                <span>{post.radius_km}km</span>
+              </div>
+            )}
+          </div>
+          <span>{formatTimeAgo(post.created_at)}</span>
+        </div>
+        
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Users className="w-4 h-4" />
+            <span>{post.profiles?.pseudonym || 'Anonymous'}</span>
+            {post.profiles?.vulnerability_factors && post.profiles.vulnerability_factors.length > 0 && (
+              <Heart className="w-4 h-4 text-red-500" />
+            )}
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => onViewDetails(post)}
+          >
+            View Details
+          </Button>
         </div>
       </CardContent>
     </Card>
