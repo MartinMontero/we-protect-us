@@ -62,13 +62,13 @@ const Navigation = () => {
               <Link 
                 to="/" 
                 className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors focus-visible"
-                aria-label="Community Solidarity Foundation - Home"
+                aria-label="We Protect Us - Home"
               >
                 <Users className="h-8 w-8 text-primary" aria-hidden="true" />
                 <span className="font-bold text-lg hidden sm:block">
-                  Community Solidarity Foundation
+                  We Protect Us
                 </span>
-                <span className="font-bold text-lg sm:hidden">CSF</span>
+                <span className="font-bold text-lg sm:hidden">WPU</span>
               </Link>
             </div>
 
