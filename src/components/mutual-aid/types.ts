@@ -3,18 +3,21 @@ export interface MutualAidPost {
   id: string;
   title: string;
   description: string;
-  latitude: number;
-  longitude: number;
+  location_lat?: number;
+  location_lng?: number;
   type: 'request' | 'offer';
   category: string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   created_at: string;
+  updated_at: string;
   user_id: string;
-  status: 'active' | 'fulfilled' | 'expired';
+  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
   contact_info?: string;
   tags?: string[];
   time_commitment_hours?: number;
   radius_km?: number;
+  skills_needed?: string[];
+  expires_at?: string;
   profiles?: {
     pseudonym?: string;
     vulnerability_factors?: string[];

@@ -28,10 +28,10 @@ export const MutualAidMap: React.FC = () => {
   const validPosts = Array.isArray(posts) ? posts.filter(post => 
     post && 
     typeof post.id === 'string' && 
-    typeof post.latitude === 'number' && 
-    typeof post.longitude === 'number' &&
-    !isNaN(post.latitude) &&
-    !isNaN(post.longitude)
+    typeof post.location_lat === 'number' && 
+    typeof post.location_lng === 'number' &&
+    !isNaN(post.location_lat) &&
+    !isNaN(post.location_lng)
   ) : [];
 
   console.log('MutualAidMap render - validPosts:', validPosts.length);

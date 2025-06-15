@@ -27,6 +27,13 @@ export interface MutualAidPost {
   };
 }
 
+const VALID_CATEGORIES = [
+  'food', 'housing', 'transportation', 'childcare', 'healthcare',
+  'education', 'technology', 'labor', 'financial', 'emotional_support'
+] as const;
+
+type ValidCategory = typeof VALID_CATEGORIES[number];
+
 export const useMutualAidPosts = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -89,6 +96,12 @@ export const useMutualAidPosts = () => {
     if (!user) return null;
 
     try {
+      // Validate category
+      const category = postData.category as ValidCategory;
+      if (!VALID_CATEGORIES.includes(category)) {
+        throw new Error('Invalid category');
+      }
+
       const { data, error } = await supabase
         .from('mutual_aid_posts')
         .insert({
@@ -96,7 +109,7 @@ export const useMutualAidPosts = () => {
           type: postData.type || 'request',
           title: postData.title || '',
           description: postData.description || '',
-          category: postData.category || 'general',
+          category: category,
           urgency: postData.urgency || 'medium',
           location_lat: postData.location_lat,
           location_lng: postData.location_lng,
@@ -129,10 +142,26 @@ export const useMutualAidPosts = () => {
 
   const updatePost = async (id: string, updates: Partial<MutualAidPost>) => {
     try {
+      // Validate category if being updated
+      if (updates.category && !VALID_CATEGORIES.includes(updates.category as ValidCategory)) {
+        throw new Error('Invalid category');
+      }
+
       const { data, error } = await supabase
         .from('mutual_aid_posts')
         .update({
-          ...updates,
+          type: updates.type,
+          title: updates.title,
+          description: updates.description,
+          category: updates.category,
+          urgency: updates.urgency,
+          location_lat: updates.location_lat,
+          location_lng: updates.location_lng,
+          radius_km: updates.radius_km,
+          time_commitment_hours: updates.time_commitment_hours,
+          skills_needed: updates.skills_needed,
+          status: updates.status,
+          expires_at: updates.expires_at,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)

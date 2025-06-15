@@ -41,9 +41,13 @@ export const MapMarker: React.FC<MapMarkerProps> = ({ post, onPostClick }) => {
     });
   };
 
+  if (!post.location_lat || !post.location_lng) {
+    return null;
+  }
+
   return (
     <Marker
-      position={[post.latitude, post.longitude]}
+      position={[post.location_lat, post.location_lng]}
       icon={createCustomIcon(post.type, post.urgency)}
       eventHandlers={{
         click: () => onPostClick(post)
