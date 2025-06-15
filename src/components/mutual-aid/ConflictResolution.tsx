@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Heart, Users, Clock, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { AlertTriangle, Clock, Users, CheckCircle, Heart, Calendar as CalendarIcon } from 'lucide-react';
 import { ConflictResolutionTooltip } from './education/ContextualTooltips';
 
 interface ConflictTicket {
@@ -251,7 +251,7 @@ export const ConflictResolution: React.FC = () => {
                           )}
                           {selectedTicket.status === 'mediation' && (
                             <Button className="w-full" variant="outline">
-                              <Calendar className="w-4 h-4 mr-2" />
+                              <CalendarIcon className="w-4 h-4 mr-2" />
                               Schedule Session
                             </Button>
                           )}
@@ -406,28 +406,28 @@ export const ConflictResolution: React.FC = () => {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                         <div>
                           <h4 className="font-medium">Clear Communication</h4>
                           <p className="text-sm text-gray-600">Establish clear guidelines and expectations for community interactions.</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                         <div>
                           <h4 className="font-medium">Regular Check-ins</h4>
                           <p className="text-sm text-gray-600">Schedule regular community meetings to address concerns early.</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                         <div>
                           <h4 className="font-medium">Skill Building</h4>
                           <p className="text-sm text-gray-600">Provide training in conflict resolution and communication skills.</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 mt-0.5" />
+                        <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
                         <div>
                           <h4 className="font-medium">Cultural Competency</h4>
                           <p className="text-sm text-gray-600">Understand and respect diverse cultural approaches to conflict.</p>

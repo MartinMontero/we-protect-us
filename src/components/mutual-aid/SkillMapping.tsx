@@ -1,11 +1,13 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Star, Plus, CheckCircle } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { SkillExchangeTooltip } from './education/ContextualTooltips';
+import { SkillNetworkView } from './skill-mapping/SkillNetworkView';
+import { MemberDetailView } from './skill-mapping/MemberDetailView';
+import { SkillDirectoryView } from './skill-mapping/SkillDirectoryView';
+import { EndorsementsView } from './skill-mapping/EndorsementsView';
 
 interface SkillEndorsement {
   id: string;
@@ -99,165 +101,32 @@ export const SkillMapping: React.FC = () => {
             </TabsList>
 
             <TabsContent value="network" className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {members.map(member => (
-                  <Card 
-                    key={member.id} 
-                    className={`cursor-pointer transition-colors ${
-                      selectedMember?.id === member.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => setSelectedMember(member)}
-                  >
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-sm mb-2">{member.name}</h3>
-                      <div className="space-y-1">
-                        {member.skills.slice(0, 2).map(skill => (
-                          <Badge key={skill} variant="outline" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {member.skills.length > 2 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{member.skills.length - 2} more
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <SkillNetworkView
+                members={members}
+                selectedMember={selectedMember}
+                onMemberSelect={setSelectedMember}
+              />
 
               {selectedMember && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{selectedMember.name}'s Skills</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold mb-2">Skills & Expertise</h4>
-                        <div className="space-y-2">
-                          {selectedMember.skills.map(skill => (
-                            <div key={skill} className="flex items-center justify-between">
-                              <span className="text-sm">{skill}</span>
-                              <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
-                                    className={`w-3 h-3 ${
-                                      i < getSkillLevel(skill, selectedMember) 
-                                        ? 'fill-yellow-400 text-yellow-400' 
-                                        : 'text-gray-300'
-                                    }`} 
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-2">Endorsements</h4>
-                        <div className="space-y-2">
-                          {selectedMember.endorsements.map(endorsement => (
-                            <div key={endorsement.id} className="flex items-center gap-2 text-sm">
-                              {endorsement.verified && <CheckCircle className="w-4 h-4 text-green-500" />}
-                              <span>{endorsement.endorser} endorsed <strong>{endorsement.skill}</strong></span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <MemberDetailView
+                  member={selectedMember}
+                  getSkillLevel={getSkillLevel}
+                />
               )}
             </TabsContent>
 
             <TabsContent value="directory" className="space-y-4">
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Add new skill..."
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                />
-                <Button onClick={() => setNewSkill('')}>
-                  <Plus className="w-4 h-4" />
-                  Add
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {getUniqueSkills().map(skill => {
-                  const skillMembers = members.filter(m => m.skills.includes(skill));
-                  return (
-                    <Card key={skill}>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{skill}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {skillMembers.map(member => (
-                            <div key={member.id} className="flex items-center justify-between text-sm">
-                              <span>{member.name}</span>
-                              <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
-                                    className={`w-3 h-3 ${
-                                      i < getSkillLevel(skill, member) 
-                                        ? 'fill-yellow-400 text-yellow-400' 
-                                        : 'text-gray-300'
-                                    }`} 
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+              <SkillDirectoryView
+                members={members}
+                newSkill={newSkill}
+                setNewSkill={setNewSkill}
+                getSkillLevel={getSkillLevel}
+                getUniqueSkills={getUniqueSkills}
+              />
             </TabsContent>
 
             <TabsContent value="endorsements" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Endorsements</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {members.flatMap(m => m.endorsements)
-                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                      .map(endorsement => (
-                        <div key={endorsement.id} className="flex items-center justify-between p-3 border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            {endorsement.verified && <CheckCircle className="w-5 h-5 text-green-500" />}
-                            <div>
-                              <p className="text-sm">
-                                <strong>{endorsement.endorser}</strong> endorsed <strong>{endorsement.skill}</strong>
-                              </p>
-                              <p className="text-xs text-gray-500">{endorsement.date}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`w-3 h-3 ${
-                                  i < endorsement.level 
-                                    ? 'fill-yellow-400 text-yellow-400' 
-                                    : 'text-gray-300'
-                                }`} 
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <EndorsementsView members={members} />
             </TabsContent>
           </Tabs>
         </CardContent>
