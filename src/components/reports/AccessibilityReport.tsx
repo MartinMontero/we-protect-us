@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Eye, Keyboard, Mouse, Volume2, Download, CheckCircle, AlertTriangle, Info } from 'lucide-react';
+import { Keyboard, CheckCircle, AlertTriangle, Info } from 'lucide-react';
+import { WCAGOverview } from './accessibility/WCAGOverview';
+import { InteractiveTests } from './accessibility/InteractiveTests';
 
 export const AccessibilityReport: React.FC = () => {
   const [activeTest, setActiveTest] = useState<string | null>(null);
@@ -89,67 +90,16 @@ export const AccessibilityReport: React.FC = () => {
 
   const runLiveTest = (testType: string) => {
     setActiveTest(testType);
-    // Simulate running test
-    setTimeout(() => {
-      setActiveTest(null);
-    }, 3000);
+    setTimeout(() => setActiveTest(null), 3000);
   };
 
   return (
     <div className="space-y-6">
-      {/* WCAG Compliance Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="w-5 h-5" />
-            WCAG 2.1 AA Validation Report
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-3xl font-bold text-green-600 mb-2">{wcagCompliance.overallScore}%</div>
-              <div className="text-sm font-medium">Overall Score</div>
-              <Badge variant="default" className="mt-2">WCAG {wcagCompliance.level}</Badge>
-            </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-blue-600 mb-2">4</div>
-              <div className="text-sm font-medium">Principles Tested</div>
-              <div className="text-xs text-gray-600 mt-2">All major areas covered</div>
-            </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-orange-600 mb-2">6</div>
-              <div className="text-sm font-medium">Minor Issues</div>
-              <div className="text-xs text-gray-600 mt-2">Non-blocking warnings</div>
-            </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-sm font-bold text-gray-700 mb-2">Apr 15</div>
-              <div className="text-sm font-medium">Next Audit</div>
-              <div className="text-xs text-gray-600 mt-2">Quarterly schedule</div>
-            </div>
-          </div>
-          
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-1">
-              <Download className="w-3 h-3" />
-              Full Report (PDF)
-            </Button>
-            <Button variant="outline" size="sm" className="gap-1">
-              <Download className="w-3 h-3" />
-              VPAT Document
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-1"
-              onClick={() => runLiveTest('full-scan')}
-              disabled={activeTest === 'full-scan'}
-            >
-              {activeTest === 'full-scan' ? 'Testing...' : 'Run Live Test'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <WCAGOverview 
+        overallScore={wcagCompliance.overallScore}
+        onRunTest={runLiveTest}
+        isTestRunning={activeTest === 'full-scan'}
+      />
 
       {/* WCAG Principles Breakdown */}
       <Card>
@@ -238,75 +188,7 @@ export const AccessibilityReport: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Live Testing Tools */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mouse className="w-5 h-5" />
-            Interactive Accessibility Tests
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => runLiveTest('keyboard')}
-              disabled={activeTest === 'keyboard'}
-              className="h-auto p-4 flex flex-col gap-2"
-            >
-              <Keyboard className="w-6 h-6" />
-              <span className="text-sm">
-                {activeTest === 'keyboard' ? 'Testing...' : 'Keyboard Nav'}
-              </span>
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => runLiveTest('contrast')}
-              disabled={activeTest === 'contrast'}
-              className="h-auto p-4 flex flex-col gap-2"
-            >
-              <Eye className="w-6 h-6" />
-              <span className="text-sm">
-                {activeTest === 'contrast' ? 'Testing...' : 'Color Contrast'}
-              </span>
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => runLiveTest('screen-reader')}
-              disabled={activeTest === 'screen-reader'}
-              className="h-auto p-4 flex flex-col gap-2"
-            >
-              <Volume2 className="w-6 h-6" />
-              <span className="text-sm">
-                {activeTest === 'screen-reader' ? 'Testing...' : 'Screen Reader'}
-              </span>
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => runLiveTest('focus')}
-              disabled={activeTest === 'focus'}
-              className="h-auto p-4 flex flex-col gap-2"
-            >
-              <Info className="w-6 h-6" />
-              <span className="text-sm">
-                {activeTest === 'focus' ? 'Testing...' : 'Focus Order'}
-              </span>
-            </Button>
-          </div>
-          
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-medium text-blue-800 mb-2">Accessibility Statement</h4>
-            <p className="text-sm text-blue-700">
-              This platform is committed to providing an inclusive experience for all users. 
-              We continuously test and improve accessibility features based on WCAG 2.1 AA guidelines 
-              and user feedback from the disability community.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <InteractiveTests onRunTest={runLiveTest} activeTest={activeTest} />
     </div>
   );
 };

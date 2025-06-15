@@ -2,9 +2,9 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Users, Vote, DollarSign, Network, Download, TrendingUp } from 'lucide-react';
+import { Network } from 'lucide-react';
+import { GovernanceMetrics } from './ownership/GovernanceMetrics';
+import { ValueFlowChart } from './ownership/ValueFlowChart';
 
 export const CommunityOwnershipReport: React.FC = () => {
   const governanceMetrics = [
@@ -81,42 +81,7 @@ export const CommunityOwnershipReport: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Governance Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
-            Cooperative Governance Model
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {governanceMetrics.map((metric, index) => (
-              <div key={index} className="text-center p-4 border rounded-lg">
-                <div className="text-2xl font-bold text-blue-600 mb-1">
-                  {typeof metric.value === 'number' && metric.value > 50 ? `${metric.value}%` : metric.value}
-                </div>
-                <div className="text-sm font-medium mb-1">{metric.metric}</div>
-                <div className="text-xs text-green-600 flex items-center justify-center gap-1">
-                  <TrendingUp className="w-3 h-3" />
-                  {metric.trend}
-                </div>
-                <div className="text-xs text-gray-600 mt-2">{metric.details}</div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 flex gap-2">
-            <Button variant="outline" size="sm" className="gap-1">
-              <Download className="w-3 h-3" />
-              Governance Report
-            </Button>
-            <Button variant="outline" size="sm" className="gap-1">
-              <Vote className="w-3 h-3" />
-              View Decisions
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <GovernanceMetrics metrics={governanceMetrics} />
 
       {/* Cooperative Structure */}
       <Card>
@@ -153,42 +118,7 @@ export const CommunityOwnershipReport: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Value Flow Visualization */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5" />
-            Value Flow Visualization
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {valueFlows.map((flow, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="text-sm font-medium">{flow.source}</div>
-                    <div className="text-gray-400">→</div>
-                    <div className="text-sm font-medium">{flow.destination}</div>
-                  </div>
-                  <div className="text-sm font-medium">{flow.amount}</div>
-                </div>
-                <Progress value={flow.percentage} className="h-2" />
-                <div className="text-xs text-gray-600 text-right">{flow.percentage}% of total flow</div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <h4 className="font-medium text-green-800 mb-2">Community Wealth Retention</h4>
-            <div className="text-sm text-green-700">
-              <p>• 92% of generated value remains within the community ecosystem</p>
-              <p>• $170K+ annual value retained vs. traditional extraction model</p>
-              <p>• 15% increase in local economic resilience year-over-year</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <ValueFlowChart flows={valueFlows} />
 
       {/* Ownership Principles Compliance */}
       <Card>
@@ -200,43 +130,23 @@ export const CommunityOwnershipReport: React.FC = () => {
             <div className="space-y-3">
               <h4 className="font-medium">Rochdale Principles</h4>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span>Voluntary Membership</span>
-                  <Badge variant="default">✓ Compliant</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Democratic Control</span>
-                  <Badge variant="default">✓ Compliant</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Economic Participation</span>
-                  <Badge variant="default">✓ Compliant</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Autonomy & Independence</span>
-                  <Badge variant="default">✓ Compliant</Badge>
-                </div>
+                {['Voluntary Membership', 'Democratic Control', 'Economic Participation', 'Autonomy & Independence'].map((principle) => (
+                  <div key={principle} className="flex items-center justify-between">
+                    <span>{principle}</span>
+                    <Badge variant="default">✓ Compliant</Badge>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="space-y-3">
               <h4 className="font-medium">Community Values</h4>
               <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span>Solidarity Economy</span>
-                  <Badge variant="default">✓ Active</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Environmental Sustainability</span>
-                  <Badge variant="default">✓ Active</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Social Justice</span>
-                  <Badge variant="default">✓ Active</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Community Care</span>
-                  <Badge variant="default">✓ Active</Badge>
-                </div>
+                {['Solidarity Economy', 'Environmental Sustainability', 'Social Justice', 'Community Care'].map((value) => (
+                  <div key={value} className="flex items-center justify-between">
+                    <span>{value}</span>
+                    <Badge variant="default">✓ Active</Badge>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

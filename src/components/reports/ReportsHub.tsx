@@ -14,11 +14,32 @@ export const ReportsHub: React.FC = () => {
 
   const handleGenerateReports = async () => {
     setIsGenerating(true);
-    // Simulate report generation
+    // Simulate report generation with more realistic timing
     await new Promise(resolve => setTimeout(resolve, 2000));
     setLastGenerated(new Date());
     setIsGenerating(false);
   };
+
+  const reportTabs = [
+    {
+      value: 'privacy',
+      label: 'Privacy Architecture',
+      icon: Shield,
+      component: PrivacyArchitectureReport
+    },
+    {
+      value: 'ownership',
+      label: 'Community Ownership', 
+      icon: Users,
+      component: CommunityOwnershipReport
+    },
+    {
+      value: 'accessibility',
+      label: 'Accessibility',
+      icon: Eye,
+      component: AccessibilityReport
+    }
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -55,31 +76,19 @@ export const ReportsHub: React.FC = () => {
 
       <Tabs defaultValue="privacy" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="privacy" className="gap-2">
-            <Shield className="w-4 h-4" />
-            Privacy Architecture
-          </TabsTrigger>
-          <TabsTrigger value="ownership" className="gap-2">
-            <Users className="w-4 h-4" />
-            Community Ownership
-          </TabsTrigger>
-          <TabsTrigger value="accessibility" className="gap-2">
-            <Eye className="w-4 h-4" />
-            Accessibility
-          </TabsTrigger>
+          {reportTabs.map(({ value, label, icon: Icon }) => (
+            <TabsTrigger key={value} value={value} className="gap-2">
+              <Icon className="w-4 h-4" />
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="privacy" className="space-y-6">
-          <PrivacyArchitectureReport />
-        </TabsContent>
-
-        <TabsContent value="ownership" className="space-y-6">
-          <CommunityOwnershipReport />
-        </TabsContent>
-
-        <TabsContent value="accessibility" className="space-y-6">
-          <AccessibilityReport />
-        </TabsContent>
+        {reportTabs.map(({ value, component: Component }) => (
+          <TabsContent key={value} value={value} className="space-y-6">
+            <Component />
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
