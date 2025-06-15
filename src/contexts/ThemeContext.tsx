@@ -29,27 +29,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     const root = document.documentElement;
-    const body = document.body;
     
-    // Remove all theme classes from both root and body
+    // Remove all theme classes
     root.classList.remove('light', 'dark', 'high-contrast');
-    body.classList.remove('light', 'dark', 'high-contrast');
     
-    // Add current theme class to both root and body
+    // Add current theme class
     root.classList.add(theme);
-    body.classList.add(theme);
-    
-    // Apply theme-specific styles to body
-    if (theme === 'dark') {
-      body.style.backgroundColor = 'hsl(240 10% 3.9%)';
-      body.style.color = 'hsl(0 0% 98%)';
-    } else if (theme === 'high-contrast') {
-      body.style.backgroundColor = 'hsl(0 0% 100%)';
-      body.style.color = 'hsl(0 0% 0%)';
-    } else {
-      body.style.backgroundColor = 'hsl(0 0% 100%)';
-      body.style.color = 'hsl(240 10% 3.9%)';
-    }
     
     // Store theme preference
     localStorage.setItem('csf-theme', theme);

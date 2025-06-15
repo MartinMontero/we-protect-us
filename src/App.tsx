@@ -38,88 +38,86 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <Router>
-                <div className="min-h-screen bg-background text-foreground">
+                <div className="min-h-screen">
                   <Navigation />
-                  <div className="w-full">
-                    <Toaster />
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/auth" element={<AuthPage />} />
-                      <Route path="/onboarding" element={
-                        <ProtectedRoute>
-                          <OnboardingPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/dashboard" element={
-                        <ProtectedRoute>
-                          <DashboardPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/mutual-aid" element={
-                        <ProtectedRoute>
-                          <MutualAid />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/community-defense" element={
-                        <ProtectedRoute>
-                          <CommunityDefense />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/food-security" element={
-                        <ProtectedRoute>
-                          <FoodSecurity />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/energy-democracy" element={
-                        <ProtectedRoute>
-                          <EnergyDemocracy />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/tool-library" element={
-                        <ProtectedRoute>
-                          <ToolLibrary />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/skills" element={
-                        <ProtectedRoute>
-                          <SkillsPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/settings" element={
-                        <ProtectedRoute>
-                          <Settings />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/admin/*" element={
-                        <ProtectedRoute>
-                          <AdminPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/integrations" element={
-                        <ProtectedRoute>
-                          <IntegrationsPage />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/organizing" element={
-                        <ProtectedRoute>
-                          <Organizing />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/community-wealth" element={
-                        <ProtectedRoute>
-                          <CommunityWealth />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/community-sovereignty" element={
-                        <ProtectedRoute>
-                          <CommunitySovereignty />
-                        </ProtectedRoute>
-                      } />
-                      <Route path="/disaster-preparedness" element={
-                        <DisasterPreparedness />
-                      } />
-                    </Routes>
-                  </div>
+                  <Toaster />
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/onboarding" element={
+                      <ProtectedRoute>
+                        <OnboardingPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard" element={
+                      <ProtectedRoute>
+                        <DashboardPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/mutual-aid" element={
+                      <ProtectedRoute>
+                        <MutualAid />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/community-defense" element={
+                      <ProtectedRoute>
+                        <CommunityDefense />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/food-security" element={
+                      <ProtectedRoute>
+                        <FoodSecurity />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/energy-democracy" element={
+                      <ProtectedRoute>
+                        <EnergyDemocracy />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/tool-library" element={
+                      <ProtectedRoute>
+                        <ToolLibrary />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/skills" element={
+                      <ProtectedRoute>
+                        <SkillsPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/settings" element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/admin/*" element={
+                      <ProtectedRoute>
+                        <AdminPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/integrations" element={
+                      <ProtectedRoute>
+                        <IntegrationsPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/organizing" element={
+                      <ProtectedRoute>
+                        <Organizing />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/community-wealth" element={
+                      <ProtectedRoute>
+                        <CommunityWealth />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/community-sovereignty" element={
+                      <ProtectedRoute>
+                        <CommunitySovereignty />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/disaster-preparedness" element={
+                      <DisasterPreparedness />
+                    } />
+                  </Routes>
                 </div>
               </Router>
             </TooltipProvider>
