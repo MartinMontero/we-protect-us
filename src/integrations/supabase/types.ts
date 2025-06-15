@@ -119,6 +119,36 @@ export type Database = {
           },
         ]
       }
+      oauth_states: {
+        Row: {
+          code_verifier: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          provider: string
+          redirect_url: string | null
+          state: string
+        }
+        Insert: {
+          code_verifier?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          provider: string
+          redirect_url?: string | null
+          state: string
+        }
+        Update: {
+          code_verifier?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          provider?: string
+          redirect_url?: string | null
+          state?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -360,6 +390,10 @@ export type Database = {
       calculate_network_density: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      cleanup_expired_oauth_states: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       update_solidarity_metrics: {
         Args: Record<PropertyKey, never>

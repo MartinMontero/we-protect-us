@@ -41,6 +41,7 @@ const features = [
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen">
@@ -69,10 +70,10 @@ export const HomePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
               <Button 
                 size="lg" 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(user ? '/dashboard' : '/auth')}
                 className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
               >
-                Join the Movement
+                {user ? 'Go to Dashboard' : 'Join the Movement'}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               <Button 
@@ -136,10 +137,10 @@ export const HomePage: React.FC = () => {
           </p>
           <Button 
             size="lg"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate(user ? '/dashboard' : '/auth')}
             className="bg-white text-red-600 hover:bg-red-50 px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            Start Organizing Today
+            {user ? 'Go to Dashboard' : 'Start Organizing Today'}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
