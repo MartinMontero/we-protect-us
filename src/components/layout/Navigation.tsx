@@ -9,7 +9,8 @@ import {
   User, 
   Menu, 
   X,
-  Sparkles
+  Sparkles,
+  Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

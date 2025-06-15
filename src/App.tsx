@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
@@ -7,6 +6,7 @@ import { HomePage } from '@/pages/HomePage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ReportsPage } from '@/pages/ReportsPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { SecurityGovernancePage } from '@/pages/SecurityGovernancePage';
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/security-governance" element={<SecurityGovernancePage />} />
         </Routes>
         <Toaster />
       </div>
