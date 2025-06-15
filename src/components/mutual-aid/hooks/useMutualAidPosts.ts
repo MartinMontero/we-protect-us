@@ -2,29 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-
-export interface MutualAidPost {
-  id: string;
-  user_id: string;
-  type: 'request' | 'offer';
-  title: string;
-  description: string;
-  category: string;
-  urgency: 'low' | 'medium' | 'high' | 'critical';
-  location_lat?: number;
-  location_lng?: number;
-  radius_km?: number;
-  time_commitment_hours?: number;
-  skills_needed?: string[];
-  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
-  expires_at?: string;
-  created_at: string;
-  updated_at: string;
-  profiles?: {
-    pseudonym: string;
-    vulnerability_factors?: string[];
-  };
-}
+import { MutualAidPost } from '../types';
 
 export const useMutualAidPosts = () => {
   const { user } = useAuth();
@@ -52,7 +30,7 @@ export const useMutualAidPosts = () => {
           title: 'Food Assistance Needed',
           description: 'Family needs groceries for the week. Any help would be greatly appreciated.',
           type: 'request' as const,
-          category: 'food',
+          category: 'food' as const,
           urgency: 'high' as const,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -72,7 +50,7 @@ export const useMutualAidPosts = () => {
           title: 'Offering Transportation',
           description: 'Can provide rides to medical appointments. Vehicle is wheelchair accessible.',
           type: 'offer' as const,
-          category: 'transportation',
+          category: 'transportation' as const,
           urgency: 'low' as const,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -122,7 +100,9 @@ export const useMutualAidPosts = () => {
         return;
       }
 
-      setPosts(data || []);
+      // Type assertion to ensure data matches our interface
+      const typedData = data as MutualAidPost[];
+      setPosts(typedData || []);
       console.log('Real posts loaded successfully:', data?.length || 0);
     } catch (error) {
       console.error('Error fetching real mutual aid posts:', error);

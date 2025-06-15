@@ -3,29 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
-
-export interface MutualAidPost {
-  id: string;
-  user_id: string;
-  type: 'request' | 'offer';
-  title: string;
-  description: string;
-  category: string;
-  urgency: 'low' | 'medium' | 'high' | 'critical';
-  location_lat?: number;
-  location_lng?: number;
-  radius_km?: number;
-  time_commitment_hours?: number;
-  skills_needed?: string[];
-  status: 'open' | 'in_progress' | 'fulfilled' | 'expired';
-  expires_at?: string;
-  created_at: string;
-  updated_at: string;
-  profiles?: {
-    pseudonym: string;
-    vulnerability_factors?: string[];
-  };
-}
+import { MutualAidPost } from '@/components/mutual-aid/types';
 
 const VALID_CATEGORIES = [
   'food', 'housing', 'transportation', 'childcare', 'healthcare',
@@ -79,7 +57,9 @@ export const useMutualAidPosts = () => {
 
       if (error) throw error;
 
-      setPosts(data || []);
+      // Type assertion to ensure data matches our interface
+      const typedData = data as MutualAidPost[];
+      setPosts(typedData || []);
     } catch (error) {
       console.error('Error fetching mutual aid posts:', error);
       toast({
@@ -153,7 +133,7 @@ export const useMutualAidPosts = () => {
           type: updates.type,
           title: updates.title,
           description: updates.description,
-          category: updates.category,
+          category: updates.category as ValidCategory,
           urgency: updates.urgency,
           location_lat: updates.location_lat,
           location_lng: updates.location_lng,
