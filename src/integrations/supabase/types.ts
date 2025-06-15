@@ -626,6 +626,137 @@ export type Database = {
           },
         ]
       }
+      communication_nodes: {
+        Row: {
+          access_level: string | null
+          backup_power_hours: number | null
+          callsign: string | null
+          capabilities: string[] | null
+          connected_nodes: string[] | null
+          contact_schedule: Json | null
+          coverage_radius_miles: number | null
+          created_at: string | null
+          equipment_details: Json | null
+          frequency_bands: string[] | null
+          id: string
+          location_description: string
+          location_lat: number | null
+          location_lng: number | null
+          node_type: string
+          operational_status: string | null
+          operator_id: string
+          power_source: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          backup_power_hours?: number | null
+          callsign?: string | null
+          capabilities?: string[] | null
+          connected_nodes?: string[] | null
+          contact_schedule?: Json | null
+          coverage_radius_miles?: number | null
+          created_at?: string | null
+          equipment_details?: Json | null
+          frequency_bands?: string[] | null
+          id?: string
+          location_description: string
+          location_lat?: number | null
+          location_lng?: number | null
+          node_type: string
+          operational_status?: string | null
+          operator_id: string
+          power_source: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          backup_power_hours?: number | null
+          callsign?: string | null
+          capabilities?: string[] | null
+          connected_nodes?: string[] | null
+          contact_schedule?: Json | null
+          coverage_radius_miles?: number | null
+          created_at?: string | null
+          equipment_details?: Json | null
+          frequency_bands?: string[] | null
+          id?: string
+          location_description?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          node_type?: string
+          operational_status?: string | null
+          operator_id?: string
+          power_source?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      community_resources: {
+        Row: {
+          access_instructions: string | null
+          availability_status: string | null
+          capacity: string | null
+          contact_preference: string | null
+          created_at: string | null
+          description: string | null
+          household_id: string | null
+          id: string
+          location_description: string | null
+          location_lat: number | null
+          location_lng: number | null
+          owner_id: string
+          resource_name: string
+          resource_type: string
+          sharing_conditions: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_instructions?: string | null
+          availability_status?: string | null
+          capacity?: string | null
+          contact_preference?: string | null
+          created_at?: string | null
+          description?: string | null
+          household_id?: string | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          owner_id: string
+          resource_name: string
+          resource_type: string
+          sharing_conditions?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_instructions?: string | null
+          availability_status?: string | null
+          capacity?: string | null
+          contact_preference?: string | null
+          created_at?: string | null
+          description?: string | null
+          household_id?: string | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          owner_id?: string
+          resource_name?: string
+          resource_type?: string
+          sharing_conditions?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_resources_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compost_bins: {
         Row: {
           bin_name: string
@@ -778,6 +909,144 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      damage_reports: {
+        Row: {
+          access_blocked: boolean | null
+          assigned_to: string | null
+          created_at: string | null
+          description: string
+          estimated_repair_time: string | null
+          id: string
+          immediate_needs: string[] | null
+          incident_type: string
+          location_description: string
+          location_lat: number | null
+          location_lng: number | null
+          people_affected: number | null
+          photos: string[] | null
+          priority_level: number | null
+          reporter_id: string
+          resolution_notes: string | null
+          safety_hazards: string[] | null
+          severity: string
+          status: string | null
+          updated_at: string | null
+          utilities_affected: string[] | null
+        }
+        Insert: {
+          access_blocked?: boolean | null
+          assigned_to?: string | null
+          created_at?: string | null
+          description: string
+          estimated_repair_time?: string | null
+          id?: string
+          immediate_needs?: string[] | null
+          incident_type: string
+          location_description: string
+          location_lat?: number | null
+          location_lng?: number | null
+          people_affected?: number | null
+          photos?: string[] | null
+          priority_level?: number | null
+          reporter_id: string
+          resolution_notes?: string | null
+          safety_hazards?: string[] | null
+          severity: string
+          status?: string | null
+          updated_at?: string | null
+          utilities_affected?: string[] | null
+        }
+        Update: {
+          access_blocked?: boolean | null
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string
+          estimated_repair_time?: string | null
+          id?: string
+          immediate_needs?: string[] | null
+          incident_type?: string
+          location_description?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          people_affected?: number | null
+          photos?: string[] | null
+          priority_level?: number | null
+          reporter_id?: string
+          resolution_notes?: string | null
+          safety_hazards?: string[] | null
+          severity?: string
+          status?: string | null
+          updated_at?: string | null
+          utilities_affected?: string[] | null
+        }
+        Relationships: []
+      }
+      distribution_points: {
+        Row: {
+          access_requirements: string[] | null
+          address: string
+          available_resources: Json | null
+          capacity_people_per_hour: number | null
+          created_at: string | null
+          current_volunteers_count: number | null
+          distribution_limits: Json | null
+          distribution_type: string
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          manager_id: string | null
+          notes: string | null
+          operating_schedule: Json | null
+          point_name: string
+          special_accommodations: string[] | null
+          status: string | null
+          updated_at: string | null
+          volunteer_needed_count: number | null
+        }
+        Insert: {
+          access_requirements?: string[] | null
+          address: string
+          available_resources?: Json | null
+          capacity_people_per_hour?: number | null
+          created_at?: string | null
+          current_volunteers_count?: number | null
+          distribution_limits?: Json | null
+          distribution_type: string
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          manager_id?: string | null
+          notes?: string | null
+          operating_schedule?: Json | null
+          point_name: string
+          special_accommodations?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          volunteer_needed_count?: number | null
+        }
+        Update: {
+          access_requirements?: string[] | null
+          address?: string
+          available_resources?: Json | null
+          capacity_people_per_hour?: number | null
+          created_at?: string | null
+          current_volunteers_count?: number | null
+          distribution_limits?: Json | null
+          distribution_type?: string
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          manager_id?: string | null
+          notes?: string | null
+          operating_schedule?: Json | null
+          point_name?: string
+          special_accommodations?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          volunteer_needed_count?: number | null
+        }
+        Relationships: []
       }
       elder_group_activities: {
         Row: {
@@ -946,6 +1215,54 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_alerts: {
+        Row: {
+          affected_areas: string[] | null
+          alert_type: string
+          attachments: string[] | null
+          communication_methods: string[] | null
+          created_at: string | null
+          expiration_time: string | null
+          id: string
+          message: string
+          sender_id: string
+          severity: string
+          target_languages: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          affected_areas?: string[] | null
+          alert_type: string
+          attachments?: string[] | null
+          communication_methods?: string[] | null
+          created_at?: string | null
+          expiration_time?: string | null
+          id?: string
+          message: string
+          sender_id: string
+          severity: string
+          target_languages?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          affected_areas?: string[] | null
+          alert_type?: string
+          attachments?: string[] | null
+          communication_methods?: string[] | null
+          created_at?: string | null
+          expiration_time?: string | null
+          id?: string
+          message?: string
+          sender_id?: string
+          severity?: string
+          target_languages?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           address: string | null
@@ -992,6 +1309,141 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      emergency_shelters: {
+        Row: {
+          address: string
+          amenities: string[] | null
+          capacity_people: number
+          contact_info: Json | null
+          created_at: string | null
+          current_occupancy: number | null
+          id: string
+          internet_available: boolean | null
+          location_lat: number | null
+          location_lng: number | null
+          manager_id: string | null
+          medical_facilities: boolean | null
+          operating_hours: string | null
+          pet_friendly: boolean | null
+          power_available: boolean | null
+          registration_required: boolean | null
+          restrictions: string[] | null
+          shelter_name: string
+          shelter_type: string
+          status: string | null
+          updated_at: string | null
+          water_available: boolean | null
+          wheelchair_accessible: boolean | null
+        }
+        Insert: {
+          address: string
+          amenities?: string[] | null
+          capacity_people: number
+          contact_info?: Json | null
+          created_at?: string | null
+          current_occupancy?: number | null
+          id?: string
+          internet_available?: boolean | null
+          location_lat?: number | null
+          location_lng?: number | null
+          manager_id?: string | null
+          medical_facilities?: boolean | null
+          operating_hours?: string | null
+          pet_friendly?: boolean | null
+          power_available?: boolean | null
+          registration_required?: boolean | null
+          restrictions?: string[] | null
+          shelter_name: string
+          shelter_type: string
+          status?: string | null
+          updated_at?: string | null
+          water_available?: boolean | null
+          wheelchair_accessible?: boolean | null
+        }
+        Update: {
+          address?: string
+          amenities?: string[] | null
+          capacity_people?: number
+          contact_info?: Json | null
+          created_at?: string | null
+          current_occupancy?: number | null
+          id?: string
+          internet_available?: boolean | null
+          location_lat?: number | null
+          location_lng?: number | null
+          manager_id?: string | null
+          medical_facilities?: boolean | null
+          operating_hours?: string | null
+          pet_friendly?: boolean | null
+          power_available?: boolean | null
+          registration_required?: boolean | null
+          restrictions?: string[] | null
+          shelter_name?: string
+          shelter_type?: string
+          status?: string | null
+          updated_at?: string | null
+          water_available?: boolean | null
+          wheelchair_accessible?: boolean | null
+        }
+        Relationships: []
+      }
+      evacuation_routes: {
+        Row: {
+          accessibility_level: string
+          alternative_route_ids: string[] | null
+          capacity_vehicles_per_hour: number | null
+          created_at: string | null
+          destination_area: string
+          estimated_travel_time: number | null
+          hazard_warnings: string[] | null
+          id: string
+          last_surveyed_date: string | null
+          origin_area: string
+          road_conditions: string | null
+          route_coordinates: Json | null
+          route_description: string | null
+          route_name: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_level: string
+          alternative_route_ids?: string[] | null
+          capacity_vehicles_per_hour?: number | null
+          created_at?: string | null
+          destination_area: string
+          estimated_travel_time?: number | null
+          hazard_warnings?: string[] | null
+          id?: string
+          last_surveyed_date?: string | null
+          origin_area: string
+          road_conditions?: string | null
+          route_coordinates?: Json | null
+          route_description?: string | null
+          route_name: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_level?: string
+          alternative_route_ids?: string[] | null
+          capacity_vehicles_per_hour?: number | null
+          created_at?: string | null
+          destination_area?: string
+          estimated_travel_time?: number | null
+          hazard_warnings?: string[] | null
+          id?: string
+          last_surveyed_date?: string | null
+          origin_area?: string
+          road_conditions?: string | null
+          route_coordinates?: Json | null
+          route_description?: string | null
+          route_name?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       family_connections: {
         Row: {
@@ -1256,6 +1708,60 @@ export type Database = {
           },
         ]
       }
+      households: {
+        Row: {
+          accessibility_requirements: string[] | null
+          address: string
+          created_at: string | null
+          emergency_contact_external: Json | null
+          household_size: number | null
+          id: string
+          languages_spoken: string[] | null
+          livestock_count: number | null
+          location_lat: number | null
+          location_lng: number | null
+          name: string
+          pets_count: number | null
+          primary_contact_id: string
+          special_needs_members: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_requirements?: string[] | null
+          address: string
+          created_at?: string | null
+          emergency_contact_external?: Json | null
+          household_size?: number | null
+          id?: string
+          languages_spoken?: string[] | null
+          livestock_count?: number | null
+          location_lat?: number | null
+          location_lng?: number | null
+          name: string
+          pets_count?: number | null
+          primary_contact_id: string
+          special_needs_members?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_requirements?: string[] | null
+          address?: string
+          created_at?: string | null
+          emergency_contact_external?: Json | null
+          household_size?: number | null
+          id?: string
+          languages_spoken?: string[] | null
+          livestock_count?: number | null
+          location_lat?: number | null
+          location_lng?: number | null
+          name?: string
+          pets_count?: number | null
+          primary_contact_id?: string
+          special_needs_members?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       member_references: {
         Row: {
           contacted_date: string | null
@@ -1343,6 +1849,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      member_skills: {
+        Row: {
+          available_for_emergency: boolean | null
+          certifications: string[] | null
+          created_at: string | null
+          equipment_owned: string[] | null
+          id: string
+          notes: string | null
+          proficiency_level: string
+          skill_category: string
+          skill_name: string
+          updated_at: string | null
+          user_id: string
+          verified_by: string | null
+          verified_date: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          available_for_emergency?: boolean | null
+          certifications?: string[] | null
+          created_at?: string | null
+          equipment_owned?: string[] | null
+          id?: string
+          notes?: string | null
+          proficiency_level: string
+          skill_category: string
+          skill_name: string
+          updated_at?: string | null
+          user_id: string
+          verified_by?: string | null
+          verified_date?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          available_for_emergency?: boolean | null
+          certifications?: string[] | null
+          created_at?: string | null
+          equipment_owned?: string[] | null
+          id?: string
+          notes?: string | null
+          proficiency_level?: string
+          skill_category?: string
+          skill_name?: string
+          updated_at?: string | null
+          user_id?: string
+          verified_by?: string | null
+          verified_date?: string | null
+          years_experience?: number | null
+        }
+        Relationships: []
       }
       member_verification: {
         Row: {
@@ -1585,6 +2142,62 @@ export type Database = {
           },
         ]
       }
+      preparedness_items: {
+        Row: {
+          category: string
+          checked: boolean | null
+          created_at: string | null
+          current_quantity: string | null
+          expiration_date: string | null
+          household_id: string
+          id: string
+          item_name: string
+          last_checked_date: string | null
+          location_stored: string | null
+          notes: string | null
+          recommended_quantity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          checked?: boolean | null
+          created_at?: string | null
+          current_quantity?: string | null
+          expiration_date?: string | null
+          household_id: string
+          id?: string
+          item_name: string
+          last_checked_date?: string | null
+          location_stored?: string | null
+          notes?: string | null
+          recommended_quantity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          checked?: boolean | null
+          created_at?: string | null
+          current_quantity?: string | null
+          expiration_date?: string | null
+          household_id?: string
+          id?: string
+          item_name?: string
+          last_checked_date?: string | null
+          location_stored?: string | null
+          notes?: string | null
+          recommended_quantity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preparedness_items_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -1698,6 +2311,133 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resource_requests: {
+        Row: {
+          created_at: string | null
+          fulfilled_by: string | null
+          fulfillment_notes: string | null
+          household_id: string | null
+          id: string
+          item_description: string
+          location_for_delivery: string | null
+          location_lat: number | null
+          location_lng: number | null
+          medical_related: boolean | null
+          preferred_fulfillment_method: string | null
+          quantity_needed: string | null
+          request_type: string
+          requester_id: string
+          special_requirements: string | null
+          status: string | null
+          updated_at: string | null
+          urgency: string
+        }
+        Insert: {
+          created_at?: string | null
+          fulfilled_by?: string | null
+          fulfillment_notes?: string | null
+          household_id?: string | null
+          id?: string
+          item_description: string
+          location_for_delivery?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          medical_related?: boolean | null
+          preferred_fulfillment_method?: string | null
+          quantity_needed?: string | null
+          request_type: string
+          requester_id: string
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string | null
+          urgency: string
+        }
+        Update: {
+          created_at?: string | null
+          fulfilled_by?: string | null
+          fulfillment_notes?: string | null
+          household_id?: string | null
+          id?: string
+          item_description?: string
+          location_for_delivery?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          medical_related?: boolean | null
+          preferred_fulfillment_method?: string | null
+          quantity_needed?: string | null
+          request_type?: string
+          requester_id?: string
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string | null
+          urgency?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_requests_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safety_checkins: {
+        Row: {
+          additional_info: string | null
+          contact_method: string | null
+          created_at: string | null
+          household_id: string | null
+          id: string
+          location_description: string | null
+          location_lat: number | null
+          location_lng: number | null
+          medical_emergency: boolean | null
+          needs_assistance: string[] | null
+          status: string
+          user_id: string
+          verified_by: string | null
+        }
+        Insert: {
+          additional_info?: string | null
+          contact_method?: string | null
+          created_at?: string | null
+          household_id?: string | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          medical_emergency?: boolean | null
+          needs_assistance?: string[] | null
+          status: string
+          user_id: string
+          verified_by?: string | null
+        }
+        Update: {
+          additional_info?: string | null
+          contact_method?: string | null
+          created_at?: string | null
+          household_id?: string | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          medical_emergency?: boolean | null
+          needs_assistance?: string[] | null
+          status?: string
+          user_id?: string
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safety_checkins_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
             referencedColumns: ["id"]
           },
         ]
@@ -2263,6 +3003,144 @@ export type Database = {
           },
         ]
       }
+      transportation_offers: {
+        Row: {
+          cargo_capacity: string | null
+          contact_method: string | null
+          created_at: string | null
+          departure_location: string
+          departure_time: string | null
+          destination_area: string | null
+          driver_id: string
+          fuel_range_miles: number | null
+          id: string
+          pet_friendly: boolean | null
+          route_flexibility: string | null
+          seats_available: number
+          special_requirements: string | null
+          status: string | null
+          updated_at: string | null
+          vehicle_type: string
+          wheelchair_accessible: boolean | null
+        }
+        Insert: {
+          cargo_capacity?: string | null
+          contact_method?: string | null
+          created_at?: string | null
+          departure_location: string
+          departure_time?: string | null
+          destination_area?: string | null
+          driver_id: string
+          fuel_range_miles?: number | null
+          id?: string
+          pet_friendly?: boolean | null
+          route_flexibility?: string | null
+          seats_available: number
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vehicle_type: string
+          wheelchair_accessible?: boolean | null
+        }
+        Update: {
+          cargo_capacity?: string | null
+          contact_method?: string | null
+          created_at?: string | null
+          departure_location?: string
+          departure_time?: string | null
+          destination_area?: string | null
+          driver_id?: string
+          fuel_range_miles?: number | null
+          id?: string
+          pet_friendly?: boolean | null
+          route_flexibility?: string | null
+          seats_available?: number
+          special_requirements?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vehicle_type?: string
+          wheelchair_accessible?: boolean | null
+        }
+        Relationships: []
+      }
+      transportation_requests: {
+        Row: {
+          assigned_driver_id: string | null
+          created_at: string | null
+          destination_area: string
+          household_id: string | null
+          id: string
+          luggage_description: string | null
+          medical_priority: boolean | null
+          notes: string | null
+          passengers_count: number
+          pets_count: number | null
+          pickup_location: string
+          pickup_time_preferred: string | null
+          requester_id: string
+          special_needs: string | null
+          status: string | null
+          transportation_offer_id: string | null
+          updated_at: string | null
+          wheelchair_needed: boolean | null
+        }
+        Insert: {
+          assigned_driver_id?: string | null
+          created_at?: string | null
+          destination_area: string
+          household_id?: string | null
+          id?: string
+          luggage_description?: string | null
+          medical_priority?: boolean | null
+          notes?: string | null
+          passengers_count: number
+          pets_count?: number | null
+          pickup_location: string
+          pickup_time_preferred?: string | null
+          requester_id: string
+          special_needs?: string | null
+          status?: string | null
+          transportation_offer_id?: string | null
+          updated_at?: string | null
+          wheelchair_needed?: boolean | null
+        }
+        Update: {
+          assigned_driver_id?: string | null
+          created_at?: string | null
+          destination_area?: string
+          household_id?: string | null
+          id?: string
+          luggage_description?: string | null
+          medical_priority?: boolean | null
+          notes?: string | null
+          passengers_count?: number
+          pets_count?: number | null
+          pickup_location?: string
+          pickup_time_preferred?: string | null
+          requester_id?: string
+          special_needs?: string | null
+          status?: string | null
+          transportation_offer_id?: string | null
+          updated_at?: string | null
+          wheelchair_needed?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transportation_requests_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transportation_requests_transportation_offer_id_fkey"
+            columns: ["transportation_offer_id"]
+            isOneToOne: false
+            referencedRelation: "transportation_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trust_relations: {
         Row: {
           created_at: string | null
@@ -2452,6 +3330,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      volunteer_assignments: {
+        Row: {
+          assignment_type: string
+          completion_notes: string | null
+          coordinator_id: string | null
+          created_at: string | null
+          description: string
+          equipment_needed: string[] | null
+          estimated_duration_hours: number | null
+          hours_logged: number | null
+          id: string
+          location_description: string | null
+          location_lat: number | null
+          location_lng: number | null
+          priority_level: number | null
+          safety_briefing: string | null
+          skills_required: string[] | null
+          start_time: string | null
+          status: string | null
+          team_members: string[] | null
+          updated_at: string | null
+          volunteer_id: string
+        }
+        Insert: {
+          assignment_type: string
+          completion_notes?: string | null
+          coordinator_id?: string | null
+          created_at?: string | null
+          description: string
+          equipment_needed?: string[] | null
+          estimated_duration_hours?: number | null
+          hours_logged?: number | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          priority_level?: number | null
+          safety_briefing?: string | null
+          skills_required?: string[] | null
+          start_time?: string | null
+          status?: string | null
+          team_members?: string[] | null
+          updated_at?: string | null
+          volunteer_id: string
+        }
+        Update: {
+          assignment_type?: string
+          completion_notes?: string | null
+          coordinator_id?: string | null
+          created_at?: string | null
+          description?: string
+          equipment_needed?: string[] | null
+          estimated_duration_hours?: number | null
+          hours_logged?: number | null
+          id?: string
+          location_description?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          priority_level?: number | null
+          safety_briefing?: string | null
+          skills_required?: string[] | null
+          start_time?: string | null
+          status?: string | null
+          team_members?: string[] | null
+          updated_at?: string | null
+          volunteer_id?: string
+        }
+        Relationships: []
       }
       volunteer_profiles: {
         Row: {

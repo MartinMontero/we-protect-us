@@ -21,6 +21,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import Settings from "./pages/Settings";
 import AuthPage from "./pages/AuthPage";
 import ElderCare from "./pages/ElderCare";
+import { DisasterPreparedness } from "./pages/DisasterPreparedness";
 import { Navigation } from "./components/layout/Navigation";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
               <Route path="/community-wealth" element={<CommunityWealth />} />
               <Route path="/childcare-coop" element={<ChildcareCoop />} />
               <Route path="/elder-care" element={<ElderCare />} />
+              <Route path="/disaster-preparedness" element={<DisasterPreparedness />} />
               <Route path="/organizing" element={<Organizing />} />
               <Route path="/security-governance" element={<SecurityGovernancePage />} />
               <Route path="/community-sovereignty" element={<CommunitySovereignty />} />

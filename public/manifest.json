@@ -1,40 +1,61 @@
 
 {
-  "name": "We Protect Us",
-  "short_name": "WPU",
-  "description": "Building stronger communities through mutual aid and solidarity",
-  "start_url": "/",
+  "name": "Emergency Preparedness System",
+  "short_name": "EmergencyPrep",
+  "description": "Community disaster preparedness and response coordination",
+  "theme_color": "#dc2626",
+  "background_color": "#ffffff",
   "display": "standalone",
-  "background_color": "#1a1a2e",
-  "theme_color": "#16213e",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/disaster-preparedness",
+  "categories": ["emergency", "utilities", "productivity"],
   "icons": [
     {
-      "src": "/placeholder.svg",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
     },
     {
-      "src": "/placeholder.svg",
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ],
-  "categories": ["social", "community", "lifestyle"],
-  "shortcuts": [
-    {
-      "name": "Community Map",
-      "short_name": "Map",
-      "description": "View local community networks",
-      "url": "/community",
-      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
-    },
-    {
-      "name": "Mutual Aid",
-      "short_name": "Aid",
-      "description": "Find or offer help",
-      "url": "/mutual-aid",
-      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
-    }
+  "features": [
+    "background-sync",
+    "offline-functionality",
+    "geolocation",
+    "push-notifications"
   ]
 }
