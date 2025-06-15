@@ -203,6 +203,112 @@ export type Database = {
           },
         ]
       }
+      campaign_actions: {
+        Row: {
+          action_name: string
+          action_type: string
+          campaign_id: string
+          created_at: string | null
+          current_participants: number | null
+          description: string | null
+          id: string
+          legal_observers_needed: number | null
+          location_address: string | null
+          location_lat: number | null
+          location_lng: number | null
+          max_participants: number | null
+          organizer_id: string
+          scheduled_date: string | null
+          security_considerations: string | null
+        }
+        Insert: {
+          action_name: string
+          action_type: string
+          campaign_id: string
+          created_at?: string | null
+          current_participants?: number | null
+          description?: string | null
+          id?: string
+          legal_observers_needed?: number | null
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          max_participants?: number | null
+          organizer_id: string
+          scheduled_date?: string | null
+          security_considerations?: string | null
+        }
+        Update: {
+          action_name?: string
+          action_type?: string
+          campaign_id?: string
+          created_at?: string | null
+          current_participants?: number | null
+          description?: string | null
+          id?: string
+          legal_observers_needed?: number | null
+          location_address?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          max_participants?: number | null
+          organizer_id?: string
+          scheduled_date?: string | null
+          security_considerations?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_actions_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "organizing_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaign_stories: {
+        Row: {
+          campaign_id: string
+          consent_for_media: boolean | null
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          story_content: string
+          story_tags: Json | null
+          story_title: string
+          storyteller_id: string
+        }
+        Insert: {
+          campaign_id: string
+          consent_for_media?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          story_content: string
+          story_tags?: Json | null
+          story_title: string
+          storyteller_id: string
+        }
+        Update: {
+          campaign_id?: string
+          consent_for_media?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          story_content?: string
+          story_tags?: Json | null
+          story_title?: string
+          storyteller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_stories_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "organizing_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       care_messages: {
         Row: {
           attachment_url: string | null
@@ -907,6 +1013,48 @@ export type Database = {
           },
         ]
       }
+      corporate_violations: {
+        Row: {
+          company_name: string
+          created_at: string | null
+          description: string | null
+          fine_amount: number | null
+          id: string
+          location_affected: string | null
+          regulatory_agency: string | null
+          source_documents: Json | null
+          status: string | null
+          violation_date: string
+          violation_type: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string | null
+          description?: string | null
+          fine_amount?: number | null
+          id?: string
+          location_affected?: string | null
+          regulatory_agency?: string | null
+          source_documents?: Json | null
+          status?: string | null
+          violation_date: string
+          violation_type: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string | null
+          description?: string | null
+          fine_amount?: number | null
+          id?: string
+          location_affected?: string | null
+          regulatory_agency?: string | null
+          source_documents?: Json | null
+          status?: string | null
+          violation_date?: string
+          violation_type?: string
+        }
+        Relationships: []
+      }
       current_plantings: {
         Row: {
           actual_harvest_date: string | null
@@ -1033,6 +1181,54 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           utilities_affected?: string[] | null
+        }
+        Relationships: []
+      }
+      development_projects: {
+        Row: {
+          address: string
+          affordable_units: number | null
+          created_at: string | null
+          developer_name: string | null
+          documents: Json | null
+          id: string
+          opposition_campaign_id: string | null
+          project_name: string
+          project_type: string | null
+          public_hearing_dates: Json | null
+          status: string | null
+          units_proposed: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          affordable_units?: number | null
+          created_at?: string | null
+          developer_name?: string | null
+          documents?: Json | null
+          id?: string
+          opposition_campaign_id?: string | null
+          project_name: string
+          project_type?: string | null
+          public_hearing_dates?: Json | null
+          status?: string | null
+          units_proposed?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          affordable_units?: number | null
+          created_at?: string | null
+          developer_name?: string | null
+          documents?: Json | null
+          id?: string
+          opposition_campaign_id?: string | null
+          project_name?: string
+          project_type?: string | null
+          public_hearing_dates?: Json | null
+          status?: string | null
+          units_proposed?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -2531,6 +2727,93 @@ export type Database = {
           },
         ]
       }
+      legal_cases: {
+        Row: {
+          assigned_advocate: string | null
+          case_description: string
+          case_type: string
+          client_id: string
+          court_dates: Json | null
+          created_at: string | null
+          documents: Json | null
+          emergency_fund_needed: number | null
+          emergency_fund_raised: number | null
+          id: string
+          notes: string | null
+          status: Database["public"]["Enums"]["legal_case_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_advocate?: string | null
+          case_description: string
+          case_type: string
+          client_id: string
+          court_dates?: Json | null
+          created_at?: string | null
+          documents?: Json | null
+          emergency_fund_needed?: number | null
+          emergency_fund_raised?: number | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["legal_case_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_advocate?: string | null
+          case_description?: string
+          case_type?: string
+          client_id?: string
+          court_dates?: Json | null
+          created_at?: string | null
+          documents?: Json | null
+          emergency_fund_needed?: number | null
+          emergency_fund_raised?: number | null
+          id?: string
+          notes?: string | null
+          status?: Database["public"]["Enums"]["legal_case_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      legal_resources: {
+        Row: {
+          applicable_situations: Json | null
+          category: string
+          content: string
+          created_by: string | null
+          document_templates: Json | null
+          helpful_votes: number | null
+          id: string
+          languages: Json | null
+          last_updated: string | null
+          title: string
+        }
+        Insert: {
+          applicable_situations?: Json | null
+          category: string
+          content: string
+          created_by?: string | null
+          document_templates?: Json | null
+          helpful_votes?: number | null
+          id?: string
+          languages?: Json | null
+          last_updated?: string | null
+          title: string
+        }
+        Update: {
+          applicable_situations?: Json | null
+          category?: string
+          content?: string
+          created_by?: string | null
+          document_templates?: Json | null
+          helpful_votes?: number | null
+          id?: string
+          languages?: Json | null
+          last_updated?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       member_references: {
         Row: {
           contacted_date: string | null
@@ -2822,6 +3105,60 @@ export type Database = {
         }
         Relationships: []
       }
+      organizing_campaigns: {
+        Row: {
+          campaign_name: string
+          campaign_timeline: Json | null
+          campaign_type: string
+          coordinator_id: string
+          created_at: string | null
+          current_signatures: number | null
+          description: string
+          id: string
+          media_contacts: Json | null
+          petition_text: string | null
+          status: Database["public"]["Enums"]["campaign_status"] | null
+          target_outcome: string | null
+          target_signatures: number | null
+          updated_at: string | null
+          victory_metrics: Json | null
+        }
+        Insert: {
+          campaign_name: string
+          campaign_timeline?: Json | null
+          campaign_type: string
+          coordinator_id: string
+          created_at?: string | null
+          current_signatures?: number | null
+          description: string
+          id?: string
+          media_contacts?: Json | null
+          petition_text?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_outcome?: string | null
+          target_signatures?: number | null
+          updated_at?: string | null
+          victory_metrics?: Json | null
+        }
+        Update: {
+          campaign_name?: string
+          campaign_timeline?: Json | null
+          campaign_type?: string
+          coordinator_id?: string
+          created_at?: string | null
+          current_signatures?: number | null
+          description?: string
+          id?: string
+          media_contacts?: Json | null
+          petition_text?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_outcome?: string | null
+          target_signatures?: number | null
+          updated_at?: string | null
+          victory_metrics?: Json | null
+        }
+        Relationships: []
+      }
       plot_history: {
         Row: {
           created_at: string | null
@@ -2910,6 +3247,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pollution_reports: {
+        Row: {
+          created_at: string | null
+          description: string
+          health_impacts: string | null
+          id: string
+          location_description: string
+          location_lat: number
+          location_lng: number
+          photos: Json | null
+          pollution_type: string
+          reporter_id: string | null
+          suspected_source: string | null
+          threat_level:
+            | Database["public"]["Enums"]["environmental_threat_level"]
+            | null
+          verified_by_officials: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          health_impacts?: string | null
+          id?: string
+          location_description: string
+          location_lat: number
+          location_lng: number
+          photos?: Json | null
+          pollution_type: string
+          reporter_id?: string | null
+          suspected_source?: string | null
+          threat_level?:
+            | Database["public"]["Enums"]["environmental_threat_level"]
+            | null
+          verified_by_officials?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          health_impacts?: string | null
+          id?: string
+          location_description?: string
+          location_lat?: number
+          location_lng?: number
+          photos?: Json | null
+          pollution_type?: string
+          reporter_id?: string | null
+          suspected_source?: string | null
+          threat_level?:
+            | Database["public"]["Enums"]["environmental_threat_level"]
+            | null
+          verified_by_officials?: boolean | null
+        }
+        Relationships: []
       }
       preparedness_items: {
         Row: {
@@ -3039,6 +3430,45 @@ export type Database = {
         }
         Relationships: []
       }
+      property_alerts: {
+        Row: {
+          alert_details: Json
+          alert_type: Database["public"]["Enums"]["property_alert_type"]
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          notification_sent: boolean | null
+          property_address: string
+          source_url: string | null
+        }
+        Insert: {
+          alert_details: Json
+          alert_type: Database["public"]["Enums"]["property_alert_type"]
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          notification_sent?: boolean | null
+          property_address: string
+          source_url?: string | null
+        }
+        Update: {
+          alert_details?: Json
+          alert_type?: Database["public"]["Enums"]["property_alert_type"]
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          notification_sent?: boolean | null
+          property_address?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       recipe_exchange: {
         Row: {
           contributor_id: string
@@ -3137,6 +3567,98 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rent_tracking: {
+        Row: {
+          created_at: string | null
+          id: string
+          lease_end_date: string | null
+          lease_start_date: string | null
+          monthly_rent: number
+          property_id: string | null
+          rent_increase_notices: Json | null
+          tenant_id: string
+          unit_number: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          lease_end_date?: string | null
+          lease_start_date?: string | null
+          monthly_rent: number
+          property_id?: string | null
+          rent_increase_notices?: Json | null
+          tenant_id: string
+          unit_number?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          lease_end_date?: string | null
+          lease_start_date?: string | null
+          monthly_rent?: number
+          property_id?: string | null
+          rent_increase_notices?: Json | null
+          tenant_id?: string
+          unit_number?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rent_tracking_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "rental_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_properties: {
+        Row: {
+          address: string
+          contact_info: Json | null
+          created_at: string | null
+          id: string
+          landlord_name: string | null
+          location_lat: number | null
+          location_lng: number | null
+          management_company: string | null
+          property_name: string | null
+          property_type: string | null
+          unit_count: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          contact_info?: Json | null
+          created_at?: string | null
+          id?: string
+          landlord_name?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          management_company?: string | null
+          property_name?: string | null
+          property_type?: string | null
+          unit_count?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          contact_info?: Json | null
+          created_at?: string | null
+          id?: string
+          landlord_name?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          management_company?: string | null
+          property_name?: string | null
+          property_type?: string | null
+          unit_count?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       resource_bookings: {
         Row: {
@@ -3564,6 +4086,59 @@ export type Database = {
             columns: ["volunteer_id"]
             isOneToOne: false
             referencedRelation: "volunteer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_issues: {
+        Row: {
+          created_at: string | null
+          date_reported: string | null
+          description: string
+          documentation: Json | null
+          id: string
+          issue_type: string
+          priority_level: number | null
+          property_id: string | null
+          reporter_id: string
+          resolution_notes: string | null
+          status: Database["public"]["Enums"]["tenant_issue_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date_reported?: string | null
+          description: string
+          documentation?: Json | null
+          id?: string
+          issue_type: string
+          priority_level?: number | null
+          property_id?: string | null
+          reporter_id: string
+          resolution_notes?: string | null
+          status?: Database["public"]["Enums"]["tenant_issue_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date_reported?: string | null
+          description?: string
+          documentation?: Json | null
+          id?: string
+          issue_type?: string
+          priority_level?: number | null
+          property_id?: string | null
+          reporter_id?: string
+          resolution_notes?: string | null
+          status?: Database["public"]["Enums"]["tenant_issue_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_issues_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "rental_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -4474,6 +5049,7 @@ export type Database = {
       }
     }
     Enums: {
+      campaign_status: "planning" | "active" | "completed" | "paused"
       care_request_status:
         | "open"
         | "accepted"
@@ -4508,6 +5084,7 @@ export type Database = {
         | "microgrid"
         | "efficiency"
         | "storage"
+      environmental_threat_level: "low" | "medium" | "high" | "critical"
       food_asset_type:
         | "garden"
         | "fruit_tree"
@@ -4518,6 +5095,7 @@ export type Database = {
         | "indoor_growing"
       fulfillment_status: "open" | "in_progress" | "fulfilled" | "expired"
       harvest_season: "spring" | "summer" | "fall" | "winter" | "year_round"
+      legal_case_status: "intake" | "active" | "resolved" | "referred"
       need_category:
         | "food"
         | "housing"
@@ -4536,6 +5114,7 @@ export type Database = {
         | "active"
         | "completed"
         | "cancelled"
+      property_alert_type: "sale" | "development" | "zoning" | "violation"
       reservation_status:
         | "pending"
         | "approved"
@@ -4563,6 +5142,7 @@ export type Database = {
       skill_level: "beginner" | "intermediate" | "advanced" | "expert"
       soil_type: "clay" | "sandy" | "loamy" | "rocky" | "amended"
       sun_exposure: "full_sun" | "partial_sun" | "partial_shade" | "full_shade"
+      tenant_issue_status: "open" | "in_progress" | "resolved" | "escalated"
       tool_category:
         | "power_tools"
         | "garden_equipment"
@@ -4707,6 +5287,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      campaign_status: ["planning", "active", "completed", "paused"],
       care_request_status: [
         "open",
         "accepted",
@@ -4746,6 +5327,7 @@ export const Constants = {
         "efficiency",
         "storage",
       ],
+      environmental_threat_level: ["low", "medium", "high", "critical"],
       food_asset_type: [
         "garden",
         "fruit_tree",
@@ -4757,6 +5339,7 @@ export const Constants = {
       ],
       fulfillment_status: ["open", "in_progress", "fulfilled", "expired"],
       harvest_season: ["spring", "summer", "fall", "winter", "year_round"],
+      legal_case_status: ["intake", "active", "resolved", "referred"],
       need_category: [
         "food",
         "housing",
@@ -4777,6 +5360,7 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      property_alert_type: ["sale", "development", "zoning", "violation"],
       reservation_status: [
         "pending",
         "approved",
@@ -4807,6 +5391,7 @@ export const Constants = {
       skill_level: ["beginner", "intermediate", "advanced", "expert"],
       soil_type: ["clay", "sandy", "loamy", "rocky", "amended"],
       sun_exposure: ["full_sun", "partial_sun", "partial_shade", "full_shade"],
+      tenant_issue_status: ["open", "in_progress", "resolved", "escalated"],
       tool_category: [
         "power_tools",
         "garden_equipment",

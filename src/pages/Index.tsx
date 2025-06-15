@@ -57,10 +57,10 @@ const features = [
   },
   {
     icon: Shield,
-    title: 'Community Security',
-    description: 'Security training and surveillance detection for community protection and safety.',
+    title: 'Community Defense',
+    description: 'Organize against displacement, environmental threats, and defend our communities.',
     color: 'from-purple-500 to-pink-500',
-    path: '/security-governance',
+    path: '/community-defense',
     implemented: true
   },
   {
