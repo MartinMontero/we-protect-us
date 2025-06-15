@@ -4,6 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ToolCard } from './ToolCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Database } from '@/integrations/supabase/types';
+
+type ToolCategory = Database['public']['Enums']['tool_category'];
+type ToolCondition = Database['public']['Enums']['tool_condition'];
 
 interface ToolGridProps {
   filters: {
@@ -27,13 +31,13 @@ export const ToolGrid: React.FC<ToolGridProps> = ({ filters }) => {
           reservations:tool_reservations!inner(*)
         `);
 
-      // Apply filters
+      // Apply filters with proper type casting
       if (filters.category) {
-        query = query.eq('category', filters.category);
+        query = query.eq('category', filters.category as ToolCategory);
       }
       
       if (filters.condition) {
-        query = query.eq('condition', filters.condition);
+        query = query.eq('condition', filters.condition as ToolCondition);
       }
       
       if (filters.availability === 'available') {
