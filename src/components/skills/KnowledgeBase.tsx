@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { BookOpen, Search, Filter, Plus } from 'lucide-react';
+import { BookOpen, Search, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Article {
@@ -43,7 +43,6 @@ export const KnowledgeBase: React.FC = () => {
       if (error) throw error;
 
       const mappedArticles: Article[] = (data || []).map(article => {
-        // Safely extract author profile
         const author = article.profiles && 
           article.profiles !== null &&
           typeof article.profiles === 'object' &&
@@ -90,7 +89,6 @@ export const KnowledgeBase: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Search and Filter Bar */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -111,7 +109,6 @@ export const KnowledgeBase: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Articles Grid */}
       <div className="grid gap-6">
         {filteredArticles.map((article) => (
           <Card key={article.id} className="hover:shadow-md transition-shadow">

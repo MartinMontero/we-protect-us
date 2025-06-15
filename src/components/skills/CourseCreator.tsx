@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -42,13 +41,19 @@ export const CourseCreator: React.FC = () => {
       const { error } = await supabase
         .from('courses')
         .insert({
-          ...courseData,
           creator_id: user.id,
+          title: courseData.title,
+          description: courseData.description,
+          difficulty_level: courseData.difficulty_level,
+          learning_format: courseData.learning_format,
+          location_type: courseData.location_type as 'local' | 'remote' | 'regional',
+          duration_weeks: courseData.duration_weeks,
+          max_participants: courseData.max_participants,
+          price: courseData.price,
         });
 
       if (error) throw error;
 
-      // Reset form
       setCourseData({
         title: '',
         description: '',

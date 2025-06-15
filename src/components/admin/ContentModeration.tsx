@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -43,19 +42,17 @@ export const ContentModeration: React.FC = () => {
         .from('mutual_aid_posts')
         .select(`
           *,
-          profiles:user_id(pseudonym, profile_image_url)
+          profiles:user_id(pseudonym, avatar_url)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       const mappedPosts: MutualAidPost[] = (data || []).map(post => {
-        // Map database status to moderation status
         let moderationStatus: 'active' | 'resolved' | 'flagged' | 'removed' = 'active';
         if (post.status === 'fulfilled') moderationStatus = 'resolved';
         if (post.status === 'expired') moderationStatus = 'removed';
 
-        // Safely extract author profile
         const author = post.profiles && 
           post.profiles !== null &&
           typeof post.profiles === 'object' &&
@@ -63,7 +60,7 @@ export const ContentModeration: React.FC = () => {
           ? {
               full_name: post.profiles.pseudonym || 'Unknown',
               pseudonym: post.profiles.pseudonym || 'Anonymous',
-              avatar_url: post.profiles.profile_image_url || undefined
+              avatar_url: post.profiles.avatar_url || undefined
             }
           : undefined;
 
@@ -75,7 +72,7 @@ export const ContentModeration: React.FC = () => {
           status: moderationStatus,
           created_at: post.created_at,
           user_id: post.user_id,
-          reported_count: 0, // Default since not in schema
+          reported_count: 0,
           author,
         };
       });
@@ -101,7 +98,6 @@ export const ContentModeration: React.FC = () => {
 
       if (error) throw error;
 
-      // Update local state
       setPosts(prev => prev.map(post => {
         if (post.id === postId) {
           let moderationStatus: 'active' | 'resolved' | 'flagged' | 'removed' = 'active';
@@ -163,7 +159,6 @@ export const ContentModeration: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Search and Filter Controls */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -187,7 +182,6 @@ export const ContentModeration: React.FC = () => {
             </select>
           </div>
 
-          {/* Posts List */}
           <div className="space-y-4">
             {filteredPosts.map((post) => (
               <Card key={post.id} className="hover:shadow-md transition-shadow">

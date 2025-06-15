@@ -32,15 +32,15 @@ export const useUsers = () => {
 
       const mappedUsers: User[] = (data || []).map(profile => ({
         id: profile.id,
-        full_name: profile.pseudonym || 'Unknown', // Use pseudonym as display name
+        full_name: profile.pseudonym || 'Unknown',
         pseudonym: profile.pseudonym || 'Anonymous',
-        email: profile.phone_number || 'N/A', // Use phone_number since email doesn't exist
-        avatar_url: profile.profile_image_url || undefined,
+        email: profile.phone_number || 'N/A',
+        avatar_url: profile.avatar_url || undefined,
         created_at: profile.created_at,
-        last_sign_in_at: profile.updated_at, // Use updated_at as last activity
+        last_sign_in_at: profile.updated_at,
         skills: profile.skills || [],
         time_bank_hours: profile.time_bank_hours || 0,
-        status: 'active', // Default status since not in profiles table
+        status: 'active',
       }));
 
       setUsers(mappedUsers);
@@ -55,8 +55,6 @@ export const useUsers = () => {
 
   const updateUserStatus = async (userId: string, status: User['status']) => {
     try {
-      // Since status doesn't exist in profiles table, we'll just update the local state
-      // In a real implementation, you'd add a status column to the profiles table
       setUsers(prev => prev.map(user => 
         user.id === userId ? { ...user, status } : user
       ));
