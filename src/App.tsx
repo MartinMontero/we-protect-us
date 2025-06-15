@@ -9,6 +9,7 @@ import Navigation from "@/components/Navigation";
 import Index from "./pages/Index";
 import Community from "./pages/Community";
 import MutualAid from "./pages/MutualAid";
+import CommunitySovereignty from "./pages/CommunitySovereignty";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/mutual-aid" element={<MutualAid />} />
+                <Route path="/sovereignty" element={<CommunitySovereignty />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

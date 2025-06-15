@@ -10,6 +10,7 @@ import {
   Users,
   Heart,
   Map,
+  Shield,
   Settings,
   Menu,
   X
@@ -25,6 +26,7 @@ const Navigation = () => {
     { href: '/', label: 'Home', icon: Users },
     { href: '/community', label: 'Community Map', icon: Map },
     { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
+    { href: '/sovereignty', label: 'Community Sovereignty', icon: Shield },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
