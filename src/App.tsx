@@ -10,7 +10,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Navigation from "@/components/layout/Navigation";
 import Index from "./pages/Index";
 import { HomePage } from "./pages/HomePage";
-import { DashboardPage } from "./pages/DashboardPage";
+import DashboardPage from "./pages/DashboardPage";
 import { FoodSecurity } from "./pages/FoodSecurity";
 import MutualAid from "./pages/MutualAid";
 import { ToolLibrary } from "./pages/ToolLibrary";

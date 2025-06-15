@@ -11,16 +11,18 @@ export const BrandLogo: React.FC = () => {
     <div className="flex items-center">
       <Link 
         to={user ? "/dashboard" : "/"} 
-        className="flex items-center space-x-3 text-foreground hover:text-primary transition-colors focus-visible group"
+        className="flex items-center space-x-3 text-foreground hover:text-primary transition-colors focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg p-2 -m-2"
         aria-label="We Protect Us - Home"
       >
-        <Users className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" aria-hidden="true" />
+        <div className="bg-gradient-to-br from-red-600 to-orange-600 p-2 rounded-lg shadow-lg">
+          <Users className="h-6 w-6 text-white" aria-hidden="true" />
+        </div>
         <div className="flex flex-col">
-          <span className="font-bold text-lg leading-tight hidden sm:block">
+          <span className="font-bold text-xl leading-tight text-gray-900 dark:text-white">
             We Protect Us
           </span>
-          <span className="font-bold text-lg sm:hidden">
-            WPU
+          <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
+            Community Power
           </span>
         </div>
       </Link>
