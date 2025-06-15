@@ -9,15 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface ModerationAction {
-  id: string;
-  post_id: string;
-  action_type: 'approved' | 'rejected' | 'flagged';
-  reason?: string;
-  moderator_id: string;
-  created_at: string;
-}
-
 interface PostWithProfile {
   id: string;
   title: string;
@@ -28,24 +19,22 @@ interface PostWithProfile {
   profiles: {
     pseudonym: string;
   } | null;
-  moderation_actions: ModerationAction[];
 }
 
 const ContentModeration = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [moderationReason, setModerationReason] = useState('');
+  const [moderationNote, setModerationNote] = useState('');
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['posts-moderation'],
+    queryKey: ['mutual-aid-posts-moderation'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('posts')
+        .from('mutual_aid_posts')
         .select(`
           *,
-          profiles:user_id(pseudonym),
-          moderation_actions(*)
+          profiles:user_id(pseudonym)
         `)
         .order('created_at', { ascending: false });
 
@@ -54,39 +43,35 @@ const ContentModeration = () => {
     },
   });
 
-  const moderatePostMutation = useMutation({
-    mutationFn: async ({ postId, action, reason }: { postId: string; action: string; reason?: string }) => {
+  const updatePostMutation = useMutation({
+    mutationFn: async ({ postId, status }: { postId: string; status: string }) => {
       const { error } = await supabase
-        .from('moderation_actions')
-        .insert({
-          post_id: postId,
-          action_type: action,
-          reason,
-          moderator_id: (await supabase.auth.getUser()).data.user?.id
-        });
+        .from('mutual_aid_posts')
+        .update({ status })
+        .eq('id', postId);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts-moderation'] });
+      queryClient.invalidateQueries({ queryKey: ['mutual-aid-posts-moderation'] });
       toast({
         title: "Action completed",
-        description: "Moderation action has been recorded.",
+        description: "Post status has been updated.",
       });
       setSelectedPost(null);
-      setModerationReason('');
+      setModerationNote('');
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to complete moderation action.",
+        description: "Failed to update post status.",
         variant: "destructive",
       });
     },
   });
 
-  const handleModeration = (postId: string, action: string) => {
-    moderatePostMutation.mutate({ postId, action, reason: moderationReason });
+  const handleModeration = (postId: string, status: string) => {
+    updatePostMutation.mutate({ postId, status });
   };
 
   if (isLoading) {
@@ -118,20 +103,6 @@ const ContentModeration = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm">{post.description}</p>
-              
-              {post.moderation_actions.length > 0 && (
-                <div className="border-t pt-4">
-                  <h4 className="font-medium mb-2">Moderation History</h4>
-                  {post.moderation_actions.map((action) => (
-                    <div key={action.id} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      {action.action_type === 'approved' && <CheckCircle className="h-4 w-4 text-green-500" />}
-                      {action.action_type === 'rejected' && <XCircle className="h-4 w-4 text-red-500" />}
-                      {action.action_type === 'flagged' && <AlertTriangle className="h-4 w-4 text-yellow-500" />}
-                      <span>{action.action_type} - {action.reason || 'No reason provided'}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
 
               <div className="flex gap-2 pt-4 border-t">
                 <Button
@@ -147,15 +118,15 @@ const ContentModeration = () => {
               {selectedPost === post.id && (
                 <div className="space-y-4 pt-4 border-t">
                   <Textarea
-                    placeholder="Reason for moderation action (optional)"
-                    value={moderationReason}
-                    onChange={(e) => setModerationReason(e.target.value)}
+                    placeholder="Add moderation notes (optional)"
+                    value={moderationNote}
+                    onChange={(e) => setModerationNote(e.target.value)}
                   />
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      onClick={() => handleModeration(post.id, 'approved')}
-                      disabled={moderatePostMutation.isPending}
+                      onClick={() => handleModeration(post.id, 'active')}
+                      disabled={updatePostMutation.isPending}
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Approve
@@ -163,17 +134,17 @@ const ContentModeration = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleModeration(post.id, 'rejected')}
-                      disabled={moderatePostMutation.isPending}
+                      onClick={() => handleModeration(post.id, 'hidden')}
+                      disabled={updatePostMutation.isPending}
                     >
                       <XCircle className="h-4 w-4 mr-2" />
-                      Reject
+                      Hide
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleModeration(post.id, 'flagged')}
-                      disabled={moderatePostMutation.isPending}
+                      disabled={updatePostMutation.isPending}
                     >
                       <AlertTriangle className="h-4 w-4 mr-2" />
                       Flag

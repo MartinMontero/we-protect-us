@@ -20,12 +20,12 @@ const CourseCreator = () => {
     title: '',
     description: '',
     difficulty_level: 'beginner' as 'beginner' | 'intermediate' | 'advanced' | 'expert',
-    delivery_mode: 'in_person' as 'in_person' | 'virtual' | 'hybrid',
+    learning_format: 'workshop' as 'workshop' | 'online' | 'self_paced',
     duration_weeks: 4,
     max_participants: 20,
-    prerequisites: '',
-    learning_outcomes: '',
-    materials_needed: '',
+    location_type: 'in_person' as 'in_person' | 'virtual' | 'hybrid',
+    location_details: '',
+    price: 0,
   });
 
   const createCourseMutation = useMutation({
@@ -33,16 +33,16 @@ const CourseCreator = () => {
       if (!user) throw new Error('User not authenticated');
 
       const { error } = await supabase
-        .from('skill_courses')
+        .from('courses')
         .insert({
           ...data,
-          created_by: user.id,
+          creator_id: user.id,
         });
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['skill_courses'] });
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
       toast({
         title: "Course created!",
         description: "Your course has been successfully created.",
@@ -52,12 +52,12 @@ const CourseCreator = () => {
         title: '',
         description: '',
         difficulty_level: 'beginner',
-        delivery_mode: 'in_person',
+        learning_format: 'workshop',
         duration_weeks: 4,
         max_participants: 20,
-        prerequisites: '',
-        learning_outcomes: '',
-        materials_needed: '',
+        location_type: 'in_person',
+        location_details: '',
+        price: 0,
       });
     },
     onError: (error) => {
@@ -128,15 +128,15 @@ const CourseCreator = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="delivery">Delivery Mode</Label>
-              <Select value={courseData.delivery_mode} onValueChange={(value) => handleInputChange('delivery_mode', value)}>
+              <Label htmlFor="format">Learning Format</Label>
+              <Select value={courseData.learning_format} onValueChange={(value) => handleInputChange('learning_format', value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="in_person">In Person</SelectItem>
-                  <SelectItem value="virtual">Virtual</SelectItem>
-                  <SelectItem value="hybrid">Hybrid</SelectItem>
+                  <SelectItem value="workshop">Workshop</SelectItem>
+                  <SelectItem value="online">Online</SelectItem>
+                  <SelectItem value="self_paced">Self Paced</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -166,35 +166,41 @@ const CourseCreator = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="prerequisites">Prerequisites</Label>
-            <Textarea
-              id="prerequisites"
-              value={courseData.prerequisites}
-              onChange={(e) => handleInputChange('prerequisites', e.target.value)}
-              placeholder="What should participants know before taking this course?"
-              rows={2}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="location_type">Location Type</Label>
+              <Select value={courseData.location_type} onValueChange={(value) => handleInputChange('location_type', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="in_person">In Person</SelectItem>
+                  <SelectItem value="virtual">Virtual</SelectItem>
+                  <SelectItem value="hybrid">Hybrid</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price">Price ($)</Label>
+              <Input
+                id="price"
+                type="number"
+                value={courseData.price}
+                onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                min="0"
+                step="0.01"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="outcomes">Learning Outcomes</Label>
+            <Label htmlFor="location_details">Location Details</Label>
             <Textarea
-              id="outcomes"
-              value={courseData.learning_outcomes}
-              onChange={(e) => handleInputChange('learning_outcomes', e.target.value)}
-              placeholder="What will participants be able to do after completing this course?"
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="materials">Materials Needed</Label>
-            <Textarea
-              id="materials"
-              value={courseData.materials_needed}
-              onChange={(e) => handleInputChange('materials_needed', e.target.value)}
-              placeholder="List any materials, tools, or supplies participants need"
+              id="location_details"
+              value={courseData.location_details}
+              onChange={(e) => handleInputChange('location_details', e.target.value)}
+              placeholder="Provide specific location details or virtual meeting information"
               rows={2}
             />
           </div>

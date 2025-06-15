@@ -25,7 +25,7 @@ const KnowledgeBase = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const { data: articles = [], isLoading } = useQuery({
+  const { data: articles = [], isLoading, refetch } = useQuery({
     queryKey: ['knowledge_articles'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -49,6 +49,10 @@ const KnowledgeBase = () => {
   });
 
   const allTags = Array.from(new Set(articles.flatMap(article => article.tags)));
+
+  const handleArticleCreated = () => {
+    refetch();
+  };
 
   if (isLoading) {
     return <div>Loading knowledge base...</div>;
@@ -150,7 +154,8 @@ const KnowledgeBase = () => {
 
       <CreateArticleModal 
         open={isCreateModalOpen} 
-        onOpenChange={setIsCreateModalOpen} 
+        onOpenChange={setIsCreateModalOpen}
+        onArticleCreated={handleArticleCreated}
       />
     </div>
   );
