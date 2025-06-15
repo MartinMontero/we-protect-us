@@ -1,9 +1,16 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Download } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { 
+  CheckCircle, 
+  AlertTriangle, 
+  Play,
+  Calendar,
+  Award
+} from 'lucide-react';
 
 interface WCAGOverviewProps {
   overallScore: number;
@@ -17,57 +24,84 @@ export const WCAGOverview: React.FC<WCAGOverviewProps> = ({
   isTestRunning 
 }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Eye className="w-5 h-5" />
-          WCAG 2.1 AA Validation Report
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="text-center p-4 border rounded-lg">
-            <div className="text-3xl font-bold text-green-600 mb-2">{overallScore}%</div>
-            <div className="text-sm font-medium">Overall Score</div>
-            <Badge variant="default" className="mt-2">WCAG AA</Badge>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      {/* Overall Score */}
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-3 rounded-xl bg-green-50">
+              <Award className="w-6 h-6 text-green-600" />
+            </div>
+            <Badge variant="default" className="bg-green-100 text-green-800">
+              WCAG 2.1 AA
+            </Badge>
           </div>
-          <div className="text-center p-4 border rounded-lg">
-            <div className="text-2xl font-bold text-blue-600 mb-2">4</div>
-            <div className="text-sm font-medium">Principles Tested</div>
-            <div className="text-xs text-gray-600 mt-2">All major areas covered</div>
+          <div>
+            <div className="text-3xl font-bold text-slate-900 mb-2">
+              {overallScore}%
+            </div>
+            <div className="text-sm text-slate-600 mb-4">
+              Overall Accessibility Score
+            </div>
+            <Progress value={overallScore} className="h-3" />
           </div>
-          <div className="text-center p-4 border rounded-lg">
-            <div className="text-2xl font-bold text-orange-600 mb-2">6</div>
-            <div className="text-sm font-medium">Minor Issues</div>
-            <div className="text-xs text-gray-600 mt-2">Non-blocking warnings</div>
+        </CardContent>
+      </Card>
+
+      {/* Status Summary */}
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-4">
+            <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+            <span className="font-medium text-slate-900">Compliance Status</span>
           </div>
-          <div className="text-center p-4 border rounded-lg">
-            <div className="text-sm font-bold text-gray-700 mb-2">Apr 15</div>
-            <div className="text-sm font-medium">Next Audit</div>
-            <div className="text-xs text-gray-600 mt-2">Quarterly schedule</div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Passing Tests</span>
+              <span className="text-sm font-medium text-green-600">47/50</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Warnings</span>
+              <span className="text-sm font-medium text-orange-600">3</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Critical Issues</span>
+              <span className="text-sm font-medium text-slate-900">0</span>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="gap-1">
-            <Download className="w-3 h-3" />
-            Full Report (PDF)
-          </Button>
-          <Button variant="outline" size="sm" className="gap-1">
-            <Download className="w-3 h-3" />
-            VPAT Document
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-1"
-            onClick={() => onRunTest('full-scan')}
-            disabled={isTestRunning}
-          >
-            {isTestRunning ? 'Testing...' : 'Run Live Test'}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-4">
+            <Play className="w-5 h-5 text-blue-600 mr-2" />
+            <span className="font-medium text-slate-900">Quick Actions</span>
+          </div>
+          <div className="space-y-3">
+            <Button 
+              onClick={() => onRunTest('full-scan')}
+              disabled={isTestRunning}
+              className="w-full justify-start"
+              variant="outline"
+            >
+              {isTestRunning ? 'Running...' : 'Run Full Scan'}
+            </Button>
+            <Button 
+              onClick={() => onRunTest('color-contrast')}
+              className="w-full justify-start"
+              variant="outline"
+            >
+              Check Color Contrast
+            </Button>
+            <div className="flex items-center text-xs text-slate-500 mt-3">
+              <Calendar className="w-3 h-3 mr-1" />
+              Last scan: 2 hours ago
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
