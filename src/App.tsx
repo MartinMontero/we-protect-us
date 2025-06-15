@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/theme-provider';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -11,18 +12,18 @@ import HomePage from '@/pages/HomePage';
 import AuthPage from '@/pages/AuthPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import DashboardPage from '@/pages/DashboardPage';
-import MutualAidPage from '@/pages/MutualAidPage';
-import CommunityDefensePage from '@/pages/CommunityDefensePage';
-import FoodSecurityPage from '@/pages/FoodSecurityPage';
-import EnergyDemocracyPage from '@/pages/EnergyDemocracyPage';
-import ToolLibraryPage from '@/pages/ToolLibraryPage';
+import MutualAid from '@/pages/MutualAid';
+import CommunityDefense from '@/pages/CommunityDefense';
+import FoodSecurity from '@/pages/FoodSecurity';
+import EnergyDemocracy from '@/pages/EnergyDemocracy';
+import ToolLibrary from '@/pages/ToolLibrary';
 import SkillsPage from '@/pages/SkillsPage';
-import SettingsPage from '@/pages/SettingsPage';
+import Settings from '@/pages/Settings';
 import AdminPage from '@/pages/AdminPage';
-import OrganizingPage from '@/pages/OrganizingPage';
-import CommunityWealthPage from '@/pages/CommunityWealthPage';
-import CommunitySovereigntyPage from '@/pages/CommunitySovereigntyPage';
-import DisasterPreparednessPage from '@/pages/DisasterPreparednessPage';
+import Organizing from '@/pages/Organizing';
+import CommunityWealth from '@/pages/CommunityWealth';
+import CommunitySovereignty from '@/pages/CommunitySovereignty';
+import DisasterPreparedness from '@/pages/DisasterPreparedness';
 import OnboardingPage from '@/pages/OnboardingPage';
 
 function App() {
@@ -52,27 +53,27 @@ function App() {
                     } />
                     <Route path="/mutual-aid" element={
                       <ProtectedRoute>
-                        <MutualAidPage />
+                        <MutualAid />
                       </ProtectedRoute>
                     } />
                     <Route path="/community-defense" element={
                       <ProtectedRoute>
-                        <CommunityDefensePage />
+                        <CommunityDefense />
                       </ProtectedRoute>
                     } />
                     <Route path="/food-security" element={
                       <ProtectedRoute>
-                        <FoodSecurityPage />
+                        <FoodSecurity />
                       </ProtectedRoute>
                     } />
                     <Route path="/energy-democracy" element={
                       <ProtectedRoute>
-                        <EnergyDemocracyPage />
+                        <EnergyDemocracy />
                       </ProtectedRoute>
                     } />
                     <Route path="/tool-library" element={
                       <ProtectedRoute>
-                        <ToolLibraryPage />
+                        <ToolLibrary />
                       </ProtectedRoute>
                     } />
                     <Route path="/skills" element={
@@ -82,32 +83,31 @@ function App() {
                     } />
                     <Route path="/settings" element={
                       <ProtectedRoute>
-                        <SettingsPage />
+                        <Settings />
                       </ProtectedRoute>
                     } />
                     <Route path="/admin/*" element={
                       <ProtectedRoute>
-                        <Navigation />
                         <AdminPage />
                       </ProtectedRoute>
                     } />
                     <Route path="/organizing" element={
                       <ProtectedRoute>
-                        <OrganizingPage />
+                        <Organizing />
                       </ProtectedRoute>
                     } />
                     <Route path="/community-wealth" element={
                       <ProtectedRoute>
-                        <CommunityWealthPage />
+                        <CommunityWealth />
                       </ProtectedRoute>
                     } />
                     <Route path="/community-sovereignty" element={
                       <ProtectedRoute>
-                        <CommunitySovereigntyPage />
+                        <CommunitySovereignty />
                       </ProtectedRoute>
                     } />
                     <Route path="/disaster-preparedness" element={
-                      <DisasterPreparednessPage />
+                      <DisasterPreparedness />
                     } />
                   </Routes>
                 </div>
