@@ -15,7 +15,8 @@ import {
   Handshake,
   Vote,
   Globe,
-  Wrench
+  Wrench,
+  Apple
 } from 'lucide-react';
 
 const quickActions = [
@@ -25,6 +26,13 @@ const quickActions = [
     icon: AlertTriangle,
     path: '/disaster-preparedness',
     color: 'from-red-500 to-orange-500'
+  },
+  {
+    title: 'Food Security Platform',
+    description: 'Community food mapping, distribution, and production planning',
+    icon: Apple,
+    path: '/food-security',
+    color: 'from-green-500 to-emerald-500'
   },
   {
     title: 'Find Mutual Aid',
@@ -57,6 +65,7 @@ const quickActions = [
 ];
 
 const recentActivity = [
+  { type: 'food', message: 'New community garden plot registered in your area', time: '30 minutes ago', path: '/food-security' },
   { type: 'emergency', message: 'Emergency preparedness checklist updated', time: '1 hour ago', path: '/disaster-preparedness' },
   { type: 'mutual-aid', message: '15 new mutual aid requests in your area', time: '2 hours ago', path: '/mutual-aid' },
   { type: 'security', message: 'Security training session scheduled for tomorrow', time: '4 hours ago', path: '/security-governance' },
@@ -77,7 +86,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
@@ -147,6 +156,17 @@ export const DashboardPage: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 <div 
+                  className="flex justify-between items-center p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                  onClick={() => navigate('/food-security')}
+                >
+                  <div className="flex items-center gap-2">
+                    <Apple className="w-4 h-4 text-green-600" />
+                    <span className="text-sm font-medium">Food Assets</span>
+                  </div>
+                  <span className="text-green-600 font-semibold">24 mapped</span>
+                </div>
+
+                <div 
                   className="flex justify-between items-center p-3 bg-red-50 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
                   onClick={() => navigate('/disaster-preparedness')}
                 >
@@ -158,14 +178,14 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 <div 
-                  className="flex justify-between items-center p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                  className="flex justify-between items-center p-3 bg-pink-50 rounded-lg cursor-pointer hover:bg-pink-100 transition-colors"
                   onClick={() => navigate('/mutual-aid')}
                 >
                   <div className="flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-green-600" />
+                    <Heart className="w-4 h-4 text-pink-600" />
                     <span className="text-sm font-medium">Active Mutual Aid</span>
                   </div>
-                  <span className="text-green-600 font-semibold">23 requests</span>
+                  <span className="text-pink-600 font-semibold">23 requests</span>
                 </div>
                 
                 <div 

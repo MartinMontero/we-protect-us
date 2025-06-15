@@ -1483,6 +1483,279 @@ export type Database = {
           },
         ]
       }
+      food_assets: {
+        Row: {
+          access_instructions: string | null
+          asset_name: string
+          asset_type: Database["public"]["Enums"]["food_asset_type"]
+          contact_method: string | null
+          created_at: string | null
+          crops_varieties: string[] | null
+          estimated_yield_per_season: string | null
+          harvest_seasons:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          id: string
+          is_public: boolean | null
+          location_description: string | null
+          location_lat: number
+          location_lng: number
+          owner_id: string
+          sustainability_notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_instructions?: string | null
+          asset_name: string
+          asset_type: Database["public"]["Enums"]["food_asset_type"]
+          contact_method?: string | null
+          created_at?: string | null
+          crops_varieties?: string[] | null
+          estimated_yield_per_season?: string | null
+          harvest_seasons?:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          id?: string
+          is_public?: boolean | null
+          location_description?: string | null
+          location_lat: number
+          location_lng: number
+          owner_id: string
+          sustainability_notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_instructions?: string | null
+          asset_name?: string
+          asset_type?: Database["public"]["Enums"]["food_asset_type"]
+          contact_method?: string | null
+          created_at?: string | null
+          crops_varieties?: string[] | null
+          estimated_yield_per_season?: string | null
+          harvest_seasons?:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          id?: string
+          is_public?: boolean | null
+          location_description?: string | null
+          location_lat?: number
+          location_lng?: number
+          owner_id?: string
+          sustainability_notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      food_crisis_response: {
+        Row: {
+          activation_date: string | null
+          affected_area: Json | null
+          coordinator_id: string
+          created_at: string | null
+          crisis_type: string
+          distribution_schedule: Json | null
+          id: string
+          priority_level: Database["public"]["Enums"]["crisis_priority"] | null
+          resource_allocation: Json | null
+          response_name: string
+          status: string | null
+          updated_at: string | null
+          volunteer_needs: Json | null
+          vulnerable_households: string[] | null
+        }
+        Insert: {
+          activation_date?: string | null
+          affected_area?: Json | null
+          coordinator_id: string
+          created_at?: string | null
+          crisis_type: string
+          distribution_schedule?: Json | null
+          id?: string
+          priority_level?: Database["public"]["Enums"]["crisis_priority"] | null
+          resource_allocation?: Json | null
+          response_name: string
+          status?: string | null
+          updated_at?: string | null
+          volunteer_needs?: Json | null
+          vulnerable_households?: string[] | null
+        }
+        Update: {
+          activation_date?: string | null
+          affected_area?: Json | null
+          coordinator_id?: string
+          created_at?: string | null
+          crisis_type?: string
+          distribution_schedule?: Json | null
+          id?: string
+          priority_level?: Database["public"]["Enums"]["crisis_priority"] | null
+          resource_allocation?: Json | null
+          response_name?: string
+          status?: string | null
+          updated_at?: string | null
+          volunteer_needs?: Json | null
+          vulnerable_households?: string[] | null
+        }
+        Relationships: []
+      }
+      food_distribution_points: {
+        Row: {
+          accessibility_features: string[] | null
+          address: string
+          capacity_info: Json | null
+          contact_info: Json | null
+          created_at: string | null
+          current_inventory: Json | null
+          distribution_type: Database["public"]["Enums"]["distribution_type"]
+          id: string
+          last_restocked: string | null
+          location_lat: number
+          location_lng: number
+          manager_id: string | null
+          operating_hours: Json | null
+          point_name: string
+          temperature_sensor_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_features?: string[] | null
+          address: string
+          capacity_info?: Json | null
+          contact_info?: Json | null
+          created_at?: string | null
+          current_inventory?: Json | null
+          distribution_type: Database["public"]["Enums"]["distribution_type"]
+          id?: string
+          last_restocked?: string | null
+          location_lat: number
+          location_lng: number
+          manager_id?: string | null
+          operating_hours?: Json | null
+          point_name: string
+          temperature_sensor_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_features?: string[] | null
+          address?: string
+          capacity_info?: Json | null
+          contact_info?: Json | null
+          created_at?: string | null
+          current_inventory?: Json | null
+          distribution_type?: Database["public"]["Enums"]["distribution_type"]
+          id?: string
+          last_restocked?: string | null
+          location_lat?: number
+          location_lng?: number
+          manager_id?: string | null
+          operating_hours?: Json | null
+          point_name?: string
+          temperature_sensor_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      food_knowledge_base: {
+        Row: {
+          author_id: string | null
+          category: string
+          climate_zones: string[] | null
+          content: string
+          created_at: string | null
+          difficulty_level: string | null
+          growing_seasons:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          helpful_votes: number | null
+          id: string
+          resource_links: Json | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          climate_zones?: string[] | null
+          content: string
+          created_at?: string | null
+          difficulty_level?: string | null
+          growing_seasons?:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          helpful_votes?: number | null
+          id?: string
+          resource_links?: Json | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          climate_zones?: string[] | null
+          content?: string
+          created_at?: string | null
+          difficulty_level?: string | null
+          growing_seasons?:
+            | Database["public"]["Enums"]["harvest_season"][]
+            | null
+          helpful_votes?: number | null
+          id?: string
+          resource_links?: Json | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      food_production_plans: {
+        Row: {
+          community_goals: string | null
+          coordinator_id: string
+          created_at: string | null
+          estimated_harvest: Json | null
+          id: string
+          participating_assets: string[] | null
+          plan_name: string
+          planting_schedule: Json | null
+          resource_needs: Json | null
+          status: string | null
+          target_crops: Json
+          target_season: Database["public"]["Enums"]["harvest_season"]
+          updated_at: string | null
+        }
+        Insert: {
+          community_goals?: string | null
+          coordinator_id: string
+          created_at?: string | null
+          estimated_harvest?: Json | null
+          id?: string
+          participating_assets?: string[] | null
+          plan_name: string
+          planting_schedule?: Json | null
+          resource_needs?: Json | null
+          status?: string | null
+          target_crops: Json
+          target_season: Database["public"]["Enums"]["harvest_season"]
+          updated_at?: string | null
+        }
+        Update: {
+          community_goals?: string | null
+          coordinator_id?: string
+          created_at?: string | null
+          estimated_harvest?: Json | null
+          id?: string
+          participating_assets?: string[] | null
+          plan_name?: string
+          planting_schedule?: Json | null
+          resource_needs?: Json | null
+          status?: string | null
+          target_crops?: Json
+          target_season?: Database["public"]["Enums"]["harvest_season"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       garden_knowledge: {
         Row: {
           author_id: string | null
@@ -1582,6 +1855,65 @@ export type Database = {
             columns: ["current_gardener_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gleaning_opportunities: {
+        Row: {
+          asset_id: string | null
+          available_produce: string
+          coordinator_id: string
+          created_at: string | null
+          current_volunteers: number | null
+          distribution_plan: string | null
+          equipment_needed: string[] | null
+          estimated_quantity: string | null
+          harvest_date: string
+          id: string
+          location_name: string
+          status: string | null
+          transportation_needed: boolean | null
+          volunteer_spots_needed: number | null
+        }
+        Insert: {
+          asset_id?: string | null
+          available_produce: string
+          coordinator_id: string
+          created_at?: string | null
+          current_volunteers?: number | null
+          distribution_plan?: string | null
+          equipment_needed?: string[] | null
+          estimated_quantity?: string | null
+          harvest_date: string
+          id?: string
+          location_name: string
+          status?: string | null
+          transportation_needed?: boolean | null
+          volunteer_spots_needed?: number | null
+        }
+        Update: {
+          asset_id?: string | null
+          available_produce?: string
+          coordinator_id?: string
+          created_at?: string | null
+          current_volunteers?: number | null
+          distribution_plan?: string | null
+          equipment_needed?: string[] | null
+          estimated_quantity?: string | null
+          harvest_date?: string
+          id?: string
+          location_name?: string
+          status?: string | null
+          transportation_needed?: boolean | null
+          volunteer_spots_needed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gleaning_opportunities_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "food_assets"
             referencedColumns: ["id"]
           },
         ]
@@ -2267,6 +2599,60 @@ export type Database = {
             | null
           vulnerability_factors?: string[] | null
           years_experience?: number | null
+        }
+        Relationships: []
+      }
+      recipe_exchange: {
+        Row: {
+          contributor_id: string
+          cook_time_minutes: number | null
+          created_at: string | null
+          helpful_votes: number | null
+          id: string
+          ingredients: Json
+          instructions: string
+          local_substitutions: Json | null
+          nutrition_notes: string | null
+          prep_time_minutes: number | null
+          preservation_method: string | null
+          recipe_name: string
+          seasonal_ingredients: string[] | null
+          servings: number | null
+          tags: string[] | null
+        }
+        Insert: {
+          contributor_id: string
+          cook_time_minutes?: number | null
+          created_at?: string | null
+          helpful_votes?: number | null
+          id?: string
+          ingredients: Json
+          instructions: string
+          local_substitutions?: Json | null
+          nutrition_notes?: string | null
+          prep_time_minutes?: number | null
+          preservation_method?: string | null
+          recipe_name: string
+          seasonal_ingredients?: string[] | null
+          servings?: number | null
+          tags?: string[] | null
+        }
+        Update: {
+          contributor_id?: string
+          cook_time_minutes?: number | null
+          created_at?: string | null
+          helpful_votes?: number | null
+          id?: string
+          ingredients?: Json
+          instructions?: string
+          local_substitutions?: Json | null
+          nutrition_notes?: string | null
+          prep_time_minutes?: number | null
+          preservation_method?: string | null
+          recipe_name?: string
+          seasonal_ingredients?: string[] | null
+          servings?: number | null
+          tags?: string[] | null
         }
         Relationships: []
       }
@@ -3569,7 +3955,14 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      crisis_priority: "low" | "medium" | "high" | "critical"
       crop_season: "spring" | "summer" | "fall" | "winter" | "year_round"
+      distribution_type:
+        | "pantry"
+        | "fridge"
+        | "mobile"
+        | "gleaning"
+        | "meal_share"
       emergency_contact_relationship:
         | "parent"
         | "guardian"
@@ -3577,7 +3970,16 @@ export type Database = {
         | "relative"
         | "family_friend"
         | "other"
+      food_asset_type:
+        | "garden"
+        | "fruit_tree"
+        | "nut_tree"
+        | "foraging_spot"
+        | "chicken_coop"
+        | "beehive"
+        | "indoor_growing"
       fulfillment_status: "open" | "in_progress" | "fulfilled" | "expired"
+      harvest_season: "spring" | "summer" | "fall" | "winter" | "year_round"
       need_category:
         | "food"
         | "housing"
@@ -3767,7 +4169,15 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      crisis_priority: ["low", "medium", "high", "critical"],
       crop_season: ["spring", "summer", "fall", "winter", "year_round"],
+      distribution_type: [
+        "pantry",
+        "fridge",
+        "mobile",
+        "gleaning",
+        "meal_share",
+      ],
       emergency_contact_relationship: [
         "parent",
         "guardian",
@@ -3776,7 +4186,17 @@ export const Constants = {
         "family_friend",
         "other",
       ],
+      food_asset_type: [
+        "garden",
+        "fruit_tree",
+        "nut_tree",
+        "foraging_spot",
+        "chicken_coop",
+        "beehive",
+        "indoor_growing",
+      ],
       fulfillment_status: ["open", "in_progress", "fulfilled", "expired"],
+      harvest_season: ["spring", "summer", "fall", "winter", "year_round"],
       need_category: [
         "food",
         "housing",

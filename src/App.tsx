@@ -1,13 +1,15 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { Navigation } from "@/components/layout/Navigation";
 import Index from "./pages/Index";
 import { HomePage } from "./pages/HomePage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { FoodSecurity } from "./pages/FoodSecurity";
 import MutualAid from "./pages/MutualAid";
 import { ToolLibrary } from "./pages/ToolLibrary";
 import { CommunityGarden } from "./pages/CommunityGarden";
@@ -22,42 +24,46 @@ import Settings from "./pages/Settings";
 import AuthPage from "./pages/AuthPage";
 import ElderCare from "./pages/ElderCare";
 import { DisasterPreparedness } from "./pages/DisasterPreparedness";
-import { Navigation } from "./components/layout/Navigation";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="min-h-screen bg-gray-50">
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/mutual-aid" element={<MutualAid />} />
-              <Route path="/tool-library" element={<ToolLibrary />} />
-              <Route path="/community-garden" element={<CommunityGarden />} />
-              <Route path="/community-wealth" element={<CommunityWealth />} />
-              <Route path="/childcare-coop" element={<ChildcareCoop />} />
-              <Route path="/elder-care" element={<ElderCare />} />
-              <Route path="/disaster-preparedness" element={<DisasterPreparedness />} />
-              <Route path="/organizing" element={<Organizing />} />
-              <Route path="/security-governance" element={<SecurityGovernancePage />} />
-              <Route path="/community-sovereignty" element={<CommunitySovereignty />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/auth" element={<AuthPage />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="flex flex-col min-h-screen">
+              <Navigation />
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/food-security" element={<FoodSecurity />} />
+                  <Route path="/mutual-aid" element={<MutualAid />} />
+                  <Route path="/tool-library" element={<ToolLibrary />} />
+                  <Route path="/community-garden" element={<CommunityGarden />} />
+                  <Route path="/community-wealth" element={<CommunityWealth />} />
+                  <Route path="/childcare-coop" element={<ChildcareCoop />} />
+                  <Route path="/elder-care" element={<ElderCare />} />
+                  <Route path="/disaster-preparedness" element={<DisasterPreparedness />} />
+                  <Route path="/organizing" element={<Organizing />} />
+                  <Route path="/security-governance" element={<SecurityGovernancePage />} />
+                  <Route path="/community-sovereignty" element={<CommunitySovereignty />} />
+                  <Route path="/reports" element={<ReportsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                </Routes>
+              </main>
+            </div>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

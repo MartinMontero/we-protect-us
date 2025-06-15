@@ -18,7 +18,8 @@ import {
   Sparkles,
   Vote,
   Wrench,
-  AlertTriangle
+  AlertTriangle,
+  Apple
 } from 'lucide-react';
 
 const features = [
@@ -28,6 +29,14 @@ const features = [
     description: 'Community-driven disaster preparedness and response coordination system.',
     color: 'from-red-500 to-orange-500',
     path: '/disaster-preparedness',
+    implemented: true
+  },
+  {
+    icon: Apple,
+    title: 'Food Security Platform',
+    description: 'Map food assets, coordinate distribution, and plan community food production.',
+    color: 'from-green-500 to-emerald-500',
+    path: '/food-security',
     implemented: true
   },
   {
