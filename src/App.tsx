@@ -29,7 +29,14 @@ import IntegrationsPage from '@/pages/IntegrationsPage';
 import Navigation from '@/components/layout/Navigation';
 
 function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -38,7 +45,7 @@ function App() {
           <AuthProvider>
             <TooltipProvider>
               <Router>
-                <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
+                <div className="min-h-screen bg-background text-foreground">
                   <Navigation />
                   <Toaster />
                   <Routes>

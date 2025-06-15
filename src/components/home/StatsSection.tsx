@@ -31,13 +31,13 @@ export const StatsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Our Community Impact
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Real numbers from real communities organizing for liberation and mutual aid
           </p>
         </div>
@@ -47,17 +47,17 @@ export const StatsSection: React.FC = () => {
             const Icon = stat.icon;
             return (
               <div key={index} className="text-center">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                  <div className="bg-red-100 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Icon className="w-8 h-8 text-red-600" />
+                <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
+                  <div className="bg-primary/10 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Icon className="w-8 h-8 text-primary" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div className="text-3xl font-bold text-foreground mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-lg font-semibold text-gray-700 mb-2">
+                  <div className="text-lg font-semibold text-foreground mb-2">
                     {stat.label}
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {stat.description}
                   </p>
                 </div>
