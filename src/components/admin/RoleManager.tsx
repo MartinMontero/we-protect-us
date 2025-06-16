@@ -10,7 +10,7 @@ import { useRoles, UserRole } from '@/hooks/useRoles';
 import { useToast } from '@/hooks/use-toast';
 
 interface UserWithRole {
-  id: string;
+  user_id: string;
   pseudonym: string;
   avatar_url?: string;
   role: UserRole;
@@ -31,13 +31,12 @@ export const RoleManager: React.FC = () => {
 
   const fetchUsersWithRoles = async () => {
     try {
-      // Use raw SQL to get users with roles
       const { data, error } = await supabase.rpc('get_users_with_roles');
 
       if (error) throw error;
 
       const mappedUsers: UserWithRole[] = (data || []).map((item: any) => ({
-        id: item.user_id,
+        user_id: item.user_id,
         pseudonym: item.pseudonym || 'Unknown',
         avatar_url: item.avatar_url,
         role: item.role as UserRole,
@@ -47,6 +46,11 @@ export const RoleManager: React.FC = () => {
       setUsersWithRoles(mappedUsers);
     } catch (error) {
       console.error('Error fetching users with roles:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch users with roles",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -72,11 +76,11 @@ export const RoleManager: React.FC = () => {
 
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
-      case 'super_admin': return 'bg-purple-100 text-purple-800';
-      case 'admin': return 'bg-red-100 text-red-800';
-      case 'moderator': return 'bg-yellow-100 text-yellow-800';
-      case 'user': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'super_admin': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-200';
+      case 'admin': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+      case 'moderator': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200';
+      case 'user': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
     }
   };
 
@@ -84,7 +88,7 @@ export const RoleManager: React.FC = () => {
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 dark:text-gray-400">
             You don't have permission to manage user roles.
           </p>
         </CardContent>
@@ -111,9 +115,9 @@ export const RoleManager: React.FC = () => {
       <CardContent>
         <div className="space-y-4">
           {usersWithRoles.map((user) => (
-            <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+            <div key={user.user_id} className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                   {user.avatar_url ? (
                     <img
                       src={user.avatar_url}
@@ -126,7 +130,7 @@ export const RoleManager: React.FC = () => {
                 </div>
                 <div>
                   <div className="font-medium">{user.pseudonym}</div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     Assigned: {new Date(user.assigned_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -140,7 +144,7 @@ export const RoleManager: React.FC = () => {
                 {hasPermission('super_admin') && (
                   <Select
                     value={user.role}
-                    onValueChange={(value) => handleRoleChange(user.id, value as UserRole)}
+                    onValueChange={(value) => handleRoleChange(user.user_id, value as UserRole)}
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -161,7 +165,7 @@ export const RoleManager: React.FC = () => {
             <div className="text-center py-8">
               <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">No Role Assignments</h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 No users have been assigned specific roles yet.
               </p>
             </div>

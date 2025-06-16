@@ -11,9 +11,9 @@ import { Globe, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+  { code: 'ar', name: 'العربية', flag: '🇵🇸' }
 ];
 
 export const LanguageToggle: React.FC = () => {
