@@ -1,7 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Users, 
   Activity, 
@@ -9,7 +11,8 @@ import {
   AlertCircle,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  RefreshCw
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -30,6 +33,7 @@ interface ActivityItem {
 }
 
 export const AdminDashboard: React.FC = () => {
+  const { t } = useLanguage();
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     activeUsers: 0,
@@ -38,24 +42,33 @@ export const AdminDashboard: React.FC = () => {
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = useCallback(async () => {
     try {
+      setError(null);
+      
       // Fetch total users
-      const { count: totalUsers } = await supabase
+      const { count: totalUsers, error: usersError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
 
+      if (usersError) throw usersError;
+
       // Fetch mutual aid posts
-      const { count: totalPosts } = await supabase
+      const { count: totalPosts, error: postsError } = await supabase
         .from('mutual_aid_posts')
         .select('*', { count: 'exact', head: true });
 
-      // Mock recent activity for now
+      if (postsError && postsError.code !== 'PGRST116') {
+        console.warn('Posts table might not exist:', postsError);
+      }
+
+      // Calculate active users (30% of total for demo)
+      const activeUsers = Math.floor((totalUsers || 0) * 0.3);
+
+      // Mock recent activity with proper timestamps
       const recentActivity: ActivityItem[] = [
         {
           id: '1',
@@ -82,16 +95,27 @@ export const AdminDashboard: React.FC = () => {
 
       setStats({
         totalUsers: totalUsers || 0,
-        activeUsers: Math.floor((totalUsers || 0) * 0.3), // Mock 30% active
+        activeUsers,
         totalPosts: totalPosts || 0,
         pendingReports: 2, // Mock data
         recentActivity
       });
-    } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+    } catch (err) {
+      console.error('Error fetching dashboard stats:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch dashboard stats');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchDashboardStats();
   };
 
   const getActivityIcon = (type: string) => {
@@ -130,19 +154,41 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-1">
-          Welcome to the Solidarity Web Weave admin panel. Monitor platform health and manage community resources.
-        </p>
+      {/* Header with refresh button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {t('admin.dashboard')}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Welcome to the Solidarity Web Weave admin panel. Monitor platform health and manage community resources.
+          </p>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="flex items-center gap-2 px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('admin.total_users')}
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -155,7 +201,9 @@ export const AdminDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('admin.active_users')}
+            </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -168,7 +216,9 @@ export const AdminDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('admin.total_posts')}
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -181,7 +231,9 @@ export const AdminDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t('admin.pending_reports')}
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -196,7 +248,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Recent Activity */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>{t('admin.recent_activity')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -223,21 +275,21 @@ export const AdminDashboard: React.FC = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle>{t('admin.quick_actions')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">User Management</h3>
-              <p className="text-sm text-gray-600">View and manage user accounts</p>
+            <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+              <h3 className="font-medium mb-2">{t('admin.user_management')}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">View and manage user accounts</p>
             </div>
-            <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">Content Moderation</h3>
-              <p className="text-sm text-gray-600">Review flagged content and posts</p>
+            <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+              <h3 className="font-medium mb-2">{t('admin.content_moderation')}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Review flagged content and posts</p>
             </div>
-            <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">System Health</h3>
-              <p className="text-sm text-gray-600">Monitor platform performance</p>
+            <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+              <h3 className="font-medium mb-2">{t('admin.system_health')}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Monitor platform performance</p>
             </div>
           </div>
         </CardContent>

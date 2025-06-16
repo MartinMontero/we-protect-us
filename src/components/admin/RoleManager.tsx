@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Users } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Shield, Users, AlertCircle, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useRoles, UserRole } from '@/hooks/useRoles';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UserWithRole {
   user_id: string;
@@ -18,8 +20,11 @@ interface UserWithRole {
 }
 
 export const RoleManager: React.FC = () => {
+  const { t } = useLanguage();
   const [usersWithRoles, setUsersWithRoles] = useState<UserWithRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const { hasPermission, assignRole } = useRoles();
   const { toast } = useToast();
 
@@ -31,6 +36,7 @@ export const RoleManager: React.FC = () => {
 
   const fetchUsersWithRoles = async () => {
     try {
+      setError(null);
       const { data, error } = await supabase.rpc('get_users_with_roles');
 
       if (error) throw error;
@@ -46,14 +52,22 @@ export const RoleManager: React.FC = () => {
       setUsersWithRoles(mappedUsers);
     } catch (error) {
       console.error('Error fetching users with roles:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch users with roles';
+      setError(errorMessage);
       toast({
-        title: "Error",
-        description: "Failed to fetch users with roles",
+        title: t('common.error'),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchUsersWithRoles();
   };
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
@@ -62,13 +76,13 @@ export const RoleManager: React.FC = () => {
       await fetchUsersWithRoles();
       
       toast({
-        title: "Role Updated",
-        description: "User role has been successfully updated",
+        title: t('admin.role_updated'),
+        description: t('admin.role_update_success'),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update user role",
+        title: t('common.error'),
+        description: t('admin.role_update_error'),
         variant: "destructive",
       });
     }
@@ -88,9 +102,12 @@ export const RoleManager: React.FC = () => {
     return (
       <Card>
         <CardContent className="pt-6">
-          <p className="text-center text-gray-600 dark:text-gray-400">
-            You don't have permission to manage user roles.
-          </p>
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {t('admin.insufficient_permissions')}
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
     );
@@ -106,13 +123,33 @@ export const RoleManager: React.FC = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="w-5 h-5" />
-          Role Management
-        </CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            {t('admin.roles')}
+          </CardTitle>
+        </div>
+        <Button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          {t('common.refresh')}
+        </Button>
       </CardHeader>
       <CardContent>
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <div className="space-y-4">
           {usersWithRoles.map((user) => (
             <div key={user.user_id} className="flex items-center justify-between p-4 border rounded-lg">
@@ -161,12 +198,12 @@ export const RoleManager: React.FC = () => {
             </div>
           ))}
 
-          {usersWithRoles.length === 0 && (
+          {usersWithRoles.length === 0 && !error && (
             <div className="text-center py-8">
               <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Role Assignments</h3>
+              <h3 className="text-lg font-medium mb-2">{t('admin.no_role_assignments')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                No users have been assigned specific roles yet.
+                {t('admin.no_users_assigned')}
               </p>
             </div>
           )}

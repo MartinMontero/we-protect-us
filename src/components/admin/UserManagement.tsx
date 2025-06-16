@@ -7,20 +7,43 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Users, Search, Eye, Trash } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Users, Search, Eye, Trash, AlertCircle, RefreshCw } from 'lucide-react';
 import { useUsers } from '@/hooks/useUsers';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const UserManagement: React.FC = () => {
-  const { users, isLoading } = useUsers();
+  const { t } = useLanguage();
+  const { users, isLoading, error, refetch } = useUsers();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.pseudonym.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.bio?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+      toast({
+        title: t('common.success'),
+        description: "User data refreshed successfully",
+      });
+    } catch (err) {
+      toast({
+        title: t('common.error'),
+        description: "Failed to refresh user data",
+        variant: "destructive",
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -33,19 +56,39 @@ export const UserManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
-            User Management
-          </CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              {t('admin.user_management')}
+            </CardTitle>
+          </div>
+          <Button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            {t('common.refresh')}
+          </Button>
         </CardHeader>
         <CardContent>
+          {/* Error Alert */}
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
           {/* Search Bar */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder="Search users..."
+                placeholder={t('admin.search_users')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -59,11 +102,11 @@ export const UserManagement: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
-                  <TableHead>Bio</TableHead>
-                  <TableHead>Trust Score</TableHead>
-                  <TableHead>Care Points</TableHead>
-                  <TableHead>Joined</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('admin.bio')}</TableHead>
+                  <TableHead>{t('admin.trust_score')}</TableHead>
+                  <TableHead>{t('admin.care_points')}</TableHead>
+                  <TableHead>{t('admin.joined')}</TableHead>
+                  <TableHead>{t('admin.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -83,7 +126,7 @@ export const UserManagement: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="max-w-xs truncate">
-                        {user.bio || 'No bio provided'}
+                        {user.bio || t('admin.no_bio')}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -97,26 +140,26 @@ export const UserManagement: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" title={t('common.view')}>
                           <Eye className="w-4 h-4" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="ghost" className="text-red-600">
+                            <Button size="sm" variant="ghost" className="text-red-600" title={t('common.delete')}>
                               <Trash className="w-4 h-4" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Delete User</AlertDialogTitle>
+                              <AlertDialogTitle>{t('admin.delete_user')}</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete {user.pseudonym}? This action cannot be undone.
+                                {t('admin.delete_user_confirm', { name: user.pseudonym })}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction>
-                                Delete
+                              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                              <AlertDialogAction className="bg-red-600 hover:bg-red-700">
+                                {t('common.delete')}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -129,14 +172,14 @@ export const UserManagement: React.FC = () => {
             </Table>
           </div>
 
-          {filteredUsers.length === 0 && (
+          {filteredUsers.length === 0 && !error && (
             <div className="text-center py-8">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Users Found</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-medium mb-2">{t('admin.no_users_found')}</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 {searchTerm 
-                  ? 'Try adjusting your search criteria.' 
-                  : 'No users have registered yet.'}
+                  ? t('admin.adjust_search')
+                  : t('admin.no_users_registered')}
               </p>
             </div>
           )}

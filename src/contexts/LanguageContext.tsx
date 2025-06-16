@@ -17,19 +17,32 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const currentLanguage = i18n.language;
   const isRTL = currentLanguage === 'ar';
 
-  const changeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-    localStorage.setItem('preferred-language', language);
-    
-    // Update document direction and lang attribute
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
+  const changeLanguage = async (language: string) => {
+    try {
+      await i18n.changeLanguage(language);
+      localStorage.setItem('preferred-language', language);
+      
+      // Update document direction and lang attribute
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = language;
+      
+      // Force re-render by updating a CSS custom property
+      document.documentElement.style.setProperty('--language-direction', language === 'ar' ? 'rtl' : 'ltr');
+      
+      console.log('Language changed to:', language);
+    } catch (error) {
+      console.error('Failed to change language:', error);
+    }
   };
 
   useEffect(() => {
     // Set initial direction based on current language
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLanguage;
+    document.documentElement.style.setProperty('--language-direction', isRTL ? 'rtl' : 'ltr');
+    
+    // Debug logging
+    console.log('Current language:', currentLanguage, 'RTL:', isRTL);
   }, [currentLanguage, isRTL]);
 
   const value: LanguageContextType = {
