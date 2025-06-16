@@ -3919,6 +3919,7 @@ export type Database = {
           care_philosophy: string | null
           care_points_balance: number | null
           created_at: string | null
+          full_name: string | null
           id: string
           location_lat: number | null
           location_lng: number | null
@@ -3942,6 +3943,7 @@ export type Database = {
           care_philosophy?: string | null
           care_points_balance?: number | null
           created_at?: string | null
+          full_name?: string | null
           id: string
           location_lat?: number | null
           location_lng?: number | null
@@ -3965,6 +3967,7 @@ export type Database = {
           care_philosophy?: string | null
           care_points_balance?: number | null
           created_at?: string | null
+          full_name?: string | null
           id?: string
           location_lat?: number | null
           location_lng?: number | null
