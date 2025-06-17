@@ -11,7 +11,7 @@ import {
   Zap, 
   BookOpen,
   Wrench,
-  Seedling
+  Sprout
 } from 'lucide-react';
 
 const features = [
@@ -65,7 +65,7 @@ const features = [
     color: 'text-orange-600'
   },
   {
-    icon: Seedling,
+    icon: Sprout,
     title: 'Community Garden',
     description: 'Coordinate plot management, harvest sharing, and gardening knowledge.',
     href: '/community-garden',
