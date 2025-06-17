@@ -10,7 +10,7 @@ import {
   Shield
 } from 'lucide-react';
 
-// Simplified navigation - only core items
+// Only 4 core navigation items as requested
 const navigationItems = [
   { key: 'home', href: '/', icon: Home },
   { key: 'food_security', href: '/food-security', icon: Utensils },

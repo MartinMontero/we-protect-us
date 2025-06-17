@@ -1,67 +1,68 @@
 
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Users, Heart, Shield, Zap } from 'lucide-react';
 
-export const StatsSection: React.FC = () => {
-  const stats = [
-    {
-      icon: Users,
-      value: '2,500+',
-      label: 'Active Members',
-      description: 'Building community power together'
-    },
-    {
-      icon: Heart,
-      value: '15,000+',
-      label: 'Mutual Aid Exchanges',
-      description: 'Resources shared and neighbors helped'
-    },
-    {
-      icon: Shield,
-      value: '150+',
-      label: 'Communities Defended',
-      description: 'From displacement and environmental harm'
-    },
-    {
-      icon: Zap,
-      value: '500MW',
-      label: 'Community Solar',
-      description: 'Renewable energy coordinated'
-    }
-  ];
+const stats = [
+  {
+    icon: Users,
+    value: '2,500+',
+    label: 'Community Members',
+    description: 'Neighbors supporting each other'
+  },
+  {
+    icon: Heart,
+    value: '850+',
+    label: 'Mutual Aid Requests',
+    description: 'Fulfilled in the last month'
+  },
+  {
+    icon: Shield,
+    value: '45+',
+    label: 'Defense Campaigns',
+    description: 'Protecting our communities'
+  },
+  {
+    icon: Zap,
+    value: '120+',
+    label: 'Solar Installations',
+    description: 'Community energy projects'
+  }
+];
 
+export const StatsSection: React.FC = () => {
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Our Community Impact
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Building <span className="text-red-600">Community Power</span> Together
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Real numbers from real communities organizing for liberation and mutual aid
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            Real communities organizing for liberation, mutual aid, and collective defense
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className="text-center">
-                <div className="bg-card p-6 rounded-xl shadow-sm border border-border">
-                  <div className="bg-primary/10 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Icon className="w-8 h-8 text-primary" />
+              <Card key={index} className="text-center border-0 shadow-sm">
+                <CardContent className="pt-8">
+                  <div className="inline-flex p-3 rounded-full bg-red-100 text-red-600 mb-4">
+                    <Icon className="w-6 h-6" />
                   </div>
-                  <div className="text-3xl font-bold text-foreground mb-2">
+                  <div className="text-3xl font-bold text-gray-900 mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-lg font-semibold text-foreground mb-2">
+                  <div className="text-lg font-medium text-gray-900 mb-1">
                     {stat.label}
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <div className="text-sm text-gray-600">
                     {stat.description}
-                  </p>
-                </div>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

@@ -17,9 +17,21 @@ const languages = [
 ];
 
 export const LanguageToggle: React.FC = () => {
-  const { currentLanguage, changeLanguage } = useLanguage();
+  // Add error boundary for the useLanguage hook
+  let currentLanguage, changeLanguage;
+  
+  try {
+    const languageContext = useLanguage();
+    currentLanguage = languageContext.currentLanguage;
+    changeLanguage = languageContext.changeLanguage;
+  } catch (error) {
+    console.error('LanguageToggle: useLanguage hook failed:', error);
+    // Fallback to English if context is not available
+    currentLanguage = 'en';
+    changeLanguage = () => {};
+  }
 
-  const currentLang = languages.find(lang => lang.code === currentLanguage);
+  const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
 
   return (
     <DropdownMenu>

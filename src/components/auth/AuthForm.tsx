@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { SocialAuthButtons } from './SocialAuthButtons';
 import { EmailPasswordForm } from './EmailPasswordForm';
+import { AdminTestAccount } from './AdminTestAccount';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -207,67 +207,72 @@ const AuthForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-red-50 dark:from-blue-950 dark:to-red-950 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Welcome to We Protect Us</CardTitle>
-          <CardDescription>
-            Join our community of mutual aid and solidarity
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            {/* Social Auth Options */}
-            <div className="mt-6">
-              <SocialAuthButtons onSocialAuth={handleSocialAuth} loading={loading} />
-            </div>
+      <div className="w-full max-w-md space-y-4">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">Welcome to We Protect Us</CardTitle>
+            <CardDescription>
+              Join our community of mutual aid and solidarity
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              
+              {/* Social Auth Options */}
+              <div className="mt-6">
+                <SocialAuthButtons onSocialAuth={handleSocialAuth} loading={loading} />
+              </div>
 
-            <div className="my-6">
-              <Separator className="relative">
-                <span className="absolute inset-x-0 top-1/2 flex justify-center transform -translate-y-1/2">
-                  <span className="px-4 text-sm text-muted-foreground bg-card">or</span>
-                </span>
-              </Separator>
-            </div>
-            
-            <TabsContent value="signin">
-              <EmailPasswordForm
-                mode="signin"
-                email={email}
-                password={password}
-                pseudonym={pseudonym}
-                showPassword={showPassword}
-                loading={loading}
-                onEmailChange={setEmail}
-                onPasswordChange={setPassword}
-                onPseudonymChange={setPseudonym}
-                onTogglePassword={() => setShowPassword(!showPassword)}
-                onSubmit={handleSignIn}
-              />
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              <EmailPasswordForm
-                mode="signup"
-                email={email}
-                password={password}
-                pseudonym={pseudonym}
-                showPassword={showPassword}
-                loading={loading}
-                onEmailChange={setEmail}
-                onPasswordChange={setPassword}
-                onPseudonymChange={setPseudonym}
-                onTogglePassword={() => setShowPassword(!showPassword)}
-                onSubmit={handleSignUp}
-              />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+              <div className="my-6">
+                <Separator className="relative">
+                  <span className="absolute inset-x-0 top-1/2 flex justify-center transform -translate-y-1/2">
+                    <span className="px-4 text-sm text-muted-foreground bg-card">or</span>
+                  </span>
+                </Separator>
+              </div>
+              
+              <TabsContent value="signin">
+                <EmailPasswordForm
+                  mode="signin"
+                  email={email}
+                  password={password}
+                  pseudonym={pseudonym}
+                  showPassword={showPassword}
+                  loading={loading}
+                  onEmailChange={setEmail}
+                  onPasswordChange={setPassword}
+                  onPseudonymChange={setPseudonym}
+                  onTogglePassword={() => setShowPassword(!showPassword)}
+                  onSubmit={handleSignIn}
+                />
+              </TabsContent>
+              
+              <TabsContent value="signup">
+                <EmailPasswordForm
+                  mode="signup"
+                  email={email}
+                  password={password}
+                  pseudonym={pseudonym}
+                  showPassword={showPassword}
+                  loading={loading}
+                  onEmailChange={setEmail}
+                  onPasswordChange={setPassword}
+                  onPseudonymChange={setPseudonym}
+                  onTogglePassword={() => setShowPassword(!showPassword)}
+                  onSubmit={handleSignUp}
+                />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+        
+        {/* Temporary admin test account creator */}
+        <AdminTestAccount />
+      </div>
     </div>
   );
 };
