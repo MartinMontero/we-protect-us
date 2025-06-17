@@ -19,6 +19,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const changeLanguage = async (language: string) => {
     try {
+      console.log('Attempting to change language to:', language);
       await i18n.changeLanguage(language);
       localStorage.setItem('preferred-language', language);
       
@@ -29,7 +30,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Force re-render by updating a CSS custom property
       document.documentElement.style.setProperty('--language-direction', language === 'ar' ? 'rtl' : 'ltr');
       
-      console.log('Language changed to:', language);
+      console.log('Language changed successfully to:', language);
+      console.log('Current i18n language:', i18n.language);
     } catch (error) {
       console.error('Failed to change language:', error);
     }
@@ -42,8 +44,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     document.documentElement.style.setProperty('--language-direction', isRTL ? 'rtl' : 'ltr');
     
     // Debug logging
-    console.log('Current language:', currentLanguage, 'RTL:', isRTL);
-  }, [currentLanguage, isRTL]);
+    console.log('Language Context - Current language:', currentLanguage, 'RTL:', isRTL);
+    console.log('Available translations:', Object.keys(i18n.store.data));
+    console.log('Translation test:', t('common.welcome'));
+  }, [currentLanguage, isRTL, i18n, t]);
 
   const value: LanguageContextType = {
     currentLanguage,

@@ -3,6 +3,8 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoles } from '@/hooks/useRoles';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 interface AdminProtectedRouteProps {
   children: React.ReactNode;
@@ -14,31 +16,36 @@ export const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({
   requiredRole = 'admin' 
 }) => {
   const { user, loading: authLoading } = useAuth();
-  const { hasPermission, loading: rolesLoading } = useRoles();
+  const { hasPermission, loading: roleLoading } = useRoles();
 
-  if (authLoading || rolesLoading) {
+  // Show loading while checking authentication and roles
+  if (authLoading || roleLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Checking permissions...</p>
+        </div>
       </div>
     );
   }
 
+  // Redirect to auth if not authenticated
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
+  // Check role permissions
   if (!hasPermission(requiredRole)) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Access Denied
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            You don't have the required permissions to access this page.
-          </p>
-          <Navigate to="/dashboard" replace />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <div className="max-w-md w-full">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              You don't have the required permissions to access this page. Contact an administrator if you believe this is an error.
+            </AlertDescription>
+          </Alert>
         </div>
       </div>
     );

@@ -175,7 +175,7 @@ const AuthForm = () => {
     }
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'github' | 'discord' | 'twitter' | 'facebook') => {
+  const handleSocialAuth = async (provider: 'google' | 'github') => {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.signInWithOAuth({

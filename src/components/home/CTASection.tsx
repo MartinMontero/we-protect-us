@@ -33,32 +33,21 @@ export const CTASection: React.FC = () => {
           The future starts with us protecting each other.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* Centered and bigger "Start Organizing Today" button */}
+        <div className="flex justify-center mb-12">
           <Button 
             asChild
             size="lg"
-            className="bg-white text-red-600 hover:bg-red-50 px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+            className="bg-white text-red-600 hover:bg-red-50 px-12 py-6 text-xl rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-bold"
           >
             <Link to={user ? '/dashboard' : '/auth'}>
               {user ? 'Go to Dashboard' : 'Start Organizing Today'}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-          </Button>
-          
-          <Button 
-            asChild
-            variant="outline"
-            size="lg"
-            className="border-2 border-white text-white hover:bg-white hover:text-red-600 px-8 py-4 text-lg rounded-xl transition-all duration-200"
-          >
-            <Link to="/disaster-preparedness">
-              <Shield className="mr-2 w-5 h-5" />
-              Emergency Resources
+              <ArrowRight className="ml-3 w-6 h-6" />
             </Link>
           </Button>
         </div>
         
-        <div className="mt-12 text-red-100">
+        <div className="text-red-100">
           <p className="text-sm opacity-90">
             Free and open-source • Community-owned • Privacy-focused
           </p>

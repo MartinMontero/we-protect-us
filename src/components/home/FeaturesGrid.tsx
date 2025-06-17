@@ -109,7 +109,7 @@ export const FeaturesGrid: React.FC = () => {
                     <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${feature.color}`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <Badge variant={feature.status === 'active' ? 'default' : 'secondary'} className="bg-green-100 text-green-700">
+                    <Badge variant="default" className="bg-green-100 text-green-700">
                       Available
                     </Badge>
                   </div>

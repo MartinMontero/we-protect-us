@@ -6,37 +6,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Home, 
   Utensils, 
-  Zap, 
   Heart, 
-  Hammer, 
-  Flower, 
-  Coins,
-  Baby,
-  Users,
-  AlertTriangle,
-  BookOpen,
-  Megaphone,
-  Shield,
-  Crown,
-  Swords
+  Shield
 } from 'lucide-react';
 
+// Simplified navigation - only core items
 const navigationItems = [
   { key: 'home', href: '/', icon: Home },
   { key: 'food_security', href: '/food-security', icon: Utensils },
-  { key: 'energy_democracy', href: '/energy-democracy', icon: Zap },
   { key: 'mutual_aid', href: '/mutual-aid', icon: Heart },
-  { key: 'tool_library', href: '/tool-library', icon: Hammer },
-  { key: 'community_garden', href: '/community-garden', icon: Flower },
-  { key: 'community_wealth', href: '/community-wealth', icon: Coins },
-  { key: 'childcare_coop', href: '/childcare-coop', icon: Baby },
-  { key: 'elder_care', href: '/elder-care', icon: Users },
-  { key: 'disaster_prep', href: '/disaster-preparedness', icon: AlertTriangle },
-  { key: 'skills', href: '/skills', icon: BookOpen },
-  { key: 'organizing', href: '/organizing', icon: Megaphone },
-  { key: 'security', href: '/security-governance', icon: Shield },
-  { key: 'sovereignty', href: '/community-sovereignty', icon: Crown },
-  { key: 'defense', href: '/community-defense', icon: Swords }
+  { key: 'community_defense', href: '/community-defense', icon: Shield }
 ];
 
 export const NavigationItems: React.FC = () => {
