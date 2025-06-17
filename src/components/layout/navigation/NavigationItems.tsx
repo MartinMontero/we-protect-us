@@ -1,19 +1,12 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
-  Utensils, 
-  Heart, 
-  Shield,
   Users
 } from 'lucide-react';
 
-// Only 4 core navigation items as requested
+// Only keep Community as requested - remove all the "Essential Tools"
 const navigationItems = [
-  { key: 'mutual_aid', href: '/mutual-aid', icon: Heart, label: 'Mutual Aid' },
-  { key: 'food_security', href: '/food-security', icon: Utensils, label: 'Food Security' },
-  { key: 'community_defense', href: '/community-defense', icon: Shield, label: 'Community Defense' },
   { key: 'community', href: '/community', icon: Users, label: 'Community' }
 ];
 

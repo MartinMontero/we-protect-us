@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -19,56 +18,56 @@ const features = [
     icon: Heart,
     title: 'Mutual Aid Networks',
     description: 'Connect with neighbors to share resources, skills, and support during times of need.',
-    href: '/mutual-aid',
+    href: '#mutual-aid', // Make it an anchor link instead of protected route
     color: 'text-red-600'
   },
   {
     icon: Utensils,
     title: 'Food Security',
     description: 'Community gardens, food distribution networks, and agricultural resource sharing.',
-    href: '/food-security',
+    href: '#food-security',
     color: 'text-green-600'
   },
   {
     icon: Shield,
     title: 'Community Defense',
     description: 'Tenant organizing, anti-displacement campaigns, and community protection strategies.',
-    href: '/community-defense',
+    href: '#community-defense',
     color: 'text-blue-600'
   },
   {
     icon: Users,
     title: 'Community Building',
     description: 'Tools for organizing, consensus building, and strengthening neighborhood connections.',
-    href: '/community',
+    href: '/community', // Keep this one as it should be accessible
     color: 'text-purple-600'
   },
   {
     icon: Zap,
     title: 'Energy Democracy',
     description: 'Solar cooperatives, energy audits, and community-controlled renewable projects.',
-    href: '/energy-democracy',
+    href: '#energy-democracy',
     color: 'text-yellow-600'
   },
   {
     icon: BookOpen,
     title: 'Skills & Education',
     description: 'Peer-to-peer learning, skill sharing, and community education programs.',
-    href: '/skills',
+    href: '#skills',
     color: 'text-indigo-600'
   },
   {
     icon: Wrench,
     title: 'Tool Library',
     description: 'Share tools and equipment with your community to reduce costs and waste.',
-    href: '/tool-library',
+    href: '#tool-library',
     color: 'text-orange-600'
   },
   {
     icon: Sprout,
     title: 'Community Garden',
     description: 'Coordinate plot management, harvest sharing, and gardening knowledge.',
-    href: '/community-garden',
+    href: '#community-garden',
     color: 'text-emerald-600'
   }
 ];
@@ -89,6 +88,8 @@ export const FeaturesGrid: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
+            const isExternalLink = feature.href.startsWith('#');
+            
             return (
               <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-sm">
                 <CardHeader className="text-center pb-4">
@@ -103,11 +104,30 @@ export const FeaturesGrid: React.FC = () => {
                   <CardDescription className="text-gray-600 mb-6 leading-relaxed">
                     {feature.description}
                   </CardDescription>
-                  <Button asChild variant="outline" className="w-full group-hover:bg-red-50 group-hover:border-red-200">
-                    <Link to={feature.href}>
-                      Explore Tool
-                    </Link>
-                  </Button>
+                  {isExternalLink ? (
+                    <Button 
+                      variant="outline" 
+                      className="w-full group-hover:bg-red-50 group-hover:border-red-200"
+                      onClick={() => {
+                        // Smooth scroll to section or show coming soon message
+                        const sectionId = feature.href.substring(1);
+                        const element = document.getElementById(sectionId);
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                          alert('Coming soon! Sign up to get notified when this feature is available.');
+                        }
+                      }}
+                    >
+                      Learn More
+                    </Button>
+                  ) : (
+                    <Button asChild variant="outline" className="w-full group-hover:bg-red-50 group-hover:border-red-200">
+                      <a href={feature.href}>
+                        Explore Tool
+                      </a>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             );

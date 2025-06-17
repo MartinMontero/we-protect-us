@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Globe, Check } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -16,13 +17,7 @@ const languages = [
 ];
 
 export const LanguageToggle: React.FC = () => {
-  const [currentLanguage, setCurrentLanguage] = React.useState('en');
-
-  const changeLanguage = (languageCode: string) => {
-    setCurrentLanguage(languageCode);
-    console.log('Language changed to:', languageCode);
-    // For now, just log the change - full i18n integration would need more setup
-  };
+  const { currentLanguage, changeLanguage } = useLanguage();
 
   const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
 

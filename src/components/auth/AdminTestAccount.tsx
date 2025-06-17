@@ -12,9 +12,9 @@ export const AdminTestAccount: React.FC = () => {
   const createTestAdmin = async () => {
     setCreating(true);
     try {
-      // First try to sign up the test admin
+      // Use a more standard email format that should pass validation
       const { data, error } = await supabase.auth.signUp({
-        email: 'admin@test.com',
+        email: 'testadmin@example.com',
         password: 'testadmin123',
         options: {
           data: {
@@ -50,7 +50,7 @@ export const AdminTestAccount: React.FC = () => {
 
         toast({
           title: "Success",
-          description: "Test admin account created: admin@test.com / testadmin123",
+          description: "Test admin account created: testadmin@example.com / testadmin123",
         });
       }
     } catch (error) {
@@ -79,7 +79,7 @@ export const AdminTestAccount: React.FC = () => {
           {creating ? 'Creating...' : 'Create Test Admin'}
         </Button>
         <p className="text-sm text-gray-600 mt-2">
-          This will create: admin@test.com / testadmin123
+          This will create: testadmin@example.com / testadmin123
         </p>
       </CardContent>
     </Card>
