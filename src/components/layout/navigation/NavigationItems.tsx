@@ -2,25 +2,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { 
-  Home, 
   Utensils, 
   Heart, 
-  Shield
+  Shield,
+  Users
 } from 'lucide-react';
 
 // Only 4 core navigation items as requested
 const navigationItems = [
-  { key: 'home', href: '/', icon: Home },
-  { key: 'food_security', href: '/food-security', icon: Utensils },
-  { key: 'mutual_aid', href: '/mutual-aid', icon: Heart },
-  { key: 'community_defense', href: '/community-defense', icon: Shield }
+  { key: 'mutual_aid', href: '/mutual-aid', icon: Heart, label: 'Mutual Aid' },
+  { key: 'food_security', href: '/food-security', icon: Utensils, label: 'Food Security' },
+  { key: 'community_defense', href: '/community-defense', icon: Shield, label: 'Community Defense' },
+  { key: 'community', href: '/community', icon: Users, label: 'Community' }
 ];
 
 export const NavigationItems: React.FC = () => {
-  const { t } = useLanguage();
-
   return (
     <>
       {navigationItems.map((item) => {
@@ -36,7 +33,7 @@ export const NavigationItems: React.FC = () => {
             <Link to={item.href} className="flex items-center gap-2">
               <Icon className="h-4 w-4" />
               <span className="hidden lg:inline">
-                {t(`navigation.${item.key}`)}
+                {item.label}
               </span>
             </Link>
           </Button>
