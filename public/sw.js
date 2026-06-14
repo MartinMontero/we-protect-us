@@ -1,161 +1,109 @@
+// Service worker for We Protect Us.
+// Privacy note: authenticated API responses are intentionally NEVER written to
+// the cache, so personal data does not linger on shared/seized devices. Only the
+// static application shell and the offline fallback page are cached.
 
-const CACHE_NAME = 'emergency-prep-v1';
+const CACHE_NAME = 'wpu-shell-v2';
 const OFFLINE_URL = '/offline.html';
 
-// Files to cache for offline use
-const STATIC_FILES = [
-  '/',
-  '/disaster-preparedness',
-  '/offline.html',
-  '/manifest.json',
-];
+const STATIC_FILES = ['/', '/offline.html', '/manifest.json'];
 
-// Install event - cache static files
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Caching static files');
-        return cache.addAll(STATIC_FILES);
-      })
-      .then(() => {
-        self.skipWaiting();
-      })
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(STATIC_FILES))
+      .then(() => self.skipWaiting()),
   );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      self.clients.claim();
-    })
+    caches
+      .keys()
+      .then((names) =>
+        Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))),
+      )
+      .then(() => self.clients.claim()),
   );
 });
 
-// Fetch event - serve from cache when offline
-self.addEventListener('fetch', event => {
-  // Only handle GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
 
-  // Handle Supabase API requests
-  if (event.request.url.includes('supabase.co')) {
+  const url = new URL(request.url);
+
+  // Never cache Supabase / API traffic — it may contain personal data.
+  // Serve from network; if offline, hand back an empty result the app understands.
+  if (url.hostname.endsWith('.supabase.co')) {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          // If online, cache the response and return it
-          if (response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          // If offline, try to serve from cache
-          return caches.match(event.request)
-            .then(cachedResponse => {
-              if (cachedResponse) {
-                return cachedResponse;
-              }
-              // Return offline data structure for critical endpoints
-              return new Response(JSON.stringify({
-                data: [],
-                error: null,
-                offline: true
-              }), {
-                headers: { 'Content-Type': 'application/json' }
-              });
-            });
-        })
+      fetch(request).catch(
+        () =>
+          new Response(JSON.stringify({ data: [], error: null, offline: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+      ),
     );
     return;
   }
 
-  // Handle page requests
+  // Only handle our own origin for caching.
+  if (url.origin !== self.location.origin) return;
+
+  // App navigations: network-first, fall back to cached shell, then offline page.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).catch(() =>
+        caches.match('/').then((cached) => cached || caches.match(OFFLINE_URL)),
+      ),
+    );
+    return;
+  }
+
+  // Static assets: cache-first, then revalidate in the background.
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
-      .catch(() => {
-        // If both cache and network fail, show offline page
-        return caches.match(OFFLINE_URL);
-      })
+    caches.match(request).then((cached) => {
+      const network = fetch(request)
+        .then((response) => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => cached);
+      return cached || network;
+    }),
   );
 });
 
-// Background sync for offline actions
-self.addEventListener('sync', event => {
+self.addEventListener('sync', (event) => {
   if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
+    // The application layer (useOfflineSync) performs the actual replay once the
+    // page regains connectivity; nothing sensitive is stored in the SW here.
   }
 });
 
-// Push notification handling
-self.addEventListener('push', event => {
+self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Emergency Alert',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: '/favicon.ico',
+    badge: '/favicon.ico',
     vibrate: [200, 100, 200],
     tag: 'emergency-alert',
     requireInteraction: true,
     actions: [
-      {
-        action: 'view',
-        title: 'View Details'
-      },
-      {
-        action: 'dismiss',
-        title: 'Dismiss'
-      }
-    ]
+      { action: 'view', title: 'View Details' },
+      { action: 'dismiss', title: 'Dismiss' },
+    ],
   };
-
-  event.waitUntil(
-    self.registration.showNotification('Emergency Alert', options)
-  );
+  event.waitUntil(self.registration.showNotification('Emergency Alert', options));
 });
 
-// Handle notification clicks
-self.addEventListener('notificationclick', event => {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-
   if (event.action === 'view') {
-    event.waitUntil(
-      clients.openWindow('/disaster-preparedness')
-    );
+    event.waitUntil(self.clients.openWindow('/disaster-preparedness'));
   }
 });
-
-// Function to sync offline data when connection is restored
-async function doBackgroundSync() {
-  try {
-    // Get stored offline data
-    const cache = await caches.open(CACHE_NAME);
-    const offlineData = await cache.match('/offline-data');
-    
-    if (offlineData) {
-      const data = await offlineData.json();
-      
-      // This will be handled by the application layer through useOfflineSync
-      console.log('Background sync triggered, data will be synced by application');
-    }
-  } catch (error) {
-    console.error('Background sync failed:', error);
-  }
-}

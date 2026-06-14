@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { TrendingUp, Users, Activity, DollarSign } from 'lucide-react';
+import { Users, Activity, DollarSign } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AnalyticsData {
@@ -14,7 +14,6 @@ interface AnalyticsData {
     activeUsers: number;
     totalPosts: number;
     completedTransactions: number;
-    avgResponseTime: number;
   };
 }
 
@@ -46,7 +45,6 @@ export const AnalyticsCharts: React.FC = () => {
       activeUsers: 0,
       totalPosts: 0,
       completedTransactions: 0,
-      avgResponseTime: 0,
     },
   });
   const [loading, setLoading] = useState(true);
@@ -100,7 +98,6 @@ export const AnalyticsCharts: React.FC = () => {
         }).length || 0,
         totalPosts: posts?.length || 0,
         completedTransactions: transactions?.length || 0,
-        avgResponseTime: Math.floor(Math.random() * 500) + 100,
       };
 
       setData({
@@ -200,7 +197,7 @@ export const AnalyticsCharts: React.FC = () => {
       </div>
 
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Users</CardTitle>
@@ -219,7 +216,7 @@ export const AnalyticsCharts: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.platformHealth.totalPosts}</div>
-            <p className="text-xs text-muted-foreground">+12% from last month</p>
+            <p className="text-xs text-muted-foreground">All categories</p>
           </CardContent>
         </Card>
 
@@ -231,17 +228,6 @@ export const AnalyticsCharts: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{data.platformHealth.completedTransactions}</div>
             <p className="text-xs text-muted-foreground">Time bank exchanges</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Response Time</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.platformHealth.avgResponseTime}ms</div>
-            <p className="text-xs text-muted-foreground">Average API response</p>
           </CardContent>
         </Card>
       </div>

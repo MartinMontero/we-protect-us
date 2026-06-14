@@ -1,0 +1,2 @@
+# SPA fallback so deep links (e.g. /dashboard) resolve to the app on reload.
+/*    /index.html   200

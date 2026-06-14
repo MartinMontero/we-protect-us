@@ -3,23 +3,12 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoles } from '@/hooks/useRoles';
-import { 
-  LayoutDashboard,
-  Heart,
-  Shield,
-  Apple,
-  Zap,
-  Wrench,
-  Users,
-  Settings,
-  LogIn,
-  Crown,
-  Puzzle
-} from 'lucide-react';
+import { Settings, LogIn, Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { UserMenu } from '@/components/layout/UserMenu';
 import { ThemeSelector } from './ThemeSelector';
+import { dashboardNavItem, featureNav } from '@/lib/navigation';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -32,14 +21,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
   const { hasPermission } = useRoles();
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/mutual-aid', label: 'Mutual Aid', icon: Heart },
-    { href: '/community-defense', label: 'Defense', icon: Shield },
-    { href: '/food-security', label: 'Food Security', icon: Apple },
-    { href: '/energy-democracy', label: 'Energy', icon: Zap },
-    { href: '/tool-library', label: 'Tools', icon: Wrench },
-    { href: '/skills', label: 'Skills', icon: Users },
-    { href: '/integrations', label: 'Integrations', icon: Puzzle },
+    dashboardNavItem,
+    ...featureNav.map(({ href, label, icon }) => ({ href, label, icon })),
     ...(hasPermission('admin') ? [{ href: '/admin', label: 'Admin', icon: Crown }] : []),
     { href: '/settings', label: 'Settings', icon: Settings },
   ];

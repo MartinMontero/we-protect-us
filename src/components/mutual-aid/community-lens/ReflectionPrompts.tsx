@@ -55,7 +55,7 @@ export const ReflectionPrompts: React.FC<ReflectionPromptsProps> = ({
     ];
 
     // Customize prompts based on post type and category
-    let customPrompts = [...basePrompts];
+    const customPrompts = [...basePrompts];
     
     if (postType === 'request') {
       customPrompts.push({

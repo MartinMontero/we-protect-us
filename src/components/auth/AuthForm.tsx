@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { SocialAuthButtons } from './SocialAuthButtons';
 import { EmailPasswordForm } from './EmailPasswordForm';
-import { AdminTestAccount } from './AdminTestAccount';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -269,9 +268,6 @@ const AuthForm = () => {
             </Tabs>
           </CardContent>
         </Card>
-        
-        {/* Temporary admin test account creator */}
-        <AdminTestAccount />
       </div>
     </div>
   );

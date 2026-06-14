@@ -224,7 +224,7 @@ export const SurveillanceDetectionDrills: React.FC<SurveillanceDetectionDrillsPr
               <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-green-800 mb-2">Drill Complete!</h3>
               <p className="text-green-700">
-                You successfully identified all surveillance threats in {drills.find(d => d.id === activeDrill)?.timeLimit! - timeRemaining} seconds.
+                You successfully identified all surveillance threats in {(drills.find(d => d.id === activeDrill)?.timeLimit ?? 0) - timeRemaining} seconds.
               </p>
             </div>
           </CardContent>

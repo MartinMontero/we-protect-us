@@ -65,40 +65,40 @@ export const AdminDashboard: React.FC = () => {
         console.warn('Posts table might not exist:', postsError);
       }
 
-      // Calculate active users (30% of total for demo)
-      const activeUsers = Math.floor((totalUsers || 0) * 0.3);
+      // Active users: distinct authors of posts in the last 30 days (real signal).
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+      const { data: recentPosts } = await supabase
+        .from('mutual_aid_posts')
+        .select('user_id, title, type, created_at')
+        .gte('created_at', thirtyDaysAgo)
+        .order('created_at', { ascending: false })
+        .limit(1000);
 
-      // Mock recent activity with proper timestamps
-      const recentActivity: ActivityItem[] = [
-        {
-          id: '1',
-          type: 'user_signup',
-          description: 'New user registered',
-          timestamp: new Date().toISOString(),
-          status: 'success'
-        },
-        {
-          id: '2',
-          type: 'post_created',
-          description: 'New mutual aid post created',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          status: 'success'
-        },
-        {
-          id: '3',
-          type: 'system_alert',
-          description: 'High server load detected',
-          timestamp: new Date(Date.now() - 7200000).toISOString(),
-          status: 'warning'
-        }
-      ];
+      const activeUsers = new Set((recentPosts ?? []).map((p) => p.user_id)).size;
+
+      // Recent activity derived from the latest real posts.
+      const recentActivity: ActivityItem[] = (recentPosts ?? []).slice(0, 5).map((p) => ({
+        id: `${p.user_id}-${p.created_at}`,
+        type: 'post_created',
+        description: `New ${p.type ?? 'mutual aid'} post: ${p.title ?? 'Untitled'}`,
+        timestamp: p.created_at ?? new Date().toISOString(),
+        status: 'success' as const,
+      }));
+
+      // "Requires attention": open requests flagged as critical urgency.
+      const { count: criticalCount } = await supabase
+        .from('mutual_aid_posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'open')
+        .eq('urgency', 'critical');
+      const pendingReports = criticalCount ?? 0;
 
       setStats({
         totalUsers: totalUsers || 0,
         activeUsers,
         totalPosts: totalPosts || 0,
-        pendingReports: 2, // Mock data
-        recentActivity
+        pendingReports,
+        recentActivity,
       });
     } catch (err) {
       console.error('Error fetching dashboard stats:', err);
@@ -194,7 +194,7 @@ export const AdminDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUsers}</div>
             <p className="text-xs text-muted-foreground">
-              +12% from last month
+              Registered members
             </p>
           </CardContent>
         </Card>
@@ -224,7 +224,7 @@ export const AdminDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalPosts}</div>
             <p className="text-xs text-muted-foreground">
-              +8% from last week
+              Mutual aid posts
             </p>
           </CardContent>
         </Card>

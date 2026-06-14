@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Users, MessageSquare, AlertCircle } from 'lucide-react';
 import { useRealtime } from '@/hooks/useRealtime';
+import { supabase } from '@/integrations/supabase/client';
 
 interface RealtimeEvent {
   id: string;
@@ -60,13 +61,29 @@ export const RealtimeDashboard: React.FC = () => {
     },
   });
 
-  // Simulate active users count
+  // Active users = distinct members who posted in the last 24h (real signal),
+  // refreshed periodically.
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveUsers(Math.floor(Math.random() * 50) + 10);
-    }, 5000);
+    let cancelled = false;
 
-    return () => clearInterval(interval);
+    const fetchActiveUsers = async () => {
+      const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+      const { data } = await supabase
+        .from('mutual_aid_posts')
+        .select('user_id')
+        .gte('created_at', since)
+        .limit(1000);
+      if (!cancelled) {
+        setActiveUsers(new Set((data ?? []).map((p) => p.user_id)).size);
+      }
+    };
+
+    fetchActiveUsers();
+    const interval = setInterval(fetchActiveUsers, 30000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
   const getEventIcon = (type: RealtimeEvent['type']) => {
