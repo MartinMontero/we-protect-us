@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -209,7 +210,7 @@ export const InvestmentSimulator: React.FC = () => {
             >
               {isRunning ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <Spinner size="sm" className="border-white" />
                   Running Simulation...
                 </>
               ) : (

@@ -1,10 +1,18 @@
 
-import React, { Suspense, lazy, useCallback, useState } from 'react';
+import { Suspense, lazy, useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Map, BarChart3, Users, Handshake, BookOpen, Grid } from 'lucide-react';
+import { Spinner, LoadingState } from '@/components/ui/spinner';
 import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
 import { CreatePostDialog } from '@/components/mutual-aid/CreatePostDialog';
 import { PostCard } from '@/components/mutual-aid/PostCard';
+import { FoodShareTooltip } from '@/components/mutual-aid/education/ContextualTooltips';
+import { useMutualAidPosts } from '@/hooks/useMutualAidPosts';
+import { useMutualAidData } from '@/components/mutual-aid/hooks/useMutualAidData';
+import { useAuth } from '@/contexts/AuthContext';
+import { MutualAidPost } from '@/types/mutualAid';
 
 // Heavy, tab-gated views: leaflet (map) and recharts (projections) only load
 // when their tab is opened, keeping the initial MutualAid payload small.
@@ -25,19 +33,7 @@ const CommunityLibrary = lazy(() =>
   })),
 );
 
-const TabFallback = () => (
-  <div className="flex justify-center py-12" role="status" aria-live="polite">
-    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
-    <span className="sr-only">Loading…</span>
-  </div>
-);
-import { useMutualAidPosts } from '@/hooks/useMutualAidPosts';
-import { useMutualAidData } from '@/components/mutual-aid/hooks/useMutualAidData';
-import { useAuth } from '@/contexts/AuthContext';
-import { FoodShareTooltip } from '@/components/mutual-aid/education/ContextualTooltips';
-import { Button } from '@/components/ui/button';
-import { Plus, Map, BarChart3, Users, Handshake, BookOpen, Grid } from 'lucide-react';
-import { MutualAidPost } from '@/types/mutualAid';
+const TabFallback = () => <LoadingState />;
 
 const MutualAid = () => {
   const { user } = useAuth();
@@ -171,7 +167,7 @@ const MutualAid = () => {
             <CardContent>
               {loading ? (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <Spinner size="md" />
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

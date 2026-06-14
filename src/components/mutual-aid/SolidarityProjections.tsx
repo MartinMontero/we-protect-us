@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,7 +87,7 @@ export const SolidarityProjections: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <Spinner size="md" className="border-blue-600" />
       </div>
     );
   }

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -86,7 +87,7 @@ export const FoodAssetMap: React.FC = () => {
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            <Spinner size="md" className="border-green-600" />
           </div>
         </CardContent>
       </Card>

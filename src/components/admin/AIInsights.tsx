@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -123,7 +124,7 @@ export const AIInsights: React.FC = () => {
       <CardContent>
         {loading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+            <Spinner size="md" className="border-red-600" />
           </div>
         ) : (
           <div className="space-y-4">

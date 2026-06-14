@@ -23,20 +23,25 @@ export const useWebRTC = (userId: string) => {
   const { toast } = useToast();
   
   const localConnectionRef = useRef<RTCPeerConnection | null>(null);
+  // Mirror peers into a ref so unmount cleanup closes the *current* connections,
+  // not the empty Map captured at mount.
+  const peersRef = useRef(peers);
+  peersRef.current = peers;
 
   useEffect(() => {
     // Initialize WebRTC when component mounts
     initializeWebRTC();
-    
+
     return () => {
       // Cleanup connections
-      peers.forEach(peer => {
+      peersRef.current.forEach(peer => {
         peer.connection.close();
       });
       if (localConnectionRef.current) {
         localConnectionRef.current.close();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initializeWebRTC = async () => {
