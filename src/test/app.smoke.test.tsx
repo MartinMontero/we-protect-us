@@ -32,4 +32,20 @@ describe('App smoke tests', () => {
     render(<App />);
     expect(await screen.findByText('404')).toBeInTheDocument();
   });
+
+  it('renders the auth page without the removed admin backdoor', async () => {
+    window.history.pushState({}, '', '/auth');
+    render(<App />);
+    expect(await screen.findByText(/Welcome to We Protect Us/i)).toBeInTheDocument();
+    // The public "Create Test Admin" backdoor must be gone.
+    expect(screen.queryByText(/Create Test Admin/i)).not.toBeInTheDocument();
+  });
+
+  it('redirects unauthenticated visitors away from protected routes', async () => {
+    window.history.pushState({}, '', '/dashboard');
+    render(<App />);
+    // ProtectedRoute -> /auth, so the sign-in card appears.
+    expect(await screen.findByText(/Welcome to We Protect Us/i)).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/auth');
+  });
 });
