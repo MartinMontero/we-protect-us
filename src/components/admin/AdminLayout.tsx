@@ -4,11 +4,14 @@ import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Settings, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Users,
+  UserCog,
+  Settings,
+  BarChart3,
+  Sparkles,
+  Activity,
   Shield,
   Menu,
   Home
@@ -17,32 +20,14 @@ import { UserMenu } from '@/components/layout/UserMenu';
 import { useState } from 'react';
 
 const navigationItems = [
-  {
-    key: 'dashboard',
-    href: '/admin',
-    icon: LayoutDashboard,
-    exact: true
-  },
-  {
-    key: 'users',
-    href: '/admin/users',
-    icon: Users
-  },
-  {
-    key: 'analytics',
-    href: '/admin/analytics',
-    icon: BarChart3
-  },
-  {
-    key: 'security',
-    href: '/admin/security',
-    icon: Shield
-  },
-  {
-    key: 'settings',
-    href: '/admin/settings',
-    icon: Settings
-  }
+  { key: 'dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
+  { key: 'users', href: '/admin/users', icon: Users },
+  { key: 'roles', href: '/admin/roles', icon: UserCog },
+  { key: 'analytics', href: '/admin/analytics', icon: BarChart3 },
+  { key: 'insights', href: '/admin/insights', icon: Sparkles },
+  { key: 'realtime', href: '/admin/realtime', icon: Activity },
+  { key: 'security', href: '/admin/security', icon: Shield },
+  { key: 'settings', href: '/admin/settings', icon: Settings },
 ];
 
 export const AdminLayout: React.FC = () => {
@@ -74,7 +59,7 @@ export const AdminLayout: React.FC = () => {
             <div className="flex items-center gap-2">
               <Shield className="w-6 h-6 text-red-600" />
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                {t('admin.dashboard')}
+                {t('admin:dashboard')}
               </h1>
             </div>
           </div>
@@ -108,7 +93,7 @@ export const AdminLayout: React.FC = () => {
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
-                  {t(`admin.${item.key}`)}
+                  {t(`admin:${item.key}`)}
                 </NavLink>
               );
             })}

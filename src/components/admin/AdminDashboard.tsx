@@ -158,7 +158,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {t('admin.dashboard')}
+            {t('admin:dashboard')}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome to the Solidarity Web Weave admin panel. Monitor platform health and manage community resources.
@@ -187,7 +187,7 @@ export const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('admin.total_users')}
+              {t('admin:total_users')}
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -202,7 +202,7 @@ export const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('admin.active_users')}
+              {t('admin:active_users')}
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -217,7 +217,7 @@ export const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('admin.total_posts')}
+              {t('admin:total_posts')}
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -232,7 +232,7 @@ export const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('admin.pending_reports')}
+              {t('admin:pending_reports')}
             </CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -248,7 +248,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Recent Activity */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('admin.recent_activity')}</CardTitle>
+          <CardTitle>{t('admin:recent_activity')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -275,20 +275,20 @@ export const AdminDashboard: React.FC = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('admin.quick_actions')}</CardTitle>
+          <CardTitle>{t('admin:quick_actions')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">{t('admin.user_management')}</h3>
+              <h3 className="font-medium mb-2">{t('admin:user_management')}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">View and manage user accounts</p>
             </div>
             <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">{t('admin.content_moderation')}</h3>
+              <h3 className="font-medium mb-2">{t('admin:content_moderation')}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">Review flagged content and posts</p>
             </div>
             <div className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
-              <h3 className="font-medium mb-2">{t('admin.system_health')}</h3>
+              <h3 className="font-medium mb-2">{t('admin:system_health')}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">Monitor platform performance</p>
             </div>
           </div>

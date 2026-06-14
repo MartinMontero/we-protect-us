@@ -76,13 +76,13 @@ export const RoleManager: React.FC = () => {
       await fetchUsersWithRoles();
       
       toast({
-        title: t('admin.role_updated'),
-        description: t('admin.role_update_success'),
+        title: t('admin:role_updated'),
+        description: t('admin:role_update_success'),
       });
     } catch (error) {
       toast({
         title: t('common.error'),
-        description: t('admin.role_update_error'),
+        description: t('admin:role_update_error'),
         variant: "destructive",
       });
     }
@@ -105,7 +105,7 @@ export const RoleManager: React.FC = () => {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {t('admin.insufficient_permissions')}
+              {t('admin:insufficient_permissions')}
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -127,7 +127,7 @@ export const RoleManager: React.FC = () => {
         <div>
           <CardTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5" />
-            {t('admin.roles')}
+            {t('admin:roles')}
           </CardTitle>
         </div>
         <Button
@@ -201,9 +201,9 @@ export const RoleManager: React.FC = () => {
           {usersWithRoles.length === 0 && !error && (
             <div className="text-center py-8">
               <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">{t('admin.no_role_assignments')}</h3>
+              <h3 className="text-lg font-medium mb-2">{t('admin:no_role_assignments')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                {t('admin.no_users_assigned')}
+                {t('admin:no_users_assigned')}
               </p>
             </div>
           )}

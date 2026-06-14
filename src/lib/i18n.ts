@@ -59,6 +59,8 @@ const resources = {
       "users": "User Management",
       "roles": "Role Management",
       "analytics": "Analytics",
+      "insights": "AI Insights",
+      "realtime": "Realtime",
       "security": "Security & Moderation",
       "settings": "Settings",
       "total_users": "Total Users",

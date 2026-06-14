@@ -60,7 +60,7 @@ export const UserManagement: React.FC = () => {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Users className="w-5 h-5" />
-              {t('admin.user_management')}
+              {t('admin:user_management')}
             </CardTitle>
           </div>
           <Button
@@ -88,7 +88,7 @@ export const UserManagement: React.FC = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder={t('admin.search_users')}
+                placeholder={t('admin:search_users')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -102,11 +102,11 @@ export const UserManagement: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
-                  <TableHead>{t('admin.bio')}</TableHead>
-                  <TableHead>{t('admin.trust_score')}</TableHead>
-                  <TableHead>{t('admin.care_points')}</TableHead>
-                  <TableHead>{t('admin.joined')}</TableHead>
-                  <TableHead>{t('admin.actions')}</TableHead>
+                  <TableHead>{t('admin:bio')}</TableHead>
+                  <TableHead>{t('admin:trust_score')}</TableHead>
+                  <TableHead>{t('admin:care_points')}</TableHead>
+                  <TableHead>{t('admin:joined')}</TableHead>
+                  <TableHead>{t('admin:actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -126,7 +126,7 @@ export const UserManagement: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="max-w-xs truncate">
-                        {user.bio || t('admin.no_bio')}
+                        {user.bio || t('admin:no_bio')}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -151,9 +151,9 @@ export const UserManagement: React.FC = () => {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>{t('admin.delete_user')}</AlertDialogTitle>
+                              <AlertDialogTitle>{t('admin:delete_user')}</AlertDialogTitle>
                               <AlertDialogDescription>
-                                {t('admin.delete_user_confirm', { name: user.pseudonym })}
+                                {t('admin:delete_user_confirm', { name: user.pseudonym })}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -175,11 +175,11 @@ export const UserManagement: React.FC = () => {
           {filteredUsers.length === 0 && !error && (
             <div className="text-center py-8">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">{t('admin.no_users_found')}</h3>
+              <h3 className="text-lg font-medium mb-2">{t('admin:no_users_found')}</h3>
               <p className="text-gray-600 dark:text-gray-400">
                 {searchTerm 
-                  ? t('admin.adjust_search')
-                  : t('admin.no_users_registered')}
+                  ? t('admin:adjust_search')
+                  : t('admin:no_users_registered')}
               </p>
             </div>
           )}
