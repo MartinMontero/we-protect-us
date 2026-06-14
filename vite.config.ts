@@ -10,7 +10,6 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   preview: {
-    host: "::",
     port: 8080,
   },
   plugins: [
@@ -31,13 +30,12 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
-        // Split heavy, rarely-changing dependencies into stable vendor chunks so
-        // browsers can cache them across deploys.
+        // Split the always-loaded vendors into stable chunks for long-term
+        // caching. Heavy, route-specific libs (recharts, leaflet) are left for
+        // Rollup to async-split so they load on demand rather than up front.
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'supabase': ['@supabase/supabase-js'],
-          'charts': ['recharts'],
-          'map': ['leaflet', 'react-leaflet'],
         },
       },
     },

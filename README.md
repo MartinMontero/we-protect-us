@@ -1,73 +1,81 @@
-# Welcome to your Lovable project
+# We Protect Us
 
-## Project info
+A web platform for **mutual aid, community defense, solidarity economy, and
+democratic organizing** — built by and for communities practicing collective
+care. Members can request and offer help, coordinate disaster response, run time
+banks and tool libraries, organize tenants, and govern themselves democratically.
 
-**URL**: https://lovable.dev/projects/a9d43ecc-4044-4f36-8c66-15795c1fec40
+> Built with privacy and safety as first-class concerns: the user base includes
+> tenants, organizers, elders, and other people for whom a data leak is not an
+> abstract risk. See [`SECURITY.md`](./SECURITY.md).
 
-## How can I edit this code?
+## Tech stack
 
-There are several ways of editing your application.
+- **Vite** + **React 18** + **TypeScript**
+- **Tailwind CSS** + **shadcn/ui** (Radix primitives)
+- **Supabase** (Postgres, Auth, Realtime, Row Level Security, Edge Functions)
+- **TanStack Query**, **React Router**, **react-i18next**, **Leaflet**, **Recharts**
+- **Vitest** + **Testing Library** for tests
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/a9d43ecc-4044-4f36-8c66-15795c1fec40) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Quick start
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Install dependencies (Node 18+ recommended)
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Configure your Supabase project
+cp .env.example .env
+#   then edit .env with your VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 3. Run the dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app runs at http://localhost:8080.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+If you don't set environment variables, the client falls back to a bundled
+public demo project so the app still boots — but you should point it at your own
+backend before launch (see [`DEPLOYMENT.md`](./DEPLOYMENT.md)).
 
-**Use GitHub Codespaces**
+## Scripts
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+| Command             | Description                                  |
+| ------------------- | -------------------------------------------- |
+| `npm run dev`       | Start the dev server                         |
+| `npm run build`     | Production build to `dist/`                  |
+| `npm run preview`   | Preview the production build locally         |
+| `npm run lint`      | ESLint (zero errors expected)                |
+| `npm run typecheck` | TypeScript type checking                     |
+| `npm test`          | Run the Vitest test suite                    |
 
-## What technologies are used for this project?
+## Project structure
 
-This project is built with:
+```
+src/
+  components/        Feature components grouped by domain (mutual-aid, wealth,
+                     defense, disaster, garden, eldercare, admin, …) + ui/
+  contexts/          Auth, Theme, Language providers
+  hooks/             Data hooks (Supabase queries, realtime, offline sync)
+  integrations/      Supabase client + generated types
+  lib/               navigation config, i18n, utils
+  pages/             Route-level pages
+supabase/
+  migrations/        SQL schema + RLS policies (run in order)
+  functions/         Deno Edge Functions (OAuth — experimental)
+public/
+  _headers           Security headers + CSP (Netlify / Cloudflare Pages)
+  _redirects         SPA history fallback
+  sw.js              Offline service worker (privacy-aware)
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Documentation
 
-## How can I deploy this project?
+- [`SECURITY.md`](./SECURITY.md) — threat model, RLS, headers, reporting.
+- [`DEPLOYMENT.md`](./DEPLOYMENT.md) — backend setup, env, hosting, headers.
+- [`PRODUCTION_READINESS.md`](./PRODUCTION_READINESS.md) — what is production-grade
+  today, what is still demo/educational content, and the roadmap.
 
-Simply open [Lovable](https://lovable.dev/projects/a9d43ecc-4044-4f36-8c66-15795c1fec40) and click on Share -> Publish.
+## License
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is intended for community use. Add a license of your choosing before
+public distribution.

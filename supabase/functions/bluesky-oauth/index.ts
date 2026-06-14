@@ -12,6 +12,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
+  // Fail-closed: this integration is experimental and insecure as written
+  // (see SECURITY.md). It stays disabled unless an operator explicitly opts in.
+  if (Deno.env.get('ENABLE_EXPERIMENTAL_OAUTH') !== 'true') {
+    return new Response(
+      JSON.stringify({ error: 'This integration is disabled.' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 },
+    )
+  }
+
   try {
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
