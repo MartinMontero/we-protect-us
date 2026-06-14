@@ -91,7 +91,7 @@ export const AnalyticsCharts: React.FC = () => {
       // Calculate platform health metrics
       const platformHealth = {
         activeUsers: profiles?.filter(p => {
-          const createdAt = new Date(p.created_at);
+          const createdAt = new Date(p.created_at ?? Date.now());
           const daysAgo = new Date();
           daysAgo.setDate(daysAgo.getDate() - 30);
           return createdAt > daysAgo;
@@ -127,7 +127,7 @@ export const AnalyticsCharts: React.FC = () => {
       const dateStr = date.toISOString().split('T')[0];
       
       const newUsersOnDate = profiles.filter(p => {
-        const createdDate = new Date(p.created_at).toISOString().split('T')[0];
+        const createdDate = new Date(p.created_at ?? Date.now()).toISOString().split('T')[0];
         return createdDate === dateStr;
       }).length;
       
@@ -157,7 +157,7 @@ export const AnalyticsCharts: React.FC = () => {
       const dateStr = date.toISOString().split('T')[0];
       
       const hoursOnDate = transactions
-        .filter(t => new Date(t.created_at).toISOString().split('T')[0] === dateStr)
+        .filter(t => new Date(t.created_at ?? Date.now()).toISOString().split('T')[0] === dateStr)
         .reduce((sum, t) => sum + (t.hours || 0), 0);
       
       totalHours += hoursOnDate;

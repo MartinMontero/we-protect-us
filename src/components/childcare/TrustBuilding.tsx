@@ -5,14 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Star, Award, Users, Heart, Shield, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
+type Review = { rating: number; review_text: string | null; tags: string[] | null };
+
 interface CaregiverProfile {
   id: string;
   pseudonym: string;
-  verification_status: string;
-  years_experience: number;
-  care_philosophy: string;
+  verification_status: string | null;
+  years_experience: number | null;
+  care_philosophy: string | null;
   member_skill_badges: { badge_type: string }[];
-  reviews: { rating: number; review_text: string; tags: string[] }[];
+  caregiver_reviews?: Review[];
+  reviews: Review[];
 }
 
 export const TrustBuilding: React.FC = () => {
@@ -34,7 +37,7 @@ export const TrustBuilding: React.FC = () => {
           years_experience,
           care_philosophy,
           member_skill_badges(badge_type),
-          caregiver_reviews:caregiver_reviews(rating, review_text, tags)
+          caregiver_reviews:caregiver_reviews!caregiver_id(rating, review_text, tags)
         `)
         .eq('verification_status', 'approved')
         .limit(6);
@@ -55,7 +58,7 @@ export const TrustBuilding: React.FC = () => {
     }
   };
 
-  const getAverageRating = (reviews: any[]) => {
+  const getAverageRating = (reviews: Review[]) => {
     if (reviews.length === 0) return 0;
     return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
   };

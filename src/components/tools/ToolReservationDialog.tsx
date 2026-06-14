@@ -139,7 +139,7 @@ export const ToolReservationDialog: React.FC<ToolReservationDialogProps> = ({
                     mode="single"
                     selected={endDate}
                     onSelect={setEndDate}
-                    disabled={(date) => date < new Date() || (startDate && date <= startDate)}
+                    disabled={(date) => date < new Date() || (!!startDate && date <= startDate)}
                   />
                 </PopoverContent>
               </Popover>

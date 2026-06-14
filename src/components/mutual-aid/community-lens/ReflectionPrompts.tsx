@@ -85,10 +85,12 @@ export const ReflectionPrompts: React.FC<ReflectionPromptsProps> = ({
     if (!selectedReflection || !reflectionResponse.trim()) return;
     
     try {
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) return;
       const { error } = await supabase
         .from('reflections')
         .insert({
-          user_id: (await supabase.auth.getUser()).data.user?.id,
+          user_id: userId,
           mutual_aid_post_id: postId,
           prompt_type: selectedReflection,
           prompt_text: reflectionPrompts.find(p => p.type === selectedReflection)?.text || '',

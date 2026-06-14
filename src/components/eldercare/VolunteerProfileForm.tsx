@@ -10,6 +10,12 @@ import { Plus, X, Users, Heart, Calendar, Award } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+type AvailabilityTimes = {
+  morning: boolean;
+  afternoon: boolean;
+  evening: boolean;
+};
+
 interface VolunteerProfile {
   id?: string;
   full_name: string;
@@ -18,7 +24,7 @@ interface VolunteerProfile {
   specializations: string[];
   languages_spoken: string[];
   availability_days: string[];
-  availability_times: any;
+  availability_times: AvailabilityTimes;
   max_hours_per_week: number;
   transportation_available: boolean;
   background_check_date: string;
@@ -66,7 +72,25 @@ export const VolunteerProfileForm: React.FC = () => {
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
-        setProfile(data);
+        setProfile({
+          id: data.id,
+          full_name: data.full_name,
+          phone_number: data.phone_number ?? '',
+          skills: data.skills ?? [],
+          specializations: data.specializations ?? [],
+          languages_spoken: data.languages_spoken ?? [],
+          availability_days: data.availability_days ?? [],
+          availability_times:
+            (data.availability_times as AvailabilityTimes | null) ?? {
+              morning: false,
+              afternoon: false,
+              evening: false,
+            },
+          max_hours_per_week: data.max_hours_per_week ?? 5,
+          transportation_available: data.transportation_available ?? false,
+          background_check_date: data.background_check_date ?? '',
+          references_verified: data.references_verified ?? false,
+        });
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -332,7 +356,7 @@ export const VolunteerProfileForm: React.FC = () => {
           <div className="space-y-4">
             <Label className="text-lg font-medium">Available Times</Label>
             <div className="grid grid-cols-3 gap-4">
-              {['morning', 'afternoon', 'evening'].map(time => (
+              {(['morning', 'afternoon', 'evening'] as (keyof AvailabilityTimes)[]).map(time => (
                 <div key={time} className="flex items-center space-x-3">
                   <Checkbox
                     id={time}

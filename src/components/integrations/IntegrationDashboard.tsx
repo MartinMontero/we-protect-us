@@ -86,7 +86,7 @@ export const IntegrationDashboard: React.FC = () => {
                   {integration.service_name.charAt(0).toUpperCase() + integration.service_name.slice(1)}
                 </CardTitle>
                 <Switch
-                  checked={integration.is_enabled}
+                  checked={integration.is_enabled ?? false}
                   onCheckedChange={(enabled) => toggleIntegration(integration.service_name, enabled)}
                 />
               </CardHeader>
@@ -95,7 +95,7 @@ export const IntegrationDashboard: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Status</span>
                     <div className="flex items-center gap-2">
-                      {getStatusIcon(integration.health_status)}
+                      {getStatusIcon(integration.health_status ?? '')}
                       <Badge variant={integration.health_status === 'healthy' ? 'default' : 'destructive'}>
                         {integration.health_status}
                       </Badge>

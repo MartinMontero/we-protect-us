@@ -36,7 +36,7 @@ export const CrisisResponse: React.FC = () => {
     }
   });
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string | null) => {
     switch (priority) {
       case 'critical': return 'bg-red-100 text-red-800';
       case 'high': return 'bg-orange-100 text-orange-800';
@@ -46,7 +46,7 @@ export const CrisisResponse: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'active': return 'bg-red-100 text-red-800';
       case 'planned': return 'bg-blue-100 text-blue-800';

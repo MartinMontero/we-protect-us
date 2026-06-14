@@ -7,25 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Search, Phone, Mail, Globe, MapPin, Star, Car, Utensils, Heart, Home, DollarSign, Shield, Laptop, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 
-interface SeniorResource {
-  id: string;
-  resource_name: string;
-  category: string;
-  description: string;
-  contact_phone: string;
-  contact_email: string;
-  website_url: string;
-  address: string;
-  service_area: string[];
-  eligibility_requirements: string;
-  cost_info: string;
-  hours_of_operation: any;
-  languages_supported: string[];
-  accessibility_features: string[];
-  rating: number;
-  verified: boolean;
-}
+type SeniorResource = Tables<'senior_resources'>;
 
 export const ResourceDirectory: React.FC = () => {
   const [resources, setResources] = useState<SeniorResource[]>([]);
@@ -82,8 +66,8 @@ export const ResourceDirectory: React.FC = () => {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(resource =>
         resource.resource_name.toLowerCase().includes(searchLower) ||
-        resource.description.toLowerCase().includes(searchLower) ||
-        resource.service_area.some(area => area.toLowerCase().includes(searchLower))
+        (resource.description ?? '').toLowerCase().includes(searchLower) ||
+        (resource.service_area ?? []).some(area => area.toLowerCase().includes(searchLower))
       );
     }
 
@@ -145,7 +129,9 @@ export const ResourceDirectory: React.FC = () => {
       languages_supported: ['English', 'Spanish'],
       accessibility_features: ['Wheelchair accessible', 'Walker friendly'],
       rating: 4.5,
-      verified: true
+      verified: true,
+      created_at: null,
+      updated_at: null,
     },
     {
       id: '2',
@@ -163,7 +149,9 @@ export const ResourceDirectory: React.FC = () => {
       languages_supported: ['English', 'Spanish', 'Chinese'],
       accessibility_features: ['Dietary accommodations', 'Cultural meals'],
       rating: 4.8,
-      verified: true
+      verified: true,
+      created_at: null,
+      updated_at: null,
     }
   ];
 
@@ -173,7 +161,7 @@ export const ResourceDirectory: React.FC = () => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return resource.resource_name.toLowerCase().includes(searchLower) ||
-             resource.description.toLowerCase().includes(searchLower);
+             (resource.description ?? '').toLowerCase().includes(searchLower);
     }
     return true;
   });
@@ -256,8 +244,8 @@ export const ResourceDirectory: React.FC = () => {
               </div>
               
               <div className="flex items-center gap-1 mt-2">
-                {renderRating(resource.rating)}
-                <span className="text-lg font-semibold ml-2">{resource.rating.toFixed(1)}</span>
+                {renderRating(resource.rating ?? 0)}
+                <span className="text-lg font-semibold ml-2">{(resource.rating ?? 0).toFixed(1)}</span>
               </div>
             </CardHeader>
             

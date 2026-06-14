@@ -6,23 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Video, Users, Calendar, Music, Gamepad2, BookOpen, Heart, Camera, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface GroupActivity {
-  id: string;
-  title: string;
-  description: string;
-  activity_type: string;
-  scheduled_date: string;
-  duration_minutes: number;
-  location_type: string;
-  location_address: string;
-  max_participants: number;
-  status: string;
-  organizer_id: string;
-  participants_count?: number;
-}
+type GroupActivity = Tables<'elder_group_activities'> & { participants_count?: number };
 
 export const SocialEngagement: React.FC = () => {
   const [activities, setActivities] = useState<GroupActivity[]>([]);
@@ -158,7 +146,7 @@ export const SocialEngagement: React.FC = () => {
         <TabsContent value="activities" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {activities.map((activity) => {
-              const typeInfo = getActivityTypeInfo(activity.activity_type);
+              const typeInfo = getActivityTypeInfo(activity.activity_type ?? '');
               
               return (
                 <Card key={activity.id} className="border-2 shadow-lg hover:shadow-xl transition-shadow">

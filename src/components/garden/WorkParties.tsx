@@ -28,7 +28,7 @@ export const WorkParties: React.FC = () => {
     }
   });
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string | null) => {
     switch (status) {
       case 'planned': return 'default';
       case 'active': return 'secondary';

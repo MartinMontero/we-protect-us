@@ -5,16 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Clock, TrendingUp, Calendar, Award, Plus, Minus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface PointsTransaction {
-  id: string;
-  points_change: number;
-  transaction_type: string;
-  description: string;
-  created_at: string;
-}
+type PointsTransaction = Tables<'care_points_transactions'>;
 
 interface PointsStats {
   current_balance: number;
@@ -237,7 +232,7 @@ export const CarePointsTracker: React.FC = () => {
                       {transaction.points_change > 0 ? '+' : ''}{transaction.points_change}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {format(new Date(transaction.created_at), 'MMM d, h:mm a')}
+                      {transaction.created_at ? format(new Date(transaction.created_at), 'MMM d, h:mm a') : ''}
                     </div>
                   </div>
                 </div>

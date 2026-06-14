@@ -3,16 +3,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import type { Tables } from '@/integrations/supabase/types';
 
-export interface TrustRelation {
-  id: string;
-  from_user_id: string;
-  to_user_id: string;
-  trust_level?: number;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-}
+export type TrustRelation = Tables<'trust_relations'>;
 
 export const useTrustRelations = () => {
   const { user } = useAuth();

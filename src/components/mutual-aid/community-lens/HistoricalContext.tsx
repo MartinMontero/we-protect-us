@@ -4,20 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 
-interface CaseStudy {
-  id: string;
-  title: string;
-  organization: string;
-  time_period: string;
-  location: string;
-  description: string;
-  key_principles: string[];
-  outcomes: string[];
-  lessons: string[];
-  relevance_score: number;
-  tags: string[];
-}
+type CaseStudy = Tables<'case_studies'>;
 
 interface HistoricalContextProps {
   category?: string;
@@ -85,7 +74,7 @@ export const HistoricalContext: React.FC<HistoricalContextProps> = ({ category }
                 <div>
                   <h4 className="font-semibold text-sm mb-2">Key Principles:</h4>
                   <div className="flex flex-wrap gap-1">
-                    {study.key_principles.map((principle, index) => (
+                    {(study.key_principles ?? []).map((principle, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">
                         {principle}
                       </Badge>
@@ -96,7 +85,7 @@ export const HistoricalContext: React.FC<HistoricalContextProps> = ({ category }
                 <div>
                   <h4 className="font-semibold text-sm mb-2">Outcomes:</h4>
                   <ul className="text-xs text-gray-600 space-y-1">
-                    {study.outcomes.map((outcome, index) => (
+                    {(study.outcomes ?? []).map((outcome, index) => (
                       <li key={index}>• {outcome}</li>
                     ))}
                   </ul>
@@ -105,14 +94,14 @@ export const HistoricalContext: React.FC<HistoricalContextProps> = ({ category }
                 <div>
                   <h4 className="font-semibold text-sm mb-2">Lessons:</h4>
                   <ul className="text-xs text-gray-600 space-y-1">
-                    {study.lessons.map((lesson, index) => (
+                    {(study.lessons ?? []).map((lesson, index) => (
                       <li key={index}>• {lesson}</li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="flex flex-wrap gap-1 pt-2">
-                  {study.tags.map((tag, index) => (
+                  {(study.tags ?? []).map((tag, index) => (
                     <Badge key={index} variant="outline" className="text-xs">
                       {tag}
                     </Badge>

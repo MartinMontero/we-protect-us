@@ -8,20 +8,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Plus, TrendingUp, AlertTriangle, DollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Json } from '@/integrations/supabase/types';
+import type { Tables } from '@/integrations/supabase/types';
 
-interface RentRecord {
-  id: string;
-  monthly_rent: number;
-  unit_number: string;
-  lease_start_date: string;
-  lease_end_date: string;
-  rent_increase_notices: Json;
-  rental_properties: {
-    address: string;
-    landlord_name: string;
-  };
-}
+type RentRecord = Tables<'rent_tracking'> & {
+  rental_properties: { address: string | null; landlord_name: string | null } | null;
+};
 
 export const RentTracker: React.FC = () => {
   const { user } = useAuth();
@@ -47,7 +38,7 @@ export const RentTracker: React.FC = () => {
             landlord_name
           )
         `)
-        .eq('tenant_id', user?.id);
+        .eq('tenant_id', user?.id ?? '');
 
       if (error) throw error;
       setRentRecords(data || []);
@@ -132,8 +123,8 @@ export const RentTracker: React.FC = () => {
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Lease Period</p>
                     <p className="text-sm">
-                      {new Date(record.lease_start_date).toLocaleDateString()} - 
-                      {new Date(record.lease_end_date).toLocaleDateString()}
+                      {record.lease_start_date ? new Date(record.lease_start_date).toLocaleDateString() : ''} - 
+                      {record.lease_end_date ? new Date(record.lease_end_date).toLocaleDateString() : ''}
                     </p>
                   </div>
                 </div>

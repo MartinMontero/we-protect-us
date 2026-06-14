@@ -12,18 +12,12 @@ interface ResourceDistribution {
   delivery_location_lat: number;
   delivery_location_lng: number;
   quantity: number;
-  created_at: string;
-  status: string;
-  donor_id: string;
-  recipient_id: string;
-  donor_profile?: {
-    full_name: string;
-    pseudonym: string;
-  } | null;
-  recipient_profile?: {
-    full_name: string;
-    pseudonym: string;
-  } | null;
+  created_at: string | null;
+  status: string | null;
+  donor_id: string | null;
+  recipient_id: string | null;
+  donor_profile?: { full_name: string; pseudonym: string } | null;
+  recipient_profile?: { full_name: string; pseudonym: string } | null;
 }
 
 export const ResourceDistributionTracker: React.FC = () => {
@@ -165,12 +159,12 @@ export const ResourceDistributionTracker: React.FC = () => {
                   </div>
                   
                   <div className="text-sm text-gray-500">
-                    Distribution Date: {new Date(distribution.created_at).toLocaleDateString()}
+                    Distribution Date: {distribution.created_at ? new Date(distribution.created_at).toLocaleDateString() : ''}
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <Badge className={getStatusColor(distribution.status)}>
+                  <Badge className={getStatusColor(distribution.status ?? '')}>
                     {distribution.status}
                   </Badge>
                 </div>

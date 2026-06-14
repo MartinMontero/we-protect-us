@@ -46,7 +46,7 @@ export const ProductionPlanning: React.FC = () => {
     return productionPlans?.filter(plan => plan.target_season === currentSeason) || [];
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'planning': return 'bg-blue-100 text-blue-800';
       case 'active': return 'bg-green-100 text-green-800';

@@ -57,7 +57,7 @@ export const ResourceManagement: React.FC = () => {
     }
   });
 
-  const getCompostStageColor = (stage: string) => {
+  const getCompostStageColor = (stage: string | null) => {
     switch (stage) {
       case 'filling': return 'bg-blue-100 text-blue-800';
       case 'composting': return 'bg-yellow-100 text-yellow-800';
@@ -67,7 +67,7 @@ export const ResourceManagement: React.FC = () => {
     }
   };
 
-  const getOrderStatusColor = (status: string) => {
+  const getOrderStatusColor = (status: string | null) => {
     switch (status) {
       case 'open': return 'bg-green-100 text-green-800';
       case 'closed': return 'bg-yellow-100 text-yellow-800';
@@ -206,8 +206,8 @@ export const ResourceManagement: React.FC = () => {
                           <h3 className="font-semibold text-green-800">{seed.variety_name}</h3>
                           <p className="text-green-600 text-sm">{seed.crop_type}</p>
                         </div>
-                        <Badge className={seed.quantity_available > 0 ? 'bg-green-600' : 'bg-gray-400'}>
-                          {seed.quantity_available} seeds
+                        <Badge className={(seed.quantity_available ?? 0) > 0 ? 'bg-green-600' : 'bg-gray-400'}>
+                          {seed.quantity_available ?? 0} seeds
                         </Badge>
                       </div>
                       
@@ -248,7 +248,7 @@ export const ResourceManagement: React.FC = () => {
                         className="w-full mt-3 bg-green-600 hover:bg-green-700"
                         disabled={seed.quantity_available === 0}
                       >
-                        {seed.quantity_available > 0 ? 'Request Seeds' : 'Out of Stock'}
+                        {(seed.quantity_available ?? 0) > 0 ? 'Request Seeds' : 'Out of Stock'}
                       </Button>
                     </CardContent>
                   </Card>

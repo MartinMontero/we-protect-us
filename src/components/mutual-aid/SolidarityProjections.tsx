@@ -1,20 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, Users, Clock, DollarSign, Network, Heart } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-interface SolidarityMetrics {
-  total_hours_exchanged: number;
-  active_participants: number;
-  network_density: number;
-  wealth_circulated: number;
-  trust_network_size: number;
-  vulnerability_support_ratio: number;
-  date: string;
-}
+type SolidarityMetrics = Tables<'solidarity_metrics'>;
 
 export const SolidarityProjections: React.FC = () => {
   const [metrics, setMetrics] = useState<SolidarityMetrics[]>([]);
@@ -67,23 +60,23 @@ export const SolidarityProjections: React.FC = () => {
     
     const recent = metrics.slice(-7); // Last 7 days
     const avgGrowth = {
-      hours: recent.reduce((acc, m, i) => i > 0 ? acc + (m.total_hours_exchanged - recent[i-1].total_hours_exchanged) : acc, 0) / Math.max(recent.length - 1, 1),
-      participants: recent.reduce((acc, m, i) => i > 0 ? acc + (m.active_participants - recent[i-1].active_participants) : acc, 0) / Math.max(recent.length - 1, 1),
-      wealth: recent.reduce((acc, m, i) => i > 0 ? acc + (m.wealth_circulated - recent[i-1].wealth_circulated) : acc, 0) / Math.max(recent.length - 1, 1),
+      hours: recent.reduce((acc, m, i) => i > 0 ? acc + ((m.total_hours_exchanged ?? 0) - (recent[i-1]?.total_hours_exchanged ?? 0)) : acc, 0) / Math.max(recent.length - 1, 1),
+      participants: recent.reduce((acc, m, i) => i > 0 ? acc + ((m.active_participants ?? 0) - (recent[i-1]?.active_participants ?? 0)) : acc, 0) / Math.max(recent.length - 1, 1),
+      wealth: recent.reduce((acc, m, i) => i > 0 ? acc + ((m.wealth_circulated ?? 0) - (recent[i-1]?.wealth_circulated ?? 0)) : acc, 0) / Math.max(recent.length - 1, 1),
     };
 
     const current = currentMetrics || recent[recent.length - 1];
     
     return {
       oneMonth: {
-        hours: Math.max(0, current.total_hours_exchanged + (avgGrowth.hours * 30)),
-        participants: Math.max(0, current.active_participants + (avgGrowth.participants * 30)),
-        wealth: Math.max(0, current.wealth_circulated + (avgGrowth.wealth * 30)),
+        hours: Math.max(0, (current.total_hours_exchanged ?? 0) + (avgGrowth.hours * 30)),
+        participants: Math.max(0, (current.active_participants ?? 0) + (avgGrowth.participants * 30)),
+        wealth: Math.max(0, (current.wealth_circulated ?? 0) + (avgGrowth.wealth * 30)),
       },
       oneYear: {
-        hours: Math.max(0, current.total_hours_exchanged + (avgGrowth.hours * 365)),
-        participants: Math.max(0, current.active_participants + (avgGrowth.participants * 365)),
-        wealth: Math.max(0, current.wealth_circulated + (avgGrowth.wealth * 365)),
+        hours: Math.max(0, (current.total_hours_exchanged ?? 0) + (avgGrowth.hours * 365)),
+        participants: Math.max(0, (current.active_participants ?? 0) + (avgGrowth.participants * 365)),
+        wealth: Math.max(0, (current.wealth_circulated ?? 0) + (avgGrowth.wealth * 365)),
       }
     };
   };

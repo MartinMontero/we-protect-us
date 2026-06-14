@@ -254,7 +254,7 @@ export const HarvestSharing: React.FC = () => {
                       
                       <div className="flex items-center gap-2 text-gray-600">
                         <Calendar className="w-4 h-4" />
-                        <span>Shared {format(new Date(share.created_at), 'MMM d, yyyy')}</span>
+                        <span>Shared {share.created_at ? format(new Date(share.created_at), 'MMM d, yyyy') : ''}</span>
                       </div>
                       
                       {share.notes && (
@@ -308,7 +308,7 @@ export const HarvestSharing: React.FC = () => {
                   </div>
                   <div className="text-right text-sm text-gray-500">
                     <p>Claimed by {share.claimer?.pseudonym}</p>
-                    <p>{format(new Date(share.claimed_at), 'MMM d')}</p>
+                    <p>{share.claimed_at ? format(new Date(share.claimed_at), 'MMM d') : ''}</p>
                   </div>
                 </div>
               ))}

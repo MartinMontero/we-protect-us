@@ -9,20 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Gift, Calendar, Heart, Cake, PartyPopper, Bell, Plus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface CelebrationReminder {
-  id: string;
-  celebration_type: string;
-  title: string;
-  celebration_date: string;
-  description: string;
-  reminder_days_before: number[];
-  is_recurring: boolean;
-  recurring_interval: string;
-  elder_profiles?: { full_name: string };
-}
+type CelebrationReminder = Tables<'celebration_reminders'> & { elder_profiles?: { full_name: string } | null };
 
 export const CelebrationReminders: React.FC = () => {
   const [reminders, setReminders] = useState<CelebrationReminder[]>([]);
@@ -143,6 +134,9 @@ export const CelebrationReminders: React.FC = () => {
       reminder_days_before: [7, 3, 1],
       is_recurring: true,
       recurring_interval: 'yearly',
+      elder_id: '',
+      created_at: null,
+      notification_recipients: null,
       elder_profiles: { full_name: 'Margaret Smith' }
     },
     {
@@ -154,6 +148,9 @@ export const CelebrationReminders: React.FC = () => {
       reminder_days_before: [14, 7, 3, 1],
       is_recurring: true,
       recurring_interval: 'yearly',
+      elder_id: '',
+      created_at: null,
+      notification_recipients: null,
       elder_profiles: { full_name: 'John & Mary Johnson' }
     }
   ];
@@ -337,7 +334,7 @@ export const CelebrationReminders: React.FC = () => {
                 <div className="space-y-2">
                   <span className="text-lg font-medium">Reminder Schedule:</span>
                   <div className="flex flex-wrap gap-2">
-                    {reminder.reminder_days_before.map((days, index) => (
+                    {(reminder.reminder_days_before ?? []).map((days, index) => (
                       <Badge key={index} variant="outline" className="text-sm">
                         {days === 1 ? '1 day before' : `${days} days before`}
                       </Badge>

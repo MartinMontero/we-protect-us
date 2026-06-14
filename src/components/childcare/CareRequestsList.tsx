@@ -5,24 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, User, AlertTriangle, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface CareRequest {
-  id: string;
-  requesting_parent_id: string;
-  start_time: string;
-  end_time: string;
-  location_address: string;
-  care_instructions: string;
-  points_offered: number;
-  status: string;
-  last_minute_request: boolean;
-  profiles: {
-    pseudonym: string;
-    verification_status: string;
-  } | null;
-}
+type CareRequest = Tables<'care_requests'> & {
+  profiles: { pseudonym: string; verification_status: string } | null;
+};
 
 export const CareRequestsList: React.FC = () => {
   const [requests, setRequests] = useState<CareRequest[]>([]);

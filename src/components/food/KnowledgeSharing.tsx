@@ -120,8 +120,8 @@ export const KnowledgeSharing: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Community Votes</p>
                 <p className="text-3xl font-bold text-purple-600">
-                  {(knowledgeBase?.reduce((acc, item) => acc + item.helpful_votes, 0) || 0) + 
-                   (recipes?.reduce((acc, item) => acc + item.helpful_votes, 0) || 0)}
+                  {(knowledgeBase?.reduce((acc, item) => acc + (item.helpful_votes ?? 0), 0) || 0) + 
+                   (recipes?.reduce((acc, item) => acc + (item.helpful_votes ?? 0), 0) || 0)}
                 </p>
               </div>
               <ThumbsUp className="w-8 h-8 text-purple-600" />
@@ -254,7 +254,7 @@ export const KnowledgeSharing: React.FC = () => {
 
                   <div className="flex justify-between items-center pt-2 border-t">
                     <span className="text-xs text-gray-500">
-                      {new Date(guide.created_at).toLocaleDateString()}
+                      {guide.created_at ? new Date(guide.created_at).toLocaleDateString() : ''}
                     </span>
                     <Button variant="outline" size="sm">
                       Read Guide
@@ -327,7 +327,7 @@ export const KnowledgeSharing: React.FC = () => {
 
                       <div className="flex justify-between items-center pt-2 border-t">
                         <span className="text-xs text-gray-500">
-                          {new Date(recipe.created_at).toLocaleDateString()}
+                          {recipe.created_at ? new Date(recipe.created_at).toLocaleDateString() : ''}
                         </span>
                         <Button variant="outline" size="sm">
                           View Recipe

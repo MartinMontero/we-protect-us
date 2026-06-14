@@ -6,25 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Users, Calendar, MapPin, DollarSign, FileText } from 'lucide-react';
 import { CreateActivityDialog } from './CreateActivityDialog';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
 
-interface GroupActivity {
-  id: string;
-  title: string;
-  description: string;
-  activity_type: string;
-  scheduled_date: string;
-  location_name: string;
-  max_children: number;
-  age_min: number;
-  age_max: number;
-  cost_per_child: number;
-  requires_permission_slip: boolean;
-  profiles: {
-    pseudonym: string;
-  };
+type GroupActivity = Tables<'group_activities'> & {
+  profiles: { pseudonym: string } | null;
   participant_count: number;
-}
+};
 
 export const GroupActivities: React.FC = () => {
   const [activities, setActivities] = useState<GroupActivity[]>([]);
@@ -196,7 +184,7 @@ export const GroupActivities: React.FC = () => {
                         {activity.max_children && `/${activity.max_children}`} kids
                       </span>
                     </div>
-                    {activity.cost_per_child > 0 && (
+                    {(activity.cost_per_child ?? 0) > 0 && (
                       <div className="flex items-center gap-2">
                         <DollarSign className="w-4 h-4 text-gray-500" />
                         <span>${activity.cost_per_child} per child</span>
@@ -223,7 +211,7 @@ export const GroupActivities: React.FC = () => {
                     <Button 
                       onClick={() => joinActivity(activity.id)}
                       className="flex-1"
-                      disabled={activity.max_children && activity.participant_count >= activity.max_children}
+                      disabled={activity.max_children != null && activity.participant_count >= activity.max_children}
                     >
                       {activity.max_children && activity.participant_count >= activity.max_children
                         ? 'Full'

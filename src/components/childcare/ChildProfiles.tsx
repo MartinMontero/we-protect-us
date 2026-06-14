@@ -6,19 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, User, AlertTriangle, Heart, Calendar } from 'lucide-react';
 import { AddChildDialog } from './AddChildDialog';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface Child {
-  id: string;
-  first_name: string;
-  birth_date: string;
-  allergies: string[];
-  medical_conditions: string[];
-  dietary_restrictions: string[];
-  favorite_activities: string[];
-  emergency_instructions: string;
-}
+type Child = Tables<'children'>;
 
 export const ChildProfiles: React.FC = () => {
   const [children, setChildren] = useState<Child[]>([]);
@@ -116,7 +108,7 @@ export const ChildProfiles: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Medical Alerts */}
-                {(child.allergies?.length > 0 || child.medical_conditions?.length > 0) && (
+                {((child.allergies?.length ?? 0) > 0 || (child.medical_conditions?.length ?? 0) > 0) && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-red-600">
                       <AlertTriangle className="w-4 h-4" />
@@ -138,14 +130,14 @@ export const ChildProfiles: React.FC = () => {
                 )}
 
                 {/* Dietary Restrictions */}
-                {child.dietary_restrictions?.length > 0 && (
+                {(child.dietary_restrictions?.length ?? 0) > 0 && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-blue-600">
                       <Heart className="w-4 h-4" />
                       <span className="font-medium text-sm">Dietary</span>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {child.dietary_restrictions.map((restriction, index) => (
+                      {(child.dietary_restrictions ?? []).map((restriction, index) => (
                         <Badge key={index} variant="outline" className="border-blue-200">
                           {restriction}
                         </Badge>
@@ -155,21 +147,21 @@ export const ChildProfiles: React.FC = () => {
                 )}
 
                 {/* Favorite Activities */}
-                {child.favorite_activities?.length > 0 && (
+                {(child.favorite_activities?.length ?? 0) > 0 && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-green-600">
                       <Heart className="w-4 h-4" />
                       <span className="font-medium text-sm">Loves</span>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {child.favorite_activities.slice(0, 3).map((activity, index) => (
+                      {(child.favorite_activities ?? []).slice(0, 3).map((activity, index) => (
                         <Badge key={index} variant="outline" className="border-green-200">
                           {activity}
                         </Badge>
                       ))}
-                      {child.favorite_activities.length > 3 && (
+                      {(child.favorite_activities?.length ?? 0) > 3 && (
                         <Badge variant="outline" className="border-gray-200">
-                          +{child.favorite_activities.length - 3} more
+                          +{(child.favorite_activities?.length ?? 0) - 3} more
                         </Badge>
                       )}
                     </div>

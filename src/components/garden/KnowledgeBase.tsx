@@ -127,7 +127,7 @@ export const KnowledgeBase: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>{format(new Date(entry.created_at), 'MMM d, yyyy')}</span>
+                      <span>{entry.created_at ? format(new Date(entry.created_at), 'MMM d, yyyy') : ''}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <ThumbsUp className="w-4 h-4" />

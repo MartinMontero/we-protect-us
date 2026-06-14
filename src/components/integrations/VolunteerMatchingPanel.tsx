@@ -7,20 +7,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface VolunteerMatch {
   id: string;
-  volunteer_id: string;
-  need_id: string;
-  match_score: number;
-  status: string;
-  created_at: string;
-  volunteer_profile?: {
-    full_name: string;
-    skills: string[];
-  } | null;
-  mutual_aid_post?: {
-    title: string;
-    description: string;
-    category: string;
-  } | null;
+  volunteer_id: string | null;
+  need_id: string | null;
+  match_score: number | null;
+  status: string | null;
+  created_at: string | null;
+  volunteer_profile?: { full_name: string; skills: string[] } | null;
+  mutual_aid_post?: { title: string; description: string; category: string } | null;
 }
 
 export const VolunteerMatchingPanel: React.FC = () => {
@@ -125,11 +118,11 @@ export const VolunteerMatchingPanel: React.FC = () => {
                         Match Score: {match.match_score}
                       </div>
                       <div className="text-sm text-gray-500">
-                        Created At: {new Date(match.created_at).toLocaleDateString()}
+                        Created At: {match.created_at ? new Date(match.created_at).toLocaleDateString() : ''}
                       </div>
                     </div>
                     <div className="text-right">
-                      <Badge className={getStatusColor(match.status)}>
+                      <Badge className={getStatusColor(match.status ?? '')}>
                         {match.status}
                       </Badge>
                     </div>

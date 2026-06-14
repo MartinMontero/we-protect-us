@@ -9,22 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, User, Bell, CheckCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface VisitRequest {
-  id: string;
-  visit_type: string;
-  scheduled_date: string;
-  duration_minutes: number;
-  location_type: string;
-  location_address: string;
-  description: string;
-  urgency_level: string;
-  status: string;
-  elder_profiles?: { full_name: string };
-  volunteer_profiles?: { full_name: string };
-}
+type VisitRequest = Tables<'visit_requests'> & {
+  elder_profiles?: { full_name: string } | null;
+  volunteer_profiles?: { full_name: string } | null;
+};
 
 export const VisitCoordination: React.FC = () => {
   const [visits, setVisits] = useState<VisitRequest[]>([]);
@@ -295,8 +287,8 @@ export const VisitCoordination: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {visits.map((visit) => {
-          const visitTypeInfo = getVisitTypeInfo(visit.visit_type);
-          const urgencyInfo = getUrgencyInfo(visit.urgency_level);
+          const visitTypeInfo = getVisitTypeInfo(visit.visit_type ?? '');
+          const urgencyInfo = getUrgencyInfo(visit.urgency_level ?? '');
           
           return (
             <Card key={visit.id} className="border-2 shadow-lg hover:shadow-xl transition-shadow">
@@ -307,9 +299,9 @@ export const VisitCoordination: React.FC = () => {
                     {visitTypeInfo.label}
                   </CardTitle>
                   <div className="flex items-center gap-2">
-                    {getStatusIcon(visit.status)}
+                    {getStatusIcon(visit.status ?? '')}
                     <span className="text-lg font-semibold capitalize">
-                      {visit.status.replace('_', ' ')}
+                      {(visit.status ?? '').replace('_', ' ')}
                     </span>
                   </div>
                 </div>
@@ -343,7 +335,7 @@ export const VisitCoordination: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <MapPin className="w-5 h-5 text-purple-600" />
                     <span className="text-lg">
-                      {visit.location_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      {(visit.location_type ?? '').replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       {visit.location_address && ` - ${visit.location_address}`}
                     </span>
                   </div>

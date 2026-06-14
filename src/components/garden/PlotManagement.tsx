@@ -55,7 +55,7 @@ export const PlotManagement: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string | null) => {
     switch (status) {
       case 'available': return 'default';
       case 'assigned': return 'secondary';
@@ -193,7 +193,7 @@ export const PlotManagement: React.FC = () => {
                         <div>
                           <p className="font-medium">{entry.user?.pseudonym}</p>
                           <p className="text-sm text-gray-600">
-                            Joined {new Date(entry.join_date).toLocaleDateString()}
+                            Joined {entry.join_date ? new Date(entry.join_date).toLocaleDateString() : ''}
                           </p>
                           {entry.notes && (
                             <p className="text-sm text-gray-500 mt-1">{entry.notes}</p>

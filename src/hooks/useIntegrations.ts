@@ -10,10 +10,10 @@ export interface IntegrationConfig {
   service_name: string;
   api_endpoint: string;
   api_key_name: string;
-  is_enabled: boolean;
+  is_enabled: boolean | null;
   configuration: Record<string, unknown>;
-  health_status: string;
-  last_health_check: string;
+  health_status: string | null;
+  last_health_check: string | null;
 }
 
 export interface VolunteerMatch {

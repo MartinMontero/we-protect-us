@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { format } from 'date-fns';
 
 interface MyCareSessionsDialogProps {
@@ -11,18 +12,10 @@ interface MyCareSessionsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-interface CareSession {
-  id: string;
-  scheduled_start: string;
-  scheduled_end: string;
-  status: string;
-  care_requests: {
-    location_address: string;
-  } | null;
-  profiles: {
-    pseudonym: string;
-  } | null;
-}
+type CareSession = Tables<'care_sessions'> & {
+  care_requests: { location_address: string } | null;
+  profiles: { pseudonym: string } | null;
+};
 
 export const MyCareSessionsDialog: React.FC<MyCareSessionsDialogProps> = ({
   open,
@@ -104,8 +97,8 @@ export const MyCareSessionsDialog: React.FC<MyCareSessionsDialogProps> = ({
                     <User className="w-4 h-4" />
                     <span className="font-medium">{session.profiles?.pseudonym}</span>
                   </div>
-                  <Badge className={getStatusColor(session.status)}>
-                    {session.status.replace('_', ' ')}
+                  <Badge className={getStatusColor(session.status ?? '')}>
+                    {(session.status ?? '').replace('_', ' ')}
                   </Badge>
                 </div>
 

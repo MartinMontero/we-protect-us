@@ -8,20 +8,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { FileText, Plus, Camera, Clock, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Json } from '@/integrations/supabase/types';
+import type { Tables } from '@/integrations/supabase/types';
 
-interface TenantIssue {
-  id: string;
-  issue_type: string;
-  description: string;
-  status: 'open' | 'in_progress' | 'resolved' | 'escalated';
-  priority_level: number;
-  date_reported: string;
-  documentation: Json;
-  rental_properties?: {
-    address: string;
-  };
-}
+type TenantIssue = Tables<'tenant_issues'> & {
+  rental_properties?: { address: string | null } | null;
+};
 
 export const RepairRequests: React.FC = () => {
   const { user } = useAuth();
@@ -46,7 +37,7 @@ export const RepairRequests: React.FC = () => {
             address
           )
         `)
-        .eq('reporter_id', user?.id)
+        .eq('reporter_id', user?.id ?? '')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -122,18 +113,18 @@ export const RepairRequests: React.FC = () => {
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
-                    {getPriorityIcon(issue.priority_level)}
+                    {getPriorityIcon(issue.priority_level ?? 0)}
                     <div>
                       <h4 className="font-semibold">{issue.issue_type}</h4>
                       <p className="text-sm text-gray-600">{issue.rental_properties?.address}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Badge className={getStatusColor(issue.status)}>
-                      {issue.status.replace('_', ' ')}
+                    <Badge className={getStatusColor(issue.status ?? '')}>
+                      {(issue.status ?? '').replace('_', ' ')}
                     </Badge>
                     <span className="text-xs text-gray-500">
-                      {new Date(issue.date_reported).toLocaleDateString()}
+                      {issue.date_reported ? new Date(issue.date_reported).toLocaleDateString() : ''}
                     </span>
                   </div>
                 </div>

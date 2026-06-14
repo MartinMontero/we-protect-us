@@ -12,6 +12,12 @@ import { Plus, X, User, Heart, Calendar, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+type EmergencyContact = {
+  name: string;
+  phone: string;
+  relationship: string;
+};
+
 interface ElderProfile {
   id?: string;
   full_name: string;
@@ -26,8 +32,8 @@ interface ElderProfile {
   dietary_preferences: string[];
   preferred_visit_types: string[];
   language_preferences: string[];
-  emergency_contact_primary: any;
-  emergency_contact_secondary: any;
+  emergency_contact_primary: EmergencyContact;
+  emergency_contact_secondary: EmergencyContact;
   medical_notes: string;
   special_instructions: string;
 }
@@ -79,7 +85,28 @@ export const ElderProfileForm: React.FC = () => {
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
-        setProfile(data);
+        const empty: EmergencyContact = { name: '', phone: '', relationship: '' };
+        setProfile({
+          id: data.id,
+          full_name: data.full_name,
+          date_of_birth: data.date_of_birth,
+          address: data.address ?? '',
+          phone_number: data.phone_number ?? '',
+          mobility_level: data.mobility_level ?? '',
+          accessibility_needs: data.accessibility_needs ?? [],
+          interests: data.interests ?? [],
+          hobbies: data.hobbies ?? [],
+          dietary_restrictions: data.dietary_restrictions ?? [],
+          dietary_preferences: data.dietary_preferences ?? [],
+          preferred_visit_types: data.preferred_visit_types ?? [],
+          language_preferences: data.language_preferences ?? [],
+          emergency_contact_primary:
+            (data.emergency_contact_primary as EmergencyContact | null) ?? empty,
+          emergency_contact_secondary:
+            (data.emergency_contact_secondary as EmergencyContact | null) ?? empty,
+          medical_notes: data.medical_notes ?? '',
+          special_instructions: data.special_instructions ?? '',
+        });
       }
     } catch (error) {
       console.error('Error loading profile:', error);
