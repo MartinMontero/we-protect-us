@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type Theme = 'light' | 'dark' | 'high-contrast';
 
@@ -43,12 +43,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Store theme preference
     localStorage.setItem('csf-theme', theme);
-    
-    console.log('Theme applied:', theme, 'Root classes:', root.classList.toString());
   }, [theme]);
 
+  const value = useMemo(() => ({ theme, setTheme }), [theme]);
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

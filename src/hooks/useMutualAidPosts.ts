@@ -54,7 +54,8 @@ export const useMutualAidPosts = () => {
             vulnerability_factors
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(200);
 
       if (error) {
         console.error('Supabase error:', error);

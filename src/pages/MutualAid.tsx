@@ -1,14 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MutualAidMap } from '@/components/mutual-aid/MutualAidMap';
-import { SolidarityProjections } from '@/components/mutual-aid/SolidarityProjections';
 import { CommunityLens } from '@/components/mutual-aid/CommunityLens';
-import { TrustBuilding } from '@/components/mutual-aid/TrustBuilding';
-import { CommunityLibrary } from '@/components/mutual-aid/education/CommunityLibrary';
 import { CreatePostDialog } from '@/components/mutual-aid/CreatePostDialog';
 import { PostCard } from '@/components/mutual-aid/PostCard';
+
+// Heavy, tab-gated views: leaflet (map) and recharts (projections) only load
+// when their tab is opened, keeping the initial MutualAid payload small.
+const MutualAidMap = lazy(() =>
+  import('@/components/mutual-aid/MutualAidMap').then((m) => ({ default: m.MutualAidMap })),
+);
+const SolidarityProjections = lazy(() =>
+  import('@/components/mutual-aid/SolidarityProjections').then((m) => ({
+    default: m.SolidarityProjections,
+  })),
+);
+const TrustBuilding = lazy(() =>
+  import('@/components/mutual-aid/TrustBuilding').then((m) => ({ default: m.TrustBuilding })),
+);
+const CommunityLibrary = lazy(() =>
+  import('@/components/mutual-aid/education/CommunityLibrary').then((m) => ({
+    default: m.CommunityLibrary,
+  })),
+);
+
+const TabFallback = () => (
+  <div className="flex justify-center py-12" role="status" aria-live="polite">
+    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
+    <span className="sr-only">Loading…</span>
+  </div>
+);
 import { useMutualAidPosts } from '@/hooks/useMutualAidPosts';
 import { useMutualAidData } from '@/components/mutual-aid/hooks/useMutualAidData';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,9 +49,9 @@ const MutualAid = () => {
   
   const [selectedPost, setSelectedPost] = useState<MutualAidPost | null>(null);
 
-  const handleViewDetails = (post: MutualAidPost) => {
+  const handleViewDetails = useCallback((post: MutualAidPost) => {
     setSelectedPost(post);
-  };
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -87,7 +109,9 @@ const MutualAid = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <MutualAidMap />
+              <Suspense fallback={<TabFallback />}>
+                <MutualAidMap />
+              </Suspense>
             </CardContent>
           </Card>
 
@@ -170,11 +194,15 @@ const MutualAid = () => {
         </TabsContent>
 
         <TabsContent value="trust" className="space-y-4">
-          <TrustBuilding />
+          <Suspense fallback={<TabFallback />}>
+            <TrustBuilding />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="projections" className="space-y-4">
-          <SolidarityProjections />
+          <Suspense fallback={<TabFallback />}>
+            <SolidarityProjections />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="community" className="space-y-4">
@@ -193,7 +221,9 @@ const MutualAid = () => {
         </TabsContent>
 
         <TabsContent value="library" className="space-y-4">
-          <CommunityLibrary />
+          <Suspense fallback={<TabFallback />}>
+            <CommunityLibrary />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>

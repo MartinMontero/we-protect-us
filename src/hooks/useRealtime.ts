@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type {
   RealtimeChannel,
@@ -28,6 +28,11 @@ export const useRealtime = ({
 }: UseRealtimeOptions) => {
   const channelRef = useRef<RealtimeChannel | null>(null);
 
+  // Keep the latest handlers in a ref so passing inline callbacks does NOT
+  // tear down and recreate the subscription on every render.
+  const handlersRef = useRef({ onInsert, onUpdate, onDelete, onGeneric });
+  handlersRef.current = { onInsert, onUpdate, onDelete, onGeneric };
+
   useEffect(() => {
     const channelName = `${table}_${event}_${filter || 'all'}`;
 
@@ -44,18 +49,19 @@ export const useRealtime = ({
           filter?: string;
         },
         (payload) => {
+          const h = handlersRef.current;
           switch (payload.eventType) {
             case 'INSERT':
-              onInsert?.(payload);
+              h.onInsert?.(payload);
               break;
             case 'UPDATE':
-              onUpdate?.(payload);
+              h.onUpdate?.(payload);
               break;
             case 'DELETE':
-              onDelete?.(payload);
+              h.onDelete?.(payload);
               break;
             default:
-              onGeneric?.(payload);
+              h.onGeneric?.(payload);
           }
         },
       )
@@ -64,16 +70,17 @@ export const useRealtime = ({
     return () => {
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
       }
     };
-  }, [table, event, filter, onInsert, onUpdate, onDelete, onGeneric]);
+  }, [table, event, filter]);
 
-  const unsubscribe = () => {
+  const unsubscribe = useCallback(() => {
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
-  };
+  }, []);
 
   return { unsubscribe };
 };

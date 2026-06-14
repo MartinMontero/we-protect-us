@@ -1,5 +1,5 @@
 
-import React from 'react';
+import { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,44 +12,45 @@ interface PostCardProps {
   onViewDetails: (post: MutualAidPost) => void;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ post, onViewDetails }) => {
-  const urgencyColors = {
-    low: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    high: 'bg-orange-100 text-orange-800',
-    critical: 'bg-red-100 text-red-800'
-  };
+const urgencyColors: Record<string, string> = {
+  low: 'bg-green-100 text-green-800',
+  medium: 'bg-yellow-100 text-yellow-800',
+  high: 'bg-orange-100 text-orange-800',
+  critical: 'bg-red-100 text-red-800',
+};
 
-  const typeColors = {
-    request: 'bg-blue-100 text-blue-800',
-    offer: 'bg-purple-100 text-purple-800'
-  };
+const typeColors: Record<string, string> = {
+  request: 'bg-blue-100 text-blue-800',
+  offer: 'bg-purple-100 text-purple-800',
+};
 
-  const statusColors = {
-    open: 'bg-green-100 text-green-800',
-    in_progress: 'bg-yellow-100 text-yellow-800',
-    fulfilled: 'bg-blue-100 text-blue-800',
-    expired: 'bg-gray-100 text-gray-800'
-  };
+const statusColors: Record<string, string> = {
+  open: 'bg-green-100 text-green-800',
+  in_progress: 'bg-yellow-100 text-yellow-800',
+  fulfilled: 'bg-blue-100 text-blue-800',
+  expired: 'bg-gray-100 text-gray-800',
+};
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes}m ago`;
-    } else if (diffInMinutes < 1440) {
-      return `${Math.floor(diffInMinutes / 60)}h ago`;
-    } else {
-      return `${Math.floor(diffInMinutes / 1440)}d ago`;
-    }
-  };
+const formatTimeAgo = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
 
-  const formatCategory = (category: string) => {
-    return category.replace('_', ' ').charAt(0).toUpperCase() + category.replace('_', ' ').slice(1);
-  };
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes}m ago`;
+  } else if (diffInMinutes < 1440) {
+    return `${Math.floor(diffInMinutes / 60)}h ago`;
+  } else {
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  }
+};
 
+const formatCategory = (category: string) => {
+  const spaced = category.replace('_', ' ');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+};
+
+export const PostCard: React.FC<PostCardProps> = memo(({ post, onViewDetails }) => {
   return (
     <Card className="h-full hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
@@ -151,4 +152,6 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onViewDetails }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+PostCard.displayName = 'PostCard';
