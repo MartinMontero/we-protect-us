@@ -19,7 +19,7 @@ interface ChecklistItem {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: React.ElementType;
   path: string;
   completed: boolean;
 }

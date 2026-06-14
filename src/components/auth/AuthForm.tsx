@@ -98,7 +98,7 @@ const AuthForm = () => {
           description: "Welcome to We Protect Us! Setting up your profile...",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Unexpected signup error:', error);
       toast({
         title: "Error",
@@ -162,7 +162,7 @@ const AuthForm = () => {
           description: "You've been signed in successfully.",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Unexpected signin error:', error);
       toast({
         title: "Error",
@@ -192,7 +192,7 @@ const AuthForm = () => {
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(`Unexpected ${provider} auth error:`, error);
       toast({
         title: "Error",

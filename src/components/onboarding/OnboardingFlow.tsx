@@ -23,7 +23,7 @@ interface OnboardingStep {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: React.ElementType;
   features: string[];
   action: {
     label: string;

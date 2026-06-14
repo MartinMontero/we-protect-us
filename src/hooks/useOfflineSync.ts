@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 
 // Extend ServiceWorkerRegistration interface to include sync
 interface ServiceWorkerRegistrationWithSync extends ServiceWorkerRegistration {
@@ -12,12 +13,12 @@ interface ServiceWorkerRegistrationWithSync extends ServiceWorkerRegistration {
 
 interface OfflineData {
   checkins: Array<{
-    data: any;
+    data: unknown;
     token: string;
     timestamp: number;
   }>;
   reports: Array<{
-    data: any;
+    data: unknown;
     token: string;
     timestamp: number;
   }>;
@@ -101,7 +102,7 @@ export const useOfflineSync = () => {
           try {
             const { error } = await supabase
               .from('safety_checkins')
-              .insert(checkin.data);
+              .insert(checkin.data as TablesInsert<'safety_checkins'>);
             
             if (error) {
               throw new Error('Failed to sync checkin');
@@ -116,7 +117,7 @@ export const useOfflineSync = () => {
           try {
             const { error } = await supabase
               .from('damage_reports')
-              .insert(report.data);
+              .insert(report.data as TablesInsert<'damage_reports'>);
             
             if (error) {
               throw new Error('Failed to sync damage report');
@@ -145,7 +146,7 @@ export const useOfflineSync = () => {
     }
   };
 
-  const storeOfflineData = async (type: 'checkin' | 'report', data: any, token: string) => {
+  const storeOfflineData = async (type: 'checkin' | 'report', data: unknown, token: string) => {
     if (isOnline) {
       return; // Don't store if online
     }

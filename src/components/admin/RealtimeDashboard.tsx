@@ -24,10 +24,11 @@ export const RealtimeDashboard: React.FC = () => {
     table: 'profiles',
     event: 'UPDATE',
     onUpdate: (payload) => {
+      const profile = payload.new as { pseudonym?: string };
       const newEvent: RealtimeEvent = {
         id: Date.now().toString(),
         type: 'user_activity',
-        message: `User ${payload.new.pseudonym || 'Unknown'} updated their profile`,
+        message: `User ${profile.pseudonym || 'Unknown'} updated their profile`,
         timestamp: new Date(),
         severity: 'info',
       };
@@ -40,20 +41,22 @@ export const RealtimeDashboard: React.FC = () => {
     table: 'mutual_aid_posts',
     event: '*',
     onInsert: (payload) => {
+      const post = payload.new as { title?: string };
       const newEvent: RealtimeEvent = {
         id: Date.now().toString(),
         type: 'content_update',
-        message: `New post created: ${payload.new.title}`,
+        message: `New post created: ${post.title}`,
         timestamp: new Date(),
         severity: 'info',
       };
       setEvents(prev => [newEvent, ...prev.slice(0, 19)]);
     },
     onUpdate: (payload) => {
+      const post = payload.new as { title?: string };
       const newEvent: RealtimeEvent = {
         id: Date.now().toString(),
         type: 'content_update',
-        message: `Post updated: ${payload.new.title}`,
+        message: `Post updated: ${post.title}`,
         timestamp: new Date(),
         severity: 'info',
       };

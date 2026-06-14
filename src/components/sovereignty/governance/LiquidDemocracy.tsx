@@ -15,7 +15,7 @@ export const LiquidDemocracy: React.FC = () => {
       role: 'Housing Advocate',
       directVotes: 1,
       delegatedVotes: 5,
-      delegatesTo: null,
+      delegatesTo: null as string | null,
       expertise: ['housing', 'tenant_rights']
     },
     {
@@ -24,7 +24,7 @@ export const LiquidDemocracy: React.FC = () => {
       role: 'Environmental Organizer',
       directVotes: 1,
       delegatedVotes: 3,
-      delegatesTo: null,
+      delegatesTo: null as string | null,
       expertise: ['environment', 'energy']
     },
     {
@@ -42,7 +42,7 @@ export const LiquidDemocracy: React.FC = () => {
       role: 'Local Business Owner',
       directVotes: 1,
       delegatedVotes: 2,
-      delegatesTo: null,
+      delegatesTo: null as string | null,
       expertise: ['economics', 'small_business']
     }
   ];

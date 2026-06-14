@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import type { TablesUpdate } from '@/integrations/supabase/types';
 
 export interface IntegrationConfig {
   id: string;
@@ -10,7 +11,7 @@ export interface IntegrationConfig {
   api_endpoint: string;
   api_key_name: string;
   is_enabled: boolean;
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
   health_status: string;
   last_health_check: string;
 }
@@ -20,7 +21,7 @@ export interface VolunteerMatch {
   need_id: string;
   volunteer_id: string;
   match_score: number;
-  factors: Record<string, any>;
+  factors: Record<string, unknown>;
   status: string;
   created_at: string;
   volunteer_profile?: {
@@ -92,7 +93,7 @@ export const useIntegrations = () => {
         api_key_name: item.api_key_name || '',
         is_enabled: item.is_enabled,
         configuration: typeof item.configuration === 'object' && item.configuration !== null 
-          ? item.configuration as Record<string, any>
+          ? item.configuration as Record<string, unknown>
           : {},
         health_status: item.health_status,
         last_health_check: item.last_health_check,
@@ -118,7 +119,7 @@ export const useIntegrations = () => {
         .update({
           ...config,
           updated_at: new Date().toISOString(),
-        })
+        } as TablesUpdate<'integration_config'>)
         .eq('service_name', serviceName);
 
       if (error) throw error;
@@ -270,7 +271,11 @@ export const useResourceDistribution = () => {
     }
   };
 
-  const updateDistributionStatus = async (distributionId: string, status: string, updates: any = {}) => {
+  const updateDistributionStatus = async (
+    distributionId: string,
+    status: string,
+    updates: Record<string, unknown> = {},
+  ) => {
     try {
       const { error } = await supabase
         .from('resource_distributions')

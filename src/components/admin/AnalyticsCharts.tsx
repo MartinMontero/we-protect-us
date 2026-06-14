@@ -113,7 +113,10 @@ export const AnalyticsCharts: React.FC = () => {
     }
   };
 
-  const generateUserGrowthData = (profiles: any[], range: string) => {
+  const generateUserGrowthData = (
+    profiles: { created_at: string | null }[],
+    range: string,
+  ) => {
     const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
     const data = [];
     let totalUsers = 0;
@@ -140,7 +143,10 @@ export const AnalyticsCharts: React.FC = () => {
     return data;
   };
 
-  const generateTimeBankData = (transactions: any[], range: string) => {
+  const generateTimeBankData = (
+    transactions: { hours: number | null; created_at: string | null }[],
+    range: string,
+  ) => {
     const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
     const data = [];
     let totalHours = 0;

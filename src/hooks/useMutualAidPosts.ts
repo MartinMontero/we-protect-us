@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { MutualAidPost, CreatePostData, UpdatePostData, NeedCategory } from '@/types/mutualAid';
+import type { TablesUpdate } from '@/integrations/supabase/types';
 
 const VALID_CATEGORIES: NeedCategory[] = [
   'food', 'housing', 'transportation', 'childcare', 'healthcare',
@@ -164,7 +165,7 @@ export const useMutualAidPosts = () => {
 
       console.log('Updating post:', id, updates);
 
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       };
 
@@ -178,7 +179,7 @@ export const useMutualAidPosts = () => {
 
       const { data, error } = await supabase
         .from('mutual_aid_posts')
-        .update(updateData)
+        .update(updateData as TablesUpdate<'mutual_aid_posts'>)
         .eq('id', id)
         .eq('user_id', user.id) // Ensure user owns the post
         .select()

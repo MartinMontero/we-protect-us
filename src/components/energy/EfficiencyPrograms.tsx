@@ -34,7 +34,7 @@ export const EfficiencyPrograms: React.FC = () => {
       address: "456 Pine Avenue",
       status: "scheduled",
       auditDate: "2024-02-20",
-      recommendations: []
+      recommendations: [] as string[]
     }
   ];
 

@@ -23,10 +23,11 @@ class ResizeObserverStub {
   unobserve() {}
   disconnect() {}
 }
-// @ts-expect-error - assigning a stub to the global
-window.ResizeObserver = window.ResizeObserver || ResizeObserverStub;
-// @ts-expect-error - assigning a stub to the global
-window.IntersectionObserver = window.IntersectionObserver || ResizeObserverStub;
+window.ResizeObserver =
+  window.ResizeObserver ?? (ResizeObserverStub as unknown as typeof ResizeObserver);
+window.IntersectionObserver =
+  window.IntersectionObserver ??
+  (ResizeObserverStub as unknown as typeof IntersectionObserver);
 
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = vi.fn();

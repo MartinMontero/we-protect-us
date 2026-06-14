@@ -65,10 +65,10 @@ export const PlotWaitlistDialog: React.FC<PlotWaitlistDialogProps> = ({
         raised_bed: false,
         notes: ''
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error instanceof Error ? error.message : 'Something went wrong',
         variant: "destructive",
       });
     } finally {

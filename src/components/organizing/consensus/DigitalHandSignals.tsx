@@ -7,7 +7,7 @@ import { ThumbsUp, ThumbsDown, Hand, Clock, AlertTriangle, CheckCircle } from 'l
 
 export const DigitalHandSignals: React.FC = () => {
   const [currentSignal, setCurrentSignal] = useState<string | null>(null);
-  const [signalCounts, setSignalCounts] = useState({
+  const [signalCounts, setSignalCounts] = useState<Record<string, number>>({
     agree: 12,
     disagree: 3,
     clarification: 2,

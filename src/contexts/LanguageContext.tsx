@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 interface LanguageContextType {
   currentLanguage: string;
   changeLanguage: (language: string) => void;
-  t: (key: string, options?: any) => string;
+  t: (key: string, options?: Record<string, unknown>) => string;
   isRTL: boolean;
 }
 

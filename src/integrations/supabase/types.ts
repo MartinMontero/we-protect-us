@@ -3519,6 +3519,7 @@ export type Database = {
       mutual_aid_posts: {
         Row: {
           category: Database["public"]["Enums"]["need_category"]
+          contact_info: string | null
           created_at: string | null
           description: string
           expires_at: string | null
@@ -3528,6 +3529,7 @@ export type Database = {
           radius_km: number | null
           skills_needed: string[] | null
           status: Database["public"]["Enums"]["fulfillment_status"] | null
+          tags: string[] | null
           time_commitment_hours: number | null
           title: string
           type: string
@@ -3537,6 +3539,7 @@ export type Database = {
         }
         Insert: {
           category: Database["public"]["Enums"]["need_category"]
+          contact_info?: string | null
           created_at?: string | null
           description: string
           expires_at?: string | null
@@ -3546,6 +3549,7 @@ export type Database = {
           radius_km?: number | null
           skills_needed?: string[] | null
           status?: Database["public"]["Enums"]["fulfillment_status"] | null
+          tags?: string[] | null
           time_commitment_hours?: number | null
           title: string
           type: string
@@ -3555,6 +3559,7 @@ export type Database = {
         }
         Update: {
           category?: Database["public"]["Enums"]["need_category"]
+          contact_info?: string | null
           created_at?: string | null
           description?: string
           expires_at?: string | null
@@ -3564,6 +3569,7 @@ export type Database = {
           radius_km?: number | null
           skills_needed?: string[] | null
           status?: Database["public"]["Enums"]["fulfillment_status"] | null
+          tags?: string[] | null
           time_commitment_hours?: number | null
           title?: string
           type?: string

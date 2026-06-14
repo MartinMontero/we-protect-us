@@ -68,14 +68,24 @@ finished before being presented as live tools:
   (wildcard CORS, no real Supabase session, Bluesky accepts a password). Leave
   undeployed. Primary auth does not depend on them.
 
+## Type safety progress
+
+- **`noImplicitAny` is now enabled** in `tsconfig.app.json` and passes clean.
+- The `typecheck` npm script previously checked **nothing** (the root tsconfig
+  has `files: []`); it now runs `tsc -p tsconfig.app.json` + the node config and
+  caught a real bug — the mutual-aid create flow inserted `contact_info`/`tags`
+  columns that didn't exist. Those columns were added (migration + types).
+- Explicit `any` reduced from 69 → ~42 (the remainder are warnings, not errors).
+
 ## Known tech debt (non-blocking)
 
-- ~100 ESLint warnings remain (mostly `@typescript-eslint/no-explicit-any` from
-  the generated Supabase types, plus a few `react-hooks/exhaustive-deps`). These
-  are warnings, not errors, and are safe to address incrementally.
-- `tsconfig` runs with loose strictness (`strictNullChecks: false`,
-  `noImplicitAny: false`). Tightening it is recommended but will surface many
-  type issues to work through.
+- **`strictNullChecks` is still off.** Enabling it surfaces ~49 errors, almost
+  all of the form "a DB-nullable column (`T | null`) assigned to a stricter
+  local interface." This is a worthwhile next increment but should be done
+  deliberately (widen the local interfaces / add null guards) rather than papered
+  over with casts. Breakdown: ~28 `TS2345`, ~10 `TS2322`, ~7 `TS2769`, ~4 `TS18047`.
+- ~42 `@typescript-eslint/no-explicit-any` warnings remain, mostly prop-type
+  annotations in feature components. Safe to burn down incrementally.
 - The `MutualAid` route chunk is large (~130 KB gzip) because it bundles both
   maps and charts; further intra-route splitting is possible.
 - Several `SECURITY DEFINER` SQL functions from earlier migrations could have

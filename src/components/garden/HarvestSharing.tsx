@@ -70,7 +70,7 @@ export const HarvestSharing: React.FC = () => {
         notes: ''
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message,
@@ -98,7 +98,7 @@ export const HarvestSharing: React.FC = () => {
         description: "You've claimed this harvest. Contact the gardener to arrange pickup.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message,
