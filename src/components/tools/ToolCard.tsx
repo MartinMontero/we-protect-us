@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import type { Tables } from '@/integrations/supabase/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,7 @@ import { ToolReservationDialog } from './ToolReservationDialog';
 import { ToolDetailsDialog } from './ToolDetailsDialog';
 
 interface ToolCardProps {
-  tool: any;
+  tool: Tables<'tools'>;
 }
 
 const categoryLabels = {

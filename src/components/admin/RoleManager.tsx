@@ -41,10 +41,10 @@ export const RoleManager: React.FC = () => {
 
       if (error) throw error;
 
-      const mappedUsers: UserWithRole[] = (data || []).map((item: any) => ({
+      const mappedUsers: UserWithRole[] = (data || []).map((item) => ({
         user_id: item.user_id,
         pseudonym: item.pseudonym || 'Unknown',
-        avatar_url: item.avatar_url,
+        avatar_url: undefined,
         role: item.role as UserRole,
         assigned_at: item.assigned_at,
       }));

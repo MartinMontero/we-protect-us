@@ -113,7 +113,7 @@ export const ResourceSovereigntyDashboard: React.FC = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs value={selectedCategory} onValueChange={(value: any) => setSelectedCategory(value)} className="w-full">
+        <Tabs value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as 'food' | 'housing' | 'energy')} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="food" className="gap-1">
               <Leaf className="w-3 h-3" />

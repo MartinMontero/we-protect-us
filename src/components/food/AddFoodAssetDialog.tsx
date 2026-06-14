@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -63,7 +64,7 @@ export const AddFoodAssetDialog: React.FC<AddFoodAssetDialogProps> = ({
   };
 
   const addAssetMutation = useMutation({
-    mutationFn: async (assetData: any) => {
+    mutationFn: async (assetData: { location_lat: string; location_lng: string; [key: string]: unknown }) => {
       if (!user) throw new Error('Not authenticated');
 
       const { data, error } = await supabase
@@ -75,7 +76,7 @@ export const AddFoodAssetDialog: React.FC<AddFoodAssetDialogProps> = ({
           crops_varieties: varieties,
           location_lat: parseFloat(assetData.location_lat) || null,
           location_lng: parseFloat(assetData.location_lng) || null
-        })
+        } as TablesInsert<'food_assets'>)
         .select()
         .single();
 

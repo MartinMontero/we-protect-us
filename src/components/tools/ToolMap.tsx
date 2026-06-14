@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
 
 interface ToolMapProps {
-  filters: any;
+  filters: { category: string; condition: string; availability: string; search: string; nearMe: boolean };
 }
 
 export const ToolMap: React.FC<ToolMapProps> = ({ filters }) => {

@@ -8,7 +8,19 @@ import { Calendar, Droplets, Sun, Mountain, User, Sprout } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface PlotDetailsDialogProps {
-  plot: any;
+  plot: {
+    plot_number: string;
+    status: string;
+    size_sqft: number | null;
+    sun_exposure: string | null;
+    soil_type: string | null;
+    water_access: boolean | null;
+    notes: string | null;
+    assigned_date: string | null;
+    raised_bed: boolean | null;
+    current_gardener?: { pseudonym?: string } | null;
+    current_plantings?: { crop_name: string; variety: string | null; planted_date?: string }[];
+  } | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -59,7 +71,7 @@ export const PlotDetailsDialog: React.FC<PlotDetailsDialogProps> = ({
                 <div className="flex items-center gap-2">
                   <Sun className="w-4 h-4 text-yellow-500" />
                   <span className="text-sm">
-                    <strong>Sun:</strong> {plot.sun_exposure.replace('_', ' ')}
+                    <strong>Sun:</strong> {(plot.sun_exposure ?? '').replace('_', ' ')}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -127,7 +139,7 @@ export const PlotDetailsDialog: React.FC<PlotDetailsDialogProps> = ({
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {plot.current_plantings.map((planting: any, idx: number) => (
+                  {plot.current_plantings.map((planting: { crop_name: string; variety: string | null; planted_date: string }, idx: number) => (
                     <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="font-medium">{planting.crop_name}</p>

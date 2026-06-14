@@ -27,7 +27,7 @@ interface GardenPlot {
   status: string;
   current_gardener_id: string | null;
   assigned_date: string | null;
-  coordinates: any;
+  coordinates: { coordinates: number[][][] } | null;
   notes: string | null;
   water_access: boolean;
   raised_bed: boolean;
@@ -135,7 +135,7 @@ export const GardenMap: React.FC = () => {
           {plots?.map((plot) => {
             if (!plot.coordinates) return null;
             
-            const coordinates = plot.coordinates.coordinates[0].map((coord: number[]) => [coord[1], coord[0]]);
+            const coordinates = plot.coordinates.coordinates[0].map((coord: number[]): [number, number] => [coord[1], coord[0]]);
             
             return (
               <Polygon

@@ -138,7 +138,7 @@ export const OrganizingCaseStudies: React.FC = () => {
               key={filter}
               variant={filterBy === filter ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilterBy(filter as any)}
+              onClick={() => setFilterBy(filter as 'all' | 'housing' | 'labor' | 'environment')}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </Button>

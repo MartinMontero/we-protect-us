@@ -200,7 +200,7 @@ export const SolidarityProjections: React.FC = () => {
                 <YAxis />
                 <Tooltip 
                   labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                  formatter={(value: any, name: string) => [
+                  formatter={(value: number | string, name: string) => [
                     typeof value === 'number' ? value.toFixed(2) : value,
                     name === 'total_hours_exchanged' ? 'Hours Exchanged' :
                     name === 'active_participants' ? 'Active Participants' :

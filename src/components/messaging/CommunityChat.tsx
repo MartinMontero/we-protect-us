@@ -30,7 +30,7 @@ interface Message {
 }
 
 interface ChatChannel {
-  id: string;
+  id: Message['channel'];
   name: string;
   icon: React.ElementType;
   color: string;
@@ -39,7 +39,7 @@ interface ChatChannel {
 
 const CommunityChat = () => {
   const { user } = useAuth();
-  const [activeChannel, setActiveChannel] = useState('general');
+  const [activeChannel, setActiveChannel] = useState<Message['channel']>('general');
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -111,7 +111,7 @@ const CommunityChat = () => {
       content: newMessage,
       timestamp: new Date(),
       type: 'text',
-      channel: activeChannel as any
+      channel: activeChannel
     };
 
     setMessages(prev => [...prev, message]);

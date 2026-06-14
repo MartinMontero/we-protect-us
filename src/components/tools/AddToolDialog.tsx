@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -54,7 +55,7 @@ export const AddToolDialog: React.FC<AddToolDialogProps> = ({ open, onOpenChange
   });
 
   const createTool = useMutation({
-    mutationFn: async (toolData: any) => {
+    mutationFn: async (toolData: { estimated_value?: string; purchase_date?: string; [key: string]: unknown }) => {
       if (!user) throw new Error('User not authenticated');
       
       const { data, error } = await supabase
@@ -64,7 +65,7 @@ export const AddToolDialog: React.FC<AddToolDialogProps> = ({ open, onOpenChange
           owner_id: user.id,
           estimated_value: toolData.estimated_value ? parseFloat(toolData.estimated_value) : null,
           purchase_date: toolData.purchase_date || null
-        })
+        } as TablesInsert<'tools'>)
         .select()
         .single();
 

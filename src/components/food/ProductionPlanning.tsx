@@ -56,7 +56,7 @@ export const ProductionPlanning: React.FC = () => {
     }
   };
 
-  const getPlanProgress = (plan: any) => {
+  const getPlanProgress = (plan: { status: string | null }) => {
     // Simplified progress calculation based on status
     switch (plan.status) {
       case 'planning': return 25;

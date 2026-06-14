@@ -57,7 +57,7 @@ export const RentTracker: React.FC = () => {
   const calculateRentIncrease = (record: RentRecord) => {
     const notices = Array.isArray(record.rent_increase_notices) ? record.rent_increase_notices : [];
     if (notices.length > 0) {
-      const lastIncrease = notices[notices.length - 1] as any;
+      const lastIncrease = notices[notices.length - 1] as { new_rent: number };
       return ((lastIncrease.new_rent - record.monthly_rent) / record.monthly_rent * 100).toFixed(1);
     }
     return null;
@@ -133,7 +133,7 @@ export const RentTracker: React.FC = () => {
                   <div className="mt-4 pt-4 border-t">
                     <h5 className="text-sm font-medium mb-2">Recent Increases</h5>
                     <div className="space-y-2">
-                      {notices.slice(-2).map((notice: any, index: number) => (
+                      {notices.slice(-2).map((notice: { notice_date: string; old_rent: number; new_rent: number }, index: number) => (
                         <div key={index} className="flex justify-between items-center text-sm">
                           <span>{new Date(notice.notice_date).toLocaleDateString()}</span>
                           <Badge variant="outline">

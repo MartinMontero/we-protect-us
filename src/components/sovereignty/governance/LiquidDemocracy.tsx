@@ -60,7 +60,7 @@ export const LiquidDemocracy: React.FC = () => {
     }
   ];
 
-  const calculateVotingPower = (member: any) => {
+  const calculateVotingPower = (member: { directVotes: number; delegatedVotes: number }) => {
     return member.directVotes + member.delegatedVotes;
   };
 

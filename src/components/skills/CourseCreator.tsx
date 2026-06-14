@@ -74,7 +74,7 @@ const CourseCreator = () => {
     createCourseMutation.mutate(courseData);
   };
 
-  const handleInputChange = (field: keyof typeof courseData, value: any) => {
+  const handleInputChange = (field: keyof typeof courseData, value: string | number) => {
     setCourseData(prev => ({ ...prev, [field]: value }));
   };
 

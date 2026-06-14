@@ -5,15 +5,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { MapPin, Search } from 'lucide-react';
 
+type ToolFilterValues = {
+  category: string;
+  condition: string;
+  availability: string;
+  search: string;
+  nearMe: boolean;
+};
+
 interface ToolFiltersProps {
-  filters: {
-    category: string;
-    condition: string;
-    availability: string;
-    search: string;
-    nearMe: boolean;
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: ToolFilterValues;
+  onFiltersChange: (filters: ToolFilterValues) => void;
 }
 
 const categories = [
@@ -39,7 +41,7 @@ const conditions = [
 ];
 
 export const ToolFilters: React.FC<ToolFiltersProps> = ({ filters, onFiltersChange }) => {
-  const updateFilter = (key: string, value: any) => {
+  const updateFilter = (key: keyof ToolFilterValues, value: string | boolean) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 

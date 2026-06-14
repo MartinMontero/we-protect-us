@@ -45,7 +45,7 @@ const KnowledgeBase = () => {
         .map(article => article.author_id)
         .filter(Boolean);
 
-      let profilesData: any[] = [];
+      let profilesData: { id: string; pseudonym: string | null }[] = [];
       if (authorIds.length > 0) {
         const { data: profiles, error: profilesError } = await supabase
           .from('profiles')

@@ -1,11 +1,12 @@
 
 import React from 'react';
+import type { Tables } from '@/integrations/supabase/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, User, DollarSign } from 'lucide-react';
 
 interface ToolDetailsDialogProps {
-  tool: any;
+  tool: Tables<'tools'> & { owner?: { pseudonym?: string; full_name?: string } | null };
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -109,7 +110,7 @@ export const ToolDetailsDialog: React.FC<ToolDetailsDialogProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
             <div className="flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
-              Added {new Date(tool.created_at).toLocaleDateString()}
+              Added {tool.created_at ? new Date(tool.created_at).toLocaleDateString() : ''}
             </div>
             {tool.purchase_date && (
               <div className="flex items-center">

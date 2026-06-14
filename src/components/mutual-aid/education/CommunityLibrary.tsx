@@ -159,7 +159,7 @@ Jane Addams established Hull House in 1889 as a "settlement house" in Chicago's 
     description: '',
     content: '',
     tags: '',
-    category: 'guide' as const
+    category: 'guide' as 'guide' | 'case-study' | 'template'
   });
 
   const filteredGuides = guides.filter(guide => {
@@ -316,7 +316,7 @@ Jane Addams established Hull House in 1889 as a "settlement house" in Chicago's 
                     <label className="block text-sm font-medium mb-1">Category</label>
                     <select
                       value={newGuide.category}
-                      onChange={(e) => setNewGuide({...newGuide, category: e.target.value as any})}
+                      onChange={(e) => setNewGuide({...newGuide, category: e.target.value as 'guide' | 'case-study' | 'template'})}
                       className="w-full px-3 py-2 border rounded-md"
                     >
                       <option value="guide">Practical Guide</option>

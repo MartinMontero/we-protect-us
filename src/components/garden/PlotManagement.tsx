@@ -145,7 +145,7 @@ export const PlotManagement: React.FC = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-1">Currently Growing:</p>
                       <div className="flex flex-wrap gap-1">
-                        {plot.current_plantings.slice(0, 3).map((planting: any, idx: number) => (
+                        {plot.current_plantings.slice(0, 3).map((planting: { crop_name: string }, idx: number) => (
                           <Badge key={idx} variant="outline" className="text-xs">
                             {planting.crop_name}
                           </Badge>

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import type { Tables } from '@/integrations/supabase/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,8 +10,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface MatchResult {
-  volunteer: any;
-  elder: any;
+  volunteer: Tables<'volunteer_profiles'>;
+  elder: Tables<'elder_profiles'>;
   match_score: number;
   common_interests: string[];
   compatible_skills: string[];
@@ -164,7 +165,7 @@ export const SupportMatching: React.FC = () => {
     }
   };
 
-  const calculateMatchScore = (elder: any, volunteer: any, commonInterests: string[], compatibleSkills: string[]) => {
+  const calculateMatchScore = (elder: Tables<'elder_profiles'>, volunteer: Tables<'volunteer_profiles'>, commonInterests: string[], compatibleSkills: string[]) => {
     let score = 0;
     
     // Interest compatibility (30%)
@@ -179,7 +180,7 @@ export const SupportMatching: React.FC = () => {
     }
     
     // Availability bonus (15%)
-    if (volunteer.max_hours_per_week >= 3) {
+    if ((volunteer.max_hours_per_week ?? 0) >= 3) {
       score += 15;
     }
     
@@ -287,7 +288,7 @@ export const SupportMatching: React.FC = () => {
                         <span className="font-semibold text-lg">Specializations:</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {profile.specializations?.map((spec: string, i: number) => (
+                        {(profile as Tables<'volunteer_profiles'>).specializations?.map((spec: string, i: number) => (
                           <Badge key={i} variant="secondary" className="text-sm p-2">
                             {spec.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                           </Badge>
@@ -297,11 +298,11 @@ export const SupportMatching: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Clock className="w-5 h-5 text-green-600" />
                         <span className="text-lg">
-                          Available {profile.max_hours_per_week} hours/week
+                          Available {(profile as Tables<'volunteer_profiles'>).max_hours_per_week} hours/week
                         </span>
                       </div>
                       
-                      {profile.transportation_available && (
+                      {(profile as Tables<'volunteer_profiles'>).transportation_available && (
                         <div className="flex items-center gap-2">
                           <MapPin className="w-5 h-5 text-purple-600" />
                           <span className="text-lg">Can provide transportation</span>
@@ -317,7 +318,7 @@ export const SupportMatching: React.FC = () => {
                         <span className="font-semibold text-lg">Interests:</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {profile.interests?.map((interest: string, i: number) => (
+                        {(profile as Tables<'elder_profiles'>).interests?.map((interest: string, i: number) => (
                           <Badge key={i} variant="secondary" className="text-sm p-2">
                             {interest}
                           </Badge>
@@ -329,7 +330,7 @@ export const SupportMatching: React.FC = () => {
                         <span className="font-semibold text-lg">Preferred visits:</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {profile.preferred_visit_types?.map((type: string, i: number) => (
+                        {(profile as Tables<'elder_profiles'>).preferred_visit_types?.map((type: string, i: number) => (
                           <Badge key={i} variant="outline" className="text-sm p-2">
                             {type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                           </Badge>

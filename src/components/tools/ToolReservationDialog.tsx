@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import type { Tables } from '@/integrations/supabase/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface ToolReservationDialogProps {
-  tool: any;
+  tool: Tables<'tools'>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -34,7 +35,7 @@ export const ToolReservationDialog: React.FC<ToolReservationDialogProps> = ({
   const [notes, setNotes] = useState('');
 
   const createReservation = useMutation({
-    mutationFn: async (reservationData: any) => {
+    mutationFn: async (reservationData: { startDate: Date; endDate: Date; notes: string }) => {
       if (!user) throw new Error('User not authenticated');
       
       const { data, error } = await supabase

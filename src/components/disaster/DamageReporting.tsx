@@ -38,7 +38,7 @@ export const DamageReporting: React.FC = () => {
 
   const [newReport, setNewReport] = useState({
     incident_type: '',
-    severity: 'moderate' as const,
+    severity: 'moderate' as 'minor' | 'moderate' | 'major' | 'severe',
     location_description: '',
     description: '',
     safety_hazards: [] as string[],
@@ -223,7 +223,7 @@ export const DamageReporting: React.FC = () => {
                     <label className="text-sm font-medium">Severity *</label>
                     <Select 
                       value={newReport.severity} 
-                      onValueChange={(value) => setNewReport(prev => ({ ...prev, severity: value as any }))}
+                      onValueChange={(value) => setNewReport(prev => ({ ...prev, severity: value as 'minor' | 'moderate' | 'major' | 'severe' }))}
                     >
                       <SelectTrigger>
                         <SelectValue />

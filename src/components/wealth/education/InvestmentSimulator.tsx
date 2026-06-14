@@ -29,7 +29,7 @@ export const InvestmentSimulator: React.FC = () => {
   });
 
   const [isRunning, setIsRunning] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<ReturnType<typeof calculateProjections> | null>(null);
 
   const investmentTypes = [
     {

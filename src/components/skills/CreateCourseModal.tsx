@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
+import type { Enums } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,15 +55,15 @@ export const CreateCourseModal: React.FC<CreateCourseModalProps> = ({
           creator_id: user.id,
           title: formData.title,
           description: formData.description,
-          difficulty_level: formData.difficulty_level as any,
-          learning_format: formData.learning_format as any,
+          difficulty_level: formData.difficulty_level as Enums<'skill_level'>,
+          learning_format: formData.learning_format as Enums<'learning_format'>,
           max_participants: parseInt(formData.max_participants),
           duration_weeks: parseInt(formData.duration_weeks),
           price: parseFloat(formData.price),
-          location_type: formData.location_type as any,
+          location_type: formData.location_type as Enums<'location_type'>,
           location_details: formData.location_details,
           featured_image_url: formData.featured_image_url || null,
-          status: 'draft' as any
+          status: 'draft' as Enums<'course_status'>
         });
 
       if (error) throw error;

@@ -340,7 +340,7 @@ export const ResourceManagement: React.FC = () => {
                             Participants ({order.participants.length})
                           </p>
                           <div className="flex flex-wrap gap-1">
-                            {order.participants.slice(0, 5).map((participant: any, idx: number) => (
+                            {order.participants.slice(0, 5).map((participant: { participant?: { pseudonym?: string } | null; quantity_requested?: number }, idx: number) => (
                               <Badge key={idx} variant="outline" className="text-xs">
                                 {participant.participant?.pseudonym} ({participant.quantity_requested})
                               </Badge>

@@ -24,10 +24,8 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
-      // `any` is discouraged but surfaced as a warning rather than blocking the
-      // build, since the generated Supabase types make full elimination costly.
-      // Tracked as tech debt; see PRODUCTION_READINESS.md.
-      "@typescript-eslint/no-explicit-any": "warn",
+      // Explicit `any` is fully eliminated from the codebase; keep it that way.
+      "@typescript-eslint/no-explicit-any": "error",
     },
   }
 );
