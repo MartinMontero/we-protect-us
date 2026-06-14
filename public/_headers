@@ -1,4 +1,6 @@
-/
+# Applied by Cloudflare Pages (and Netlify). Security headers must use /* so
+# they cover every route — the SPA serves index.html for deep links too.
+/*
   Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
@@ -7,11 +9,19 @@
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
 
-# Long-cache fingerprinted build assets
+# Fingerprinted build assets never change — cache them forever.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Never cache the service worker or the app shell
+# Non-fingerprinted static assets: cache a day, then revalidate.
+/icon.svg
+  Cache-Control: public, max-age=86400
+/favicon.ico
+  Cache-Control: public, max-age=86400
+/manifest.json
+  Cache-Control: public, max-age=86400
+
+# Never cache the service worker or the app shell (so deploys take effect at once).
 /sw.js
   Cache-Control: no-cache
 /index.html

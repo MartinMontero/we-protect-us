@@ -41,10 +41,38 @@ The output in `dist/` is a static SPA. It needs two things from the host:
 1. **History fallback** — serve `index.html` for unknown paths so deep links work.
 2. **Security headers** — see `public/_headers`.
 
-### Netlify / Cloudflare Pages
-`public/_headers` and `public/_redirects` are copied into `dist/` automatically
-and are honored as-is. Set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as
-build environment variables. Build command `npm run build`, publish dir `dist`.
+### Cloudflare Pages (recommended)
+
+This repo is set up for Cloudflare Pages out of the box: `public/_headers`
+(security headers + caching) and `public/_redirects` (SPA history fallback) are
+copied into `dist/` and honored as-is, `wrangler.toml` declares the build output
+dir, and `.nvmrc` pins Node 20 for the build.
+
+**Option A — connect the GitHub repo (simplest):**
+1. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git.
+2. Build command: `npm run build`. Build output directory: `dist`.
+3. Environment variables (Production **and** Preview):
+   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+   - `NODE_VERSION = 20` (or rely on `.nvmrc`)
+4. Every push builds and deploys; PRs get preview URLs automatically.
+
+**Option B — CLI / CI:**
+```sh
+npm run build
+npx wrangler pages deploy dist --project-name we-protect-us
+```
+
+**Custom domain:** Pages → your project → Custom domains → add your domain;
+Cloudflare provisions TLS and enables HTTP/3 + Brotli automatically. Turn on
+"Always Use HTTPS". The build injects a `<link rel="preconnect">` to whatever
+`VITE_SUPABASE_URL` you set, so the first auth call skips a DNS+TLS round-trip.
+
+> After deploy, verify headers at https://securityheaders.com (expect an A).
+> The `connect-src` CSP already allows `*.supabase.co` over https + wss.
+
+### Netlify
+Same `_headers` / `_redirects` apply. Build command `npm run build`, publish dir
+`dist`, and set the two `VITE_` env vars.
 
 ### Vercel
 Add a `vercel.json` (headers + SPA rewrite), since Vercel ignores `_headers`:

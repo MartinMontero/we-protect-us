@@ -1,0 +1,6 @@
+# Cloudflare Pages project config (enables `wrangler pages deploy` / CI deploys).
+# For most users the simplest path is connecting the GitHub repo in the
+# Cloudflare Pages dashboard instead — see DEPLOYMENT.md.
+name = "we-protect-us"
+compatibility_date = "2024-06-01"
+pages_build_output_dir = "dist"
